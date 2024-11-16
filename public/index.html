@@ -12,31 +12,34 @@
         <button id="save-content">Save Content</button>
     </div>
 
-    <!-- Load TinyMCE from CDN -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="js/script.js"></script>
+    <!-- Load TinyMCE -->
     <script src="https://cdn.tiny.cloud/1/cn3runbtm7ybmc43uo6cwh3a3692t2skp6p8m1ckfg6i12ot/tinymce/5/tinymce.min.js"></script>
 
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Load ArteJS -->
+    <script src="../libs/arte.js"></script>
 
+    <!-- Debugging ArteJS -->
+    <script>
+        console.log("ArteJS Check:", typeof Arte); // Should output "function" or "object"
+    </script>
 
+    <!-- Initialize TinyMCE -->
+    <script>
+        tinymce.init({
+            selector: '#editor',
+            plugins: 'lists code link',
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | code | link',
+            height: 300,
+            menubar: false,
+            branding: false,
+            api_key: 'cn3runbtm7ybmc43uo6cwh3a3692t2skp6p8m1ckfg6i12ot', // Ensure your API key is valid
+        });
+    </script>
 
-    <!-- Load jQuery first from a CDN -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Load ArteJS -->
-<script src="../libs/arte.js"></script>
-
-<!-- Debugging Check for ArteJS -->
-<script>
-    console.log("ArteJS Check:", typeof Arte); // Should output "function" or "object"
-</script>
-
-<!-- Load the custom JavaScript file last -->
-<script src="js/script.js"></script>
-
-
-
+    <!-- Custom JavaScript -->
+    <script src="js/script.js"></script>
 </body>
 </html>
