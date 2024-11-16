@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArteJS Test</title>
+</head>
+<body>
+    <div id="test-editor" contenteditable="true" style="border:1px solid #ddd; padding:20px;">
+        Start editing here...
+    </div>
+
+    <!-- Load jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Load ArteJS -->
+    <script src="../libs/arte.js"></script>
+
+    <!-- Check if ArteJS loaded -->
+    <script>
+        console.log("ArteJS Check:", typeof Arte); // Should output "function" or "object"
+
+        // Initialize ArteJS if loaded
+        if (typeof Arte !== "undefined") {
+            const editor = new Arte.Editor('#test-editor', {
+                placeholder: 'Type something...',
+                toolbar: ['bold', 'italic', 'underline'],
+            });
+            editor.init();
+        } else {
+            console.error("ArteJS did not load.");
+        }
+    </script>
+</body>
+</html>
