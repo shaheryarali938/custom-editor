@@ -596,7 +596,7 @@
             "alignX": "none",
             "alignY": "none",
             "meetOrSlice": "meet",
-            "src": "http://localhost:4200/assets/img/bullbasaur.svg",
+            "src": "http://localhost:3001/assets/img/bullbasaur.svg",
             "filters": [],
             "resizeFilters": [],
             "id": 873526
