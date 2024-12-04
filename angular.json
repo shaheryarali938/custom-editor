@@ -68,7 +68,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-editor-fabric-js-app:build"
+            "browserTarget": "angular-editor-fabric-js-app:build",
+            "port": 3001,      
+            "host": "0.0.0.0"   
           },
           "configurations": {
             "production": {
