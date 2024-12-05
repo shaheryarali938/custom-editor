@@ -20,7 +20,7 @@ export class AppComponent {
   }
 
   public exportToHtml() {
-    const htmlContent = this.getEditorContentAsHtml(); // Get the HTML representation of the editor's content
+    const htmlContent = this.getEditorContentAsHtml(); // Get the HTML content with embedded canvas image
   
     // Create a Blob object from the HTML content
     const blob = new Blob([htmlContent], { type: 'text/html' });
@@ -35,10 +35,14 @@ export class AppComponent {
     link.remove();
   }
   
+  
 
 
   public getEditorContentAsHtml(): string {
-    const canvas = this.canvas.getCanvas();  // Use the getter to get the Fabric.js canvas instance
+    const canvas = this.canvas.getCanvas();  // Get Fabric.js canvas instance
+    const canvasImage = canvas.toDataURL({ format: 'png' }); // Convert canvas to PNG image
+  
+    // Create HTML content
     let htmlContent = `
       <html>
         <head>
@@ -50,52 +54,18 @@ export class AppComponent {
               user-select: none;
               border: 1px solid #000;
             }
-            .canvas-object {
-              position: absolute;
-            }
           </style>
         </head>
         <body>
           <div class="canvas-container">
-    `;
-  
-    // Iterate over all objects on the canvas and generate HTML for each object
-    canvas.getObjects().forEach((obj) => {
-      if (obj.type === 'text') {
-        const textObj = obj as fabric.Text;
-        htmlContent += `
-          <div class="canvas-object" style="left: ${textObj.left}px; top: ${textObj.top}px; 
-            font-size: ${textObj.fontSize}px; font-family: ${textObj.fontFamily}; color: ${textObj.fill};">
-            ${textObj.text}
-          </div>
-        `;
-      }
-      else if (obj.type === 'image') {
-        const imageObj = obj as fabric.Image;
-        htmlContent += `
-          <img class="canvas-object" src="${imageObj.getSrc()}" style="left: ${imageObj.left}px; top: ${imageObj.top}px;
-            width: ${imageObj.width}px; height: ${imageObj.height}px;" />
-        `;
-      }
-      else if (obj.type === 'rect') {
-        const rectObj = obj as fabric.Rect;
-        htmlContent += `
-          <div class="canvas-object" style="left: ${rectObj.left}px; top: ${rectObj.top}px; 
-            width: ${rectObj.width}px; height: ${rectObj.height}px; background-color: ${rectObj.fill};">
-          </div>
-        `;
-      }
-      // Add more cases for other object types (circles, lines, etc.) as needed
-    });
-  
-    htmlContent += `
+            <img src="${canvasImage}" width="${canvas.getWidth()}" height="${canvas.getHeight()}" />
           </div>
         </body>
       </html>
     `;
-    
     return htmlContent;
   }
+  
   
 
   public saveCanvasToJSON() {
