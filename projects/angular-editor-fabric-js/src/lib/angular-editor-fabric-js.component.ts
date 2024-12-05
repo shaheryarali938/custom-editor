@@ -43,7 +43,6 @@ export class FabricjsEditorComponent implements AfterViewInit {
   constructor() { }
 
   ngAfterViewInit(): void {
-
     // setup front side canvas
     this.canvas = new fabric.Canvas(this.htmlCanvas.nativeElement, {
       hoverCursor: 'pointer',
@@ -239,6 +238,11 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
   cleanSelect() {
     this.canvas.discardActiveObject().renderAll();
+  }
+
+  // New method to expose the private canvas
+  public getCanvas(): fabric.Canvas {
+    return this.canvas;
   }
 
   selectItemAfterAdded(obj) {
@@ -557,6 +561,33 @@ export class FabricjsEditorComponent implements AfterViewInit {
       this.canvas.clear();
     }
   }
+
+
+  exportToHtml() {
+    // Get the content from the canvas (or editor).
+    const editorContent = this.getEditorContentAsHtml();  // Replace this with your actual method to extract HTML content from the editor.
+  
+    // Create a Blob object with HTML content
+    const blob = new Blob([editorContent], { type: 'text/html' });
+  
+    // Create a temporary download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = Date.now() + '.html';  // Name the HTML file
+  
+    // Trigger the click to start the download and remove the link element
+    link.click();
+    link.remove();
+  }
+  
+  // Method to retrieve editor content in HTML (you will need to replace this with your actual method)
+  getEditorContentAsHtml(): string {
+    // This method should return the HTML of your editor's content
+    // For example, if you're using Fabric.js, you may want to extract the canvas content as HTML, or if you're using an iframe for editing, you can get the content of that iframe.
+    const content = this.canvas.toSVG();  // You can adjust this based on the editor you're using
+    return content;  // Return as HTML string
+  }
+  
 
   rasterize() {
     const image = new Image();

@@ -13,11 +13,15 @@
                   <button data-toggle="tooltip" data-placement="bottom" title="Save in localStorage" type="button" class="btn btn-primary m-1"
                       (click)="saveCanvasToJSON();">
                       <i class="fa fa-save" aria-hidden="true"></i> Save local</button>
+                  <button data-toggle="tooltip" data-placement="bottom" title="Export to HTML" type="button" class="btn btn-primary m-1" (click)="exportToHtml();">
+                      <i class="fa fa-download" aria-hidden="true"></i> Export to HTML</button>
                   <button data-toggle="tooltip" data-placement="bottom" title="Load from localStorage" type="button" class="btn btn-primary m-1"
                       (click)="loadCanvasFromJSON();">
                       <i class="fa fa-save" aria-hidden="true"></i> Load local</button>
                   <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button" class="btn btn-danger" (click)="confirmClear();">
                       <i class="fa fa-ban" aria-hidden="true"></i> Clean</button>
+
+                  
               </div>
           </div>
       </div>

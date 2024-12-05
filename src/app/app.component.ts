@@ -19,6 +19,63 @@ export class AppComponent {
     this.canvas.rasterizeSVG();
   }
 
+  // Add the exportToHtml() method here
+  public exportToHtml() {
+    const htmlContent = this.getEditorContentAsHtml(); // Get the HTML representation of the editor's content
+
+    // Create a Blob object from the HTML content
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+
+    // Create a temporary download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = Date.now() + '.html';  // Set the name of the HTML file
+
+    // Trigger the download by clicking the link programmatically
+    link.click();
+    link.remove();
+  }
+
+  // Method to get editor content as HTML
+  public getEditorContentAsHtml(): string {
+    const canvas = this.canvas.getCanvas();  // Use the getter to get the Fabric.js canvas instance
+    let htmlContent = '<div style="position: relative; width: 100%; height: 100%;">';  // Start of the container div
+
+    // Iterate over all objects on the canvas
+    canvas.getObjects().forEach((obj) => {
+      // Check if the object is a fabric.Text
+      if (obj.type === 'text') {
+        const textObj = obj as fabric.Text;  // Type casting to fabric.Text
+        htmlContent += `
+          <div style="position: absolute; left: ${textObj.left}px; top: ${textObj.top}px;
+            font-size: ${textObj.fontSize}px; font-family: ${textObj.fontFamily}; color: ${textObj.fill};">
+            ${textObj.text}
+          </div>
+        `;
+      }
+      // Check if the object is a fabric.Image
+      else if (obj.type === 'image') {
+        const imageObj = obj as fabric.Image;  // Type casting to fabric.Image
+        htmlContent += `
+          <img src="${imageObj.getSrc()}" style="position: absolute; left: ${imageObj.left}px; top: ${imageObj.top}px;
+            width: ${imageObj.width}px; height: ${imageObj.height}px;" />
+        `;
+      }
+      // Check if the object is a fabric.Rect (or any other shape)
+      else if (obj.type === 'rect') {
+        const rectObj = obj as fabric.Rect;  // Type casting to fabric.Rect
+        htmlContent += `
+          <div style="position: absolute; left: ${rectObj.left}px; top: ${rectObj.top}px;
+            width: ${rectObj.width}px; height: ${rectObj.height}px; background-color: ${rectObj.fill};"></div>
+        `;
+      }
+    });
+
+    htmlContent += '</div>';  // End of the container div
+    return htmlContent;
+  }
+  
+
   public saveCanvasToJSON() {
     this.canvas.saveCanvasToJSON();
   }
