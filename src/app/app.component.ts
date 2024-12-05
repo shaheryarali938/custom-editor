@@ -19,59 +19,81 @@ export class AppComponent {
     this.canvas.rasterizeSVG();
   }
 
-  // Add the exportToHtml() method here
   public exportToHtml() {
     const htmlContent = this.getEditorContentAsHtml(); // Get the HTML representation of the editor's content
-
+  
     // Create a Blob object from the HTML content
     const blob = new Blob([htmlContent], { type: 'text/html' });
-
+  
     // Create a temporary download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = Date.now() + '.html';  // Set the name of the HTML file
-
+  
     // Trigger the download by clicking the link programmatically
     link.click();
     link.remove();
   }
+  
 
-  // Method to get editor content as HTML
+
   public getEditorContentAsHtml(): string {
     const canvas = this.canvas.getCanvas();  // Use the getter to get the Fabric.js canvas instance
-    let htmlContent = '<div style="position: relative; width: 100%; height: 100%;">';  // Start of the container div
-
-    // Iterate over all objects on the canvas
+    let htmlContent = `
+      <html>
+        <head>
+          <style>
+            .canvas-container {
+              position: relative;
+              width: ${canvas.getWidth()}px;
+              height: ${canvas.getHeight()}px;
+              user-select: none;
+              border: 1px solid #000;
+            }
+            .canvas-object {
+              position: absolute;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="canvas-container">
+    `;
+  
+    // Iterate over all objects on the canvas and generate HTML for each object
     canvas.getObjects().forEach((obj) => {
-      // Check if the object is a fabric.Text
       if (obj.type === 'text') {
-        const textObj = obj as fabric.Text;  // Type casting to fabric.Text
+        const textObj = obj as fabric.Text;
         htmlContent += `
-          <div style="position: absolute; left: ${textObj.left}px; top: ${textObj.top}px;
+          <div class="canvas-object" style="left: ${textObj.left}px; top: ${textObj.top}px; 
             font-size: ${textObj.fontSize}px; font-family: ${textObj.fontFamily}; color: ${textObj.fill};">
             ${textObj.text}
           </div>
         `;
       }
-      // Check if the object is a fabric.Image
       else if (obj.type === 'image') {
-        const imageObj = obj as fabric.Image;  // Type casting to fabric.Image
+        const imageObj = obj as fabric.Image;
         htmlContent += `
-          <img src="${imageObj.getSrc()}" style="position: absolute; left: ${imageObj.left}px; top: ${imageObj.top}px;
+          <img class="canvas-object" src="${imageObj.getSrc()}" style="left: ${imageObj.left}px; top: ${imageObj.top}px;
             width: ${imageObj.width}px; height: ${imageObj.height}px;" />
         `;
       }
-      // Check if the object is a fabric.Rect (or any other shape)
       else if (obj.type === 'rect') {
-        const rectObj = obj as fabric.Rect;  // Type casting to fabric.Rect
+        const rectObj = obj as fabric.Rect;
         htmlContent += `
-          <div style="position: absolute; left: ${rectObj.left}px; top: ${rectObj.top}px;
-            width: ${rectObj.width}px; height: ${rectObj.height}px; background-color: ${rectObj.fill};"></div>
+          <div class="canvas-object" style="left: ${rectObj.left}px; top: ${rectObj.top}px; 
+            width: ${rectObj.width}px; height: ${rectObj.height}px; background-color: ${rectObj.fill};">
+          </div>
         `;
       }
+      // Add more cases for other object types (circles, lines, etc.) as needed
     });
-
-    htmlContent += '</div>';  // End of the container div
+  
+    htmlContent += `
+          </div>
+        </body>
+      </html>
+    `;
+    
     return htmlContent;
   }
   
