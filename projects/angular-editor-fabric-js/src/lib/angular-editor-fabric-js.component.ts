@@ -23,14 +23,15 @@ export class FabricjsEditorComponent implements AfterViewInit {
     fontStyle: null,
     textAlign: null,
     fontFamily: null,
-    TextDecoration: ''
+    TextDecoration: '',
   };
 
   public textString: string;
   public url: string | ArrayBuffer = '';
   public size: any = {
     width: 500,
-    height: 800
+    height: 800,
+    bleed: 0,
   };
 
   public json: any;
@@ -52,10 +53,14 @@ export class FabricjsEditorComponent implements AfterViewInit {
     });
 
     this.canvas.on({
-      'object:moving': (e) => { },
-      'object:modified': (e) => { },
+      'object:moving': (e) => {
+        this.addSafeAreaAndBleed(e)
+      },
+      'object:modified': (e) => { 
+        this.addSafeAreaAndBleed(e)
+      },
       'object:selected': (e) => {
-
+        this.addSafeAreaAndBleed(e)
         const selectedObject = e.target;
         this.selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
@@ -92,6 +97,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
         }
       },
       'selection:cleared': (e) => {
+        this.addSafeAreaAndBleed(e)
         this.selected = null;
         this.resetPanels();
       }
@@ -112,11 +118,57 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
   // Block "Size"
 
+  addSafeAreaAndBleed(event: fabric.IEvent): void {
+    const padding = this.size.bleed;
+    const movingObject = event.target;
+    const canvasHeight = movingObject.canvas.getHeight();
+    const canvasWidth = movingObject.canvas.getWidth();
+  
+    // if movingObject is too big ignore
+    if (movingObject.getBoundingRect().height > canvasHeight - padding * 2 ||
+      movingObject.getBoundingRect().width > canvasWidth - padding * 2) {
+      return;
+    }
+  
+    movingObject.setCoords();
+  
+    // top-left corner
+    if (movingObject.getBoundingRect().top < padding ||
+      movingObject.getBoundingRect().left < padding) {
+      movingObject.top = Math.max(
+          movingObject.top,
+          movingObject.top - movingObject.getBoundingRect().top + padding
+      );
+      movingObject.left = Math.max(
+          movingObject.left,
+          movingObject.left - movingObject.getBoundingRect().left + padding
+      );
+    }
+  
+    // bottom-right corner
+    if (movingObject.getBoundingRect().top + movingObject.getBoundingRect().height > canvasHeight - padding ||
+      movingObject.getBoundingRect().left + movingObject.getBoundingRect().width > canvasWidth - padding) {
+      movingObject.top = Math.min(
+          movingObject.top,
+          canvasHeight - movingObject.getBoundingRect().height + movingObject.top - movingObject.getBoundingRect().top - padding
+      );
+      movingObject.left = Math.min(
+          movingObject.left,
+          canvasWidth - movingObject.getBoundingRect().width + movingObject.left - movingObject.getBoundingRect().left - padding
+      );
+    }
+  }
+
   changeSize() {
     this.canvas.setWidth(this.size.width);
     this.canvas.setHeight(this.size.height);
   }
 
+  changeSizeWithMeasures(height: number, width: number) {
+    this.canvas.setWidth(width);
+    this.canvas.setHeight(height);
+  }
+  
   // Block "Add text"
 
   addText() {

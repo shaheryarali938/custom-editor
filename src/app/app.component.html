@@ -52,6 +52,27 @@
                           </div>
                       </div>
                   </div>
+                  <div class="form-group">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" [(ngModel)]="canvas.size.bleed" appPositiveNumber>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                Bleed
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                  <div class="row">
+                    <div class="col-xl-3 text-right">
+                        <button data-toggle="tooltip" data-placement="bottom" title="5x4" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(500,400);">5x4</button>
+                    </div>
+                    <div class="col-xl-3 text-right">
+                        <button data-toggle="tooltip" data-placement="bottom" title="5x3" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(500,300);">5x3</button>
+                    </div>
+                    <div class="col-xl-3 text-right">
+                        <button data-toggle="tooltip" data-placement="bottom" title="4x4" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(400,400);">4x4</button>
+                    </div>
+                </div>
               </div>
           </div>
           <br/>

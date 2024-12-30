@@ -84,6 +84,10 @@ export class AppComponent {
     this.canvas.changeSize();
   }
 
+  public changeSizeWithMeasures(height: number, width: number) {
+    this.canvas.changeSizeWithMeasures(height, width);
+  }
+
   public addText() {
     this.canvas.addText();
   }
