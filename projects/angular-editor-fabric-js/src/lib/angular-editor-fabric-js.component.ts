@@ -30,9 +30,10 @@ export class FabricjsEditorComponent implements AfterViewInit {
   public url: string | ArrayBuffer = '';
   public size: any = {
     width: 500,
-    height: 800,
-    bleed: 0,
+    height: 700,
+    bleed: 10,
   };
+  public safetyArea: fabric.Rect;
 
   public json: any;
   private globalEditor = false;
@@ -57,10 +58,10 @@ export class FabricjsEditorComponent implements AfterViewInit {
         this.addSafeAreaAndBleed(e)
       },
       'object:modified': (e) => { 
-        this.addSafeAreaAndBleed(e)
+        //this.addSafeAreaAndBleed(e)
       },
       'object:selected': (e) => {
-        this.addSafeAreaAndBleed(e)
+        //this.addSafeAreaAndBleed(e)
         const selectedObject = e.target;
         this.selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
@@ -97,7 +98,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
         }
       },
       'selection:cleared': (e) => {
-        this.addSafeAreaAndBleed(e)
+        //this.addSafeAreaAndBleed(e)
         this.selected = null;
         this.resetPanels();
       }
@@ -105,6 +106,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
     this.canvas.setWidth(this.size.width);
     this.canvas.setHeight(this.size.height);
+    this.addDashedSafetyArea();
 
     // get references to the html canvas element & its context
     this.canvas.on('mouse:down', (e) => {
@@ -126,49 +128,70 @@ export class FabricjsEditorComponent implements AfterViewInit {
   
     // if movingObject is too big ignore
     if (movingObject.getBoundingRect().height > canvasHeight - padding * 2 ||
-      movingObject.getBoundingRect().width > canvasWidth - padding * 2) {
+        movingObject.getBoundingRect().width > canvasWidth - padding * 2) {
       return;
     }
   
     movingObject.setCoords();
   
+    const boundingRect = movingObject.getBoundingRect();
+  
     // top-left corner
-    if (movingObject.getBoundingRect().top < padding ||
-      movingObject.getBoundingRect().left < padding) {
-      movingObject.top = Math.max(
-          movingObject.top,
-          movingObject.top - movingObject.getBoundingRect().top + padding
-      );
-      movingObject.left = Math.max(
-          movingObject.left,
-          movingObject.left - movingObject.getBoundingRect().left + padding
-      );
+    if (boundingRect.top < padding) {
+      movingObject.top = padding - boundingRect.top + movingObject.top;
+    }
+    if (boundingRect.left < padding) {
+      movingObject.left = padding - boundingRect.left + movingObject.left;
     }
   
     // bottom-right corner
-    if (movingObject.getBoundingRect().top + movingObject.getBoundingRect().height > canvasHeight - padding ||
-      movingObject.getBoundingRect().left + movingObject.getBoundingRect().width > canvasWidth - padding) {
-      movingObject.top = Math.min(
-          movingObject.top,
-          canvasHeight - movingObject.getBoundingRect().height + movingObject.top - movingObject.getBoundingRect().top - padding
-      );
-      movingObject.left = Math.min(
-          movingObject.left,
-          canvasWidth - movingObject.getBoundingRect().width + movingObject.left - movingObject.getBoundingRect().left - padding
-      );
+    if (boundingRect.top + boundingRect.height > canvasHeight - padding) {
+      movingObject.top = canvasHeight - boundingRect.height - padding - (boundingRect.top - movingObject.top);
     }
+    if (boundingRect.left + boundingRect.width > canvasWidth - padding) {
+      movingObject.left = canvasWidth - boundingRect.width - padding - (boundingRect.left - movingObject.left);
+    }
+  
+    movingObject.setCoords();
   }
 
   changeSize() {
     this.canvas.setWidth(this.size.width);
     this.canvas.setHeight(this.size.height);
+    this.addDashedSafetyArea();
   }
 
   changeSizeWithMeasures(height: number, width: number) {
     this.canvas.setWidth(width);
     this.canvas.setHeight(height);
+    this.addDashedSafetyArea();
   }
   
+  addDashedSafetyArea(): void {
+    if (this.safetyArea) {
+      this.canvas.remove(this.safetyArea);
+    }
+
+    const padding = this.size.bleed;
+    this.safetyArea = new fabric.Rect({
+      left: padding,
+      top: padding,
+      width: this.canvas.getWidth() - padding * 2,
+      height: this.canvas.getHeight() - padding * 2,
+      fill: 'transparent',
+      stroke: 'grey',
+      strokeDashArray: [5, 5],
+      selectable: false,
+      evented: false,
+      excludeFromExport: true
+    });
+
+    this.canvas.add(this.safetyArea);
+    console.log("Calling send To Back");
+    this.canvas.sendToBack(this.safetyArea);
+    console.log("Called send To Back");
+  }
+
   // Block "Add text"
 
   addText() {
@@ -589,50 +612,48 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
   /*System*/
 
-
   removeSelected() {
-    const activeObject: any = this.canvas.getActiveObject();
-    const activeGroup: any = this.canvas.getActiveObjects();
-
-    if (activeGroup) {
+    const activeObjects = this.canvas.getActiveObjects();
+    if (activeObjects.length) {
       this.canvas.discardActiveObject();
-      const self = this;
-      activeGroup.forEach((object) => {
-        self.canvas.remove(object);
+      activeObjects.forEach((object) => {
+        this.canvas.remove(object);
       });
-    } else if (activeObject) {
-      this.canvas.remove(activeObject);
-    }
+      this.canvas.renderAll();
+    } 
   }
 
   bringToFront() {
-    const activeObject = this.canvas.getActiveObject();
-    const activeGroup = this.canvas.getActiveObjects();
-
-    if (activeObject) {
-      activeObject.bringToFront();
-      activeObject.opacity = 1;
-    } else if (activeGroup) {
-      this.canvas.discardActiveObject();
-      activeGroup.forEach((object) => {
-        object.bringToFront();
+    const activeObjects = this.canvas.getActiveObjects();
+    console.log('Bringing objects to front:', activeObjects); // Debugging: Log the objects to be brought to front
+  
+    if (activeObjects.length) {
+      activeObjects.forEach((object) => {
+        this.canvas.bringToFront(object);
+        object.setCoords(); // Ensure the object's coordinates are updated
       });
+      this.canvas.discardActiveObject();
+      this.canvas.renderAll(); // Ensure the canvas is re-rendered after bringing objects to front
+      console.log('Objects brought to front successfully'); // Debugging: Confirm action
+    } else {
+      console.log('No active objects to bring to front'); // Debugging: Log if no objects are selected
     }
   }
-
+  
   sendToBack() {
-    const activeObject = this.canvas.getActiveObject();
-    const activeGroup = this.canvas.getActiveObjects();
-
-    if (activeObject) {
-      this.canvas.sendToBack(activeObject);
-      activeObject.sendToBack();
-      activeObject.opacity = 1;
-    } else if (activeGroup) {
-      this.canvas.discardActiveObject();
-      activeGroup.forEach((object) => {
-        object.sendToBack();
+    const activeObjects = this.canvas.getActiveObjects();
+    console.log('Sending objects to back:', activeObjects); // Debugging: Log the objects to be sent to back
+  
+    if (activeObjects.length) {
+      activeObjects.forEach((object) => {
+        this.canvas.sendToBack(object);
+        object.setCoords(); // Ensure the object's coordinates are updated
       });
+      this.canvas.discardActiveObject();
+      this.canvas.renderAll(); // Ensure the canvas is re-rendered after sending objects to back
+      console.log('Objects sent to back successfully'); // Debugging: Confirm action
+    } else {
+      console.log('No active objects to send to back'); // Debugging: Log if no objects are selected
     }
   }
 
@@ -670,6 +691,11 @@ export class FabricjsEditorComponent implements AfterViewInit {
   
 
   rasterize() {
+    // Temporarily remove the safety area
+    if (this.safetyArea) {
+      this.canvas.remove(this.safetyArea);
+    }
+    
     const image = new Image();
     image.src = this.canvas.toDataURL({ format: 'png' });
     const w = window.open('');

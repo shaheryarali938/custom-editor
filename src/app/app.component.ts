@@ -20,51 +20,90 @@ export class AppComponent {
   }
 
   public exportToHtml() {
-    const htmlContent = this.getEditorContentAsHtml(); // Get the HTML content with embedded canvas image
+    this.canvas.exportToHtml();
+    // const canvas = this.canvas.getCanvas();
+    // const canvasObjects = canvas.getObjects();
+
+    // let htmlContent = `
+    //   <html>
+    //     <head>
+    //       <style>
+    //         .canvas-container {
+    //           position: relative;
+    //           width: ${canvas.getWidth()}px;
+    //           height: ${canvas.getHeight()}px;
+    //           user-select: none;
+    //           border: 1px solid #000;
+    //         }
+    //       </style>
+    //     </head>
+    //     <body>
+    //       <div class="canvas-container">`;
+
+    // canvasObjects.forEach((obj) => {
+    //   if (obj.type === 'i-text') {
+    //     const textObj = obj as fabric.IText;
+    //     htmlContent += `<div style="position:absolute; left:${textObj.left}px; top:${textObj.top}px; font-size:${textObj.fontSize}px; color:${textObj.fill};">${textObj.text}</div>`;
+    //   } else if (obj.type === 'path') {
+    //     const pathObj = obj as fabric.Path;
+    //     const pathData = pathObj.path.map(segment => segment.toString()).join(' ');
+    //     htmlContent += `<svg style="position:absolute; left:${pathObj.left}px; top:${pathObj.top}px;" width="${pathObj.width}" height="${pathObj.height}" viewBox="0 0 ${pathObj.width} ${pathObj.height}"><path d="${pathData}" fill="${pathObj.fill}" stroke="${pathObj.stroke}" stroke-width="${pathObj.strokeWidth}"/></svg>`;
+    //   } else if (obj.type === 'image') {
+    //     const imageObj = obj as fabric.Image;
+    //     const dataUrl = imageObj.toDataURL({ format: 'png' });
+    //     htmlContent += `<img src="${dataUrl}" style="position:absolute; left:${imageObj.left}px; top:${imageObj.top}px; width:${imageObj.width * imageObj.scaleX}px; height:${imageObj.height * imageObj.scaleY}px;" />`;
+    //   } else if (['rect', 'circle', 'triangle'].includes(obj.type)) {
+    //     const shapeObj = obj as fabric.Object;
+    //     htmlContent += `<div style="position:absolute; left:${shapeObj.left}px; top:${shapeObj.top}px; width:${shapeObj.width * shapeObj.scaleX}px; height:${shapeObj.height * shapeObj.scaleY}px; background-color:${shapeObj.fill};"></div>`;
+    //   }
+    // });
+
+    // htmlContent += `
+    //       </div>
+    //     </body>
+    //   </html>`;
   
-    // Create a Blob object from the HTML content
-    const blob = new Blob([htmlContent], { type: 'text/html' });
+    // // Create a Blob object from the HTML content
+    // const blob = new Blob([htmlContent], { type: 'text/html' });
   
-    // Create a temporary download link
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = Date.now() + '.html';  // Set the name of the HTML file
+    // // Create a temporary download link
+    // const link = document.createElement('a');
+    // link.href = URL.createObjectURL(blob);
+    // link.download = Date.now() + '.html';  // Set the name of the HTML file
   
-    // Trigger the download by clicking the link programmatically
-    link.click();
-    link.remove();
+    // // Trigger the download by clicking the link programmatically
+    // link.click();
+    // link.remove();
   }
   
+  // public getEditorContentAsHtml(): string {
+  //   const canvas = this.canvas.getCanvas();  // Get Fabric.js canvas instance
+  //   const canvasImage = canvas.toDataURL({ format: 'png' }); // Convert canvas to PNG image
   
+  //   // Create HTML content
+  //   let htmlContent = `
+  //     <html>
+  //       <head>
+  //         <style>
+  //           .canvas-container {
+  //             position: relative;
+  //             width: ${canvas.getWidth()}px;
+  //             height: ${canvas.getHeight()}px;
+  //             user-select: none;
+  //             border: 1px solid #000;
+  //           }
+  //         </style>
+  //       </head>
+  //       <body>
+  //         <div class="canvas-container">`;
 
-
-  public getEditorContentAsHtml(): string {
-    const canvas = this.canvas.getCanvas();  // Get Fabric.js canvas instance
-    const canvasImage = canvas.toDataURL({ format: 'png' }); // Convert canvas to PNG image
-  
-    // Create HTML content
-    let htmlContent = `
-      <html>
-        <head>
-          <style>
-            .canvas-container {
-              position: relative;
-              width: ${canvas.getWidth()}px;
-              height: ${canvas.getHeight()}px;
-              user-select: none;
-              border: 1px solid #000;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="canvas-container">
-            <img src="${canvasImage}" width="${canvas.getWidth()}" height="${canvas.getHeight()}" />
-          </div>
-        </body>
-      </html>
-    `;
-    return htmlContent;
-  }
+  //     htmlContent+=`
+  //         </div>
+  //       </body>
+  //     </html>
+  //   `;
+  //   return htmlContent;
+  // }
   
   
 
