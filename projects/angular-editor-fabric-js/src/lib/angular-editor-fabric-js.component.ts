@@ -196,20 +196,48 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
   getImgPolaroid(event: any) {
     const el = event.target;
-    fabric.loadSVGFromURL(el.src, (objects, options) => {
-      const image = fabric.util.groupSVGElements(objects, options);
-      image.set({
-        left: 10,
-        top: 10,
-        angle: 0,
-        padding: 10,
-        cornerSize: 10,
-        hasRotatingPoint: true,
+    const imageUrl = el.src;
+  
+    // Check if the image is an SVG or PNG
+    if (imageUrl.endsWith('.svg')) {
+      fabric.loadSVGFromURL(imageUrl, (objects, options) => {
+        const image = fabric.util.groupSVGElements(objects, options);
+        image.set({
+          left: 10,
+          top: 10,
+          angle: 0,
+          padding: 10,
+          cornerSize: 10,
+          hasRotatingPoint: true,
+        });
+        this.extend(image, this.randomId());
+        this.canvas.add(image);
+        this.selectItemAfterAdded(image);
       });
-      this.extend(image, this.randomId());
-      this.canvas.add(image);
-      this.selectItemAfterAdded(image);
-    });
+    } else if (imageUrl.endsWith('.png')) {
+      fabric.Image.fromURL(imageUrl, (image) => {
+        // Set the desired initial width and height
+        const initialWidth = 150; // Adjust this value as needed
+        const initialHeight = 150; // Adjust this value as needed
+
+        // Calculate the scale factors
+        const scaleX = initialWidth / image.width;
+        const scaleY = initialHeight / image.height;
+        image.set({
+          left: 10,
+          top: 10,
+          angle: 0,
+          padding: 10,
+          cornerSize: 10,
+          hasRotatingPoint: true,
+          scaleX: scaleX,
+          scaleY: scaleY
+        });
+        this.extend(image, this.randomId());
+        this.canvas.add(image);
+        this.selectItemAfterAdded(image);
+      });
+    }
   }
 
   // Block "Upload Image"
