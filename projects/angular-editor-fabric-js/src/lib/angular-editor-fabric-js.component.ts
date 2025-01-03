@@ -58,11 +58,8 @@ export class FabricjsEditorComponent implements AfterViewInit {
         this.addSafeAreaAndBleed(e)
       },
       'object:modified': (e) => { 
-        this.addDashedSafetyArea();
-        //this.addSafeAreaAndBleed(e)
       },
       'object:selected': (e) => {
-        //this.addSafeAreaAndBleed(e)
         const selectedObject = e.target;
         this.selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
@@ -99,7 +96,6 @@ export class FabricjsEditorComponent implements AfterViewInit {
         }
       },
       'selection:cleared': (e) => {
-        //this.addSafeAreaAndBleed(e)
         this.selected = null;
         this.resetPanels();
       }
