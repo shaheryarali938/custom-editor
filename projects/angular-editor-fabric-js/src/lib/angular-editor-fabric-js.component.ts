@@ -58,6 +58,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
         this.addSafeAreaAndBleed(e)
       },
       'object:modified': (e) => { 
+        this.addDashedSafetyArea();
         //this.addSafeAreaAndBleed(e)
       },
       'object:selected': (e) => {
@@ -166,18 +167,26 @@ export class FabricjsEditorComponent implements AfterViewInit {
     this.canvas.setHeight(height);
     this.addDashedSafetyArea();
   }
-  
+
   addDashedSafetyArea(): void {
+    if (!this.size.bleed || this.size.bleed < 0) {
+      console.warn("Invalid bleed value. Skipping safety area update.");
+      return;
+    }
+  
     if (this.safetyArea) {
       this.canvas.remove(this.safetyArea);
     }
-
+  
     const padding = this.size.bleed;
+    const canvasWidth = this.canvas.getWidth();
+    const canvasHeight = this.canvas.getHeight();
+  
     this.safetyArea = new fabric.Rect({
       left: padding,
       top: padding,
-      width: this.canvas.getWidth() - padding * 2,
-      height: this.canvas.getHeight() - padding * 2,
+      width: canvasWidth - padding * 2,
+      height: canvasHeight - padding * 2,
       fill: 'transparent',
       stroke: 'grey',
       strokeDashArray: [5, 5],
@@ -185,11 +194,9 @@ export class FabricjsEditorComponent implements AfterViewInit {
       evented: false,
       excludeFromExport: true
     });
-
+  
     this.canvas.add(this.safetyArea);
-    console.log("Calling send To Back");
     this.canvas.sendToBack(this.safetyArea);
-    console.log("Called send To Back");
   }
 
   // Block "Add text"

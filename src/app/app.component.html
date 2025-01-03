@@ -34,7 +34,7 @@
               <div class="card-body">
                   <div class="form-group">
                       <div class="input-group">
-                          <input type="text" class="form-control" [(ngModel)]="canvas.size.width" (keyup)="changeSize()">
+                          <input type="number" class="form-control" [(ngModel)]="canvas.size.width" (keyup)="changeSize()">
                           <div class="input-group-append">
                               <span class="input-group-text">
                                   Width
@@ -44,7 +44,7 @@
                   </div>
                   <div class="form-group">
                       <div class="input-group mb-3">
-                          <input type="text" class="form-control" [(ngModel)]="canvas.size.height" (keyup)="changeSize()">
+                          <input type="number" class="form-control" [(ngModel)]="canvas.size.height" (keyup)="changeSize()">
                           <div class="input-group-append">
                               <span class="input-group-text">
                                   Height
@@ -52,16 +52,16 @@
                           </div>
                       </div>
                   </div>
-                  <!-- <div class="form-group">
+                  <div class="form-group">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" [(ngModel)]="canvas.size.bleed" appPositiveNumber>
+                        <input type="number" class="form-control" [(ngModel)]="canvas.size.bleed" (keyup)="changeSize()">
                         <div class="input-group-append">
                             <span class="input-group-text">
                                 Bleed
                             </span>
                         </div>
                     </div>
-                  </div> -->
+                  </div>
                   <div class="row">
                     <div class="col-xl-3 text-right">
                         <button data-toggle="tooltip" data-placement="bottom" title="5x4" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(500,400);">5x4</button>
@@ -169,7 +169,7 @@
           </div>
       </div>
       <div class="col-xl-6">
-          <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
+        <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
       </div>
       <div class="col-xl-3">
           <div class="card">
