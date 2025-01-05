@@ -119,8 +119,8 @@ export class AppComponent {
     this.canvas.confirmClear();
   }
 
-  public changeSize() {
-    this.canvas.changeSize();
+  public changeBleedSize() {
+    this.canvas.changeBleedSize();
   }
 
   public changeSizeWithMeasures(height: number, width: number) {
@@ -231,9 +231,9 @@ export class AppComponent {
     this.canvas.rasterizeJSON();
   }
 
-  public drawMode() {
-    this.canvas.drawingMode();
-  }
+  // public drawMode() {
+  //   this.canvas.drawingMode();
+  // }
 
   public changeFigureColor(color){
     this.canvas.changeFigureColor(color);

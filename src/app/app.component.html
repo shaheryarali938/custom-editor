@@ -30,53 +30,34 @@
   <div class="row">
       <div class="col-xl-3">
           <div class="card">
-              <div class="card-header">Size</div>
+              <div class="card-header">Products</div>
               <div class="card-body">
-                  <div class="form-group">
-                      <div class="input-group">
-                          <input type="number" class="form-control" [(ngModel)]="canvas.size.width" (keyup)="changeSize()">
-                          <div class="input-group-append">
-                              <span class="input-group-text">
-                                  Width
-                              </span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="form-group">
-                      <div class="input-group mb-3">
-                          <input type="number" class="form-control" [(ngModel)]="canvas.size.height" (keyup)="changeSize()">
-                          <div class="input-group-append">
-                              <span class="input-group-text">
-                                  Height
-                              </span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="form-group">
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="Post Card (2x) (6 in x 4 in)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(591,399);">Post Card (2x)</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="Letter (4.25 in x 5.5 in)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(408,528);">Letter</button>
+                </div>
+              </div>
+          </div>
+          <br/>
+          <div class="card">
+            <div class="card-header">Safety Area</div>
+            <div class="card-body">
+                <div class="form-group">
                     <div class="input-group mb-3">
-                        <input type="number" class="form-control" [(ngModel)]="canvas.size.bleed" (keyup)="changeSize()">
+                        <input type="number" class="form-control" [(ngModel)]="canvas.size.bleed" (keyup)="changeBleedSize()">
                         <div class="input-group-append">
                             <span class="input-group-text">
                                 Bleed
                             </span>
                         </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xl-3 text-right">
-                        <button data-toggle="tooltip" data-placement="bottom" title="5x4" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(500,400);">5x4</button>
-                    </div>
-                    <div class="col-xl-3 text-right">
-                        <button data-toggle="tooltip" data-placement="bottom" title="5x3" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(500,300);">5x3</button>
-                    </div>
-                    <div class="col-xl-3 text-right">
-                        <button data-toggle="tooltip" data-placement="bottom" title="4x4" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(400,400);">4x4</button>
-                    </div>
                 </div>
-              </div>
+            </div>
           </div>
           <br/>
-          <div class="card">
+          <!-- <div class="card">
             <div class="card-header">Free Drawing Mode</div>
             <div class="card-body">
                 <div class="input-group">
@@ -85,17 +66,17 @@
                       <div class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" checked id="customSwitch1" (click)="drawMode()">
                         <label class="custom-control-label" for="customSwitch1">Enable / Disable</label>
-                      </div>
+                      </div> -->
                         <!-- <span class="input-group-text">
 
                              <button id="add-text" data-toggle="tooltip" data-placement="bottom" title="Drawing Mode" class="btn btn-primary" (click)="drawMode()">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                             </button>
                         </span> -->
-                    </div>
+                    <!-- </div>
                 </div>
             </div>
-        </div>
+          </div> --> 
           <div class="card">
               <div class="card-header">Add text</div>
               <div class="card-body">

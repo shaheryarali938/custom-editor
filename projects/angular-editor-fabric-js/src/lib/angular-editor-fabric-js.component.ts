@@ -50,7 +50,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
       hoverCursor: 'pointer',
       selection: true,
       selectionBorderColor: 'blue',
-      isDrawingMode: true
+      isDrawingMode: false
     });
 
     this.canvas.on({
@@ -152,9 +152,9 @@ export class FabricjsEditorComponent implements AfterViewInit {
     movingObject.setCoords();
   }
 
-  changeSize() {
-    this.canvas.setWidth(this.size.width);
-    this.canvas.setHeight(this.size.height);
+  changeBleedSize() {
+    // this.canvas.setWidth(this.size.width);
+    // this.canvas.setHeight(this.size.height);
     this.addDashedSafetyArea();
   }
 
@@ -771,8 +771,8 @@ export class FabricjsEditorComponent implements AfterViewInit {
     this.figureEditor = false;
   }
 
-  drawingMode() {
-    this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
-  }
+  // drawingMode() {
+  //   this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
+  // }
 
 }
