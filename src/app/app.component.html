@@ -320,6 +320,23 @@
                           <input type="text" class="form-control" placeholder="http://example.jpg" [(ngModel)]="canvas.props.canvasImage" (keyup)="setCanvasImage()">
                       </div>
                   </div>
+                  <div class="custom-item">
+                    <div class="custom-item-title">Upload Background Image</div>
+                        <div class="custom-item-body">
+                            <div class="card-body text-center">
+                                <img id="testImage" *ngIf="canvas.bgUrl" class="images-item-upload" [src]="canvas.bgUrl">
+                                <input type="file" (change)="readBgUrl($event);">
+                                <br/>
+                                <br/>
+                                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.bgUrl);">
+                                            <i class="fa fa-times" aria-hidden="true"></i> Remove Background</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
                   <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                     <div class="custom-item-title">Object Background</div>
                     <div class="custom-item-body">

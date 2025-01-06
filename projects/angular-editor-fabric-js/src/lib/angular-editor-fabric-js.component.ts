@@ -28,6 +28,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
   public textString: string;
   public url: string | ArrayBuffer = '';
+  public bgUrl: string | HTMLImageElement = '';
   public size: any = {
     width: 500,
     height: 700,
@@ -285,6 +286,22 @@ export class FabricjsEditorComponent implements AfterViewInit {
         this.canvas.add(image);
         this.selectItemAfterAdded(image);
       });
+    }
+  }
+
+  readBgUrl(event: any) {
+    const self = this;
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+            this.bgUrl = e.target.result;
+            self.canvas.setBackgroundColor(new fabric.Pattern({ source: this.bgUrl, repeat: 'repeat' }), () => {
+                self.props.canvasFill = '';
+                self.canvas.renderAll();
+            });
+        };
+        reader.readAsDataURL(file);
     }
   }
 

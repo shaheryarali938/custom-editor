@@ -397,6 +397,10 @@ export class AppComponent implements OnInit {
     this.canvas.readUrl(event);
   }
 
+  public readBgUrl(event) {
+    this.canvas.readBgUrl(event);
+  }
+
   public removeWhite(url) {
     this.canvas.removeWhite(url);
   }
