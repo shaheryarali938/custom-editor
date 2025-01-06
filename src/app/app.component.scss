@@ -43,3 +43,25 @@
   overflow: auto;
   max-height: 300px;
 }
+
+
+.template-thumbnail {
+  transition: transform 0.2s ease-in-out;
+  width: 100px; /* Ensure consistent box width */
+  height: 100px; /* Ensure consistent box height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.template-thumbnail:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.template-thumbnail img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain; /* Prevent cropping */
+  border-radius: 5px;
+}

@@ -1,7 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
-@import url("https://fonts.googleapis.com/css?family=Bellefair|Fresca|Gloria+Hallelujah|Inconsolata|Indie+Flower|Josefin+Sans|Lato|Open+Sans|Open+Sans+Condensed:300|Pacifico|Raleway|Roboto|Zilla+Slab");
+/* @import url("https://fonts.googleapis.com/css?family=Bellefair|Fresca|Gloria+Hallelujah|Inconsolata|Indie+Flower|Josefin+Sans|Lato|Open+Sans|Open+Sans+Condensed:300|Pacifico|Raleway|Roboto|Zilla+Slab"); */
+
+/* @import url('https://fonts.googleapis.com/css2?family=YourCustomFont1:wght@400;700&family=YourCustomFont2:wght@400;700&display=swap'); */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Poppins:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Nunito:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=PT+Sans:wght@400;700&family=Georgia:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&family=Crimson+Text:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Cormorant+Garamond:wght@400;700&family=Lora:wght@400;700&family=PT+Serif:wght@400;700&family=Oswald:wght@400;700&family=Bebas+Neue&family=Abril+Fatface&family=Pacifico&family=Dancing+Script:wght@400;700&family=Chewy&family=Cookie&family=Satisfy&family=Courier+New&family=Lucida+Console&family=Fira+Code:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Inconsolata:wght@400;700&display=swap');
+
+
+  
+
 /*!
  * Bootswatch v4.0.0
  * Homepage: https://bootswatch.com

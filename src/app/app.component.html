@@ -78,20 +78,143 @@
             </div>
           </div> --> 
           <div class="card">
-              <div class="card-header">Add text</div>
-              <div class="card-body">
-                  <div class="input-group">
-                      <input type="text" class="form-control" [(ngModel)]="canvas.textString">
-                      <div class="input-group-append">
-                          <span class="input-group-text">
-                              <button id="add-text" data-toggle="tooltip" data-placement="bottom" title="Add text" class="btn btn-primary" (click)="addText()">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                              </button>
-                          </span>
-                      </div>
-                  </div>
+            <div class="card-header">Add Text</div>
+            <div class="card-body">
+              <!-- Input for entering text -->
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="canvas.textString"
+                  placeholder="Enter your text here"
+                />
               </div>
+          
+              <!-- Dropdown for font selection (on a new line) -->
+              <div class="input-group mt-2">
+                <select class="form-control" [(ngModel)]="selectedFont">
+                    <!-- Sans-serif Fonts -->
+                    <option value="Arial" style="font-family: Arial;">Arial</option>
+                    <option value="Roboto" style="font-family: Roboto;">Roboto</option>
+                    <option value="Open Sans" style="font-family: 'Open Sans';">Open Sans</option>
+                    <option value="Poppins" style="font-family: Poppins;">Poppins</option>
+                    <option value="Lato" style="font-family: Lato;">Lato</option>
+                    <option value="Montserrat" style="font-family: 'Montserrat';">Montserrat</option>
+                    <option value="Nunito" style="font-family: Nunito;">Nunito</option>
+                    <option value="Source Sans Pro" style="font-family: 'Source Sans Pro';">Source Sans Pro</option>
+                    <option value="PT Sans" style="font-family: 'PT Sans';">PT Sans</option>
+                    <option value="Inter" style="font-family: Inter;">Inter</option>
+                  
+                    <!-- Serif Fonts -->
+                    <option value="Times New Roman" style="font-family: 'Times New Roman';">Times New Roman</option>
+                    <option value="Georgia" style="font-family: Georgia;">Georgia</option>
+                    <option value="Playfair Display" style="font-family: 'Playfair Display';">Playfair Display</option>
+                    <option value="Merriweather" style="font-family: Merriweather;">Merriweather</option>
+                    <option value="Crimson Text" style="font-family: 'Crimson Text';">Crimson Text</option>
+                    <option value="Libre Baskerville" style="font-family: 'Libre Baskerville';">Libre Baskerville</option>
+                    <option value="Cormorant Garamond" style="font-family: 'Cormorant Garamond';">Cormorant Garamond</option>
+                    <option value="Lora" style="font-family: Lora;">Lora</option>
+                    <option value="PT Serif" style="font-family: 'PT Serif';">PT Serif</option>
+                    <option value="Cardo" style="font-family: Cardo;">Cardo</option>
+                  
+                    <!-- Display Fonts -->
+                    <option value="Oswald" style="font-family: Oswald;">Oswald</option>
+                    <option value="Bebas Neue" style="font-family: 'Bebas Neue';">Bebas Neue</option>
+                    <option value="Abril Fatface" style="font-family: 'Abril Fatface';">Abril Fatface</option>
+                    <option value="Pacifico" style="font-family: Pacifico;">Pacifico</option>
+                    <option value="Fredoka One" style="font-family: 'Fredoka One';">Fredoka One</option>
+                    <option value="Lobster" style="font-family: Lobster;">Lobster</option>
+                    <option value="Dancing Script" style="font-family: 'Dancing Script';">Dancing Script</option>
+                    <option value="Chewy" style="font-family: Chewy;">Chewy</option>
+                    <option value="Cookie" style="font-family: Cookie;">Cookie</option>
+                    <option value="Satisfy" style="font-family: Satisfy;">Satisfy</option>
+                  
+                    <!-- Monospace Fonts -->
+                    <option value="Courier New" style="font-family: 'Courier New';">Courier New</option>
+                    <option value="Lucida Console" style="font-family: 'Lucida Console';">Lucida Console</option>
+                    <option value="Fira Code" style="font-family: 'Fira Code';">Fira Code</option>
+                    <option value="Source Code Pro" style="font-family: 'Source Code Pro';">Source Code Pro</option>
+                    <option value="Inconsolata" style="font-family: Inconsolata;">Inconsolata</option>
+                  </select>
+              </div>
+<!-- Dropdown for font weight -->
+<div class="input-group mt-2">
+    <select class="form-control" [(ngModel)]="selectedFontWeight">
+      <option value="100">Thin (100)</option>
+      <option value="200">Extra Light (200)</option>
+      <option value="300">Light (300)</option>
+      <option value="400" selected>Normal (400)</option>
+      <option value="500">Medium (500)</option>
+      <option value="600">Semi Bold (600)</option>
+      <option value="700">Bold (700)</option>
+      <option value="800">Extra Bold (800)</option>
+      <option value="900">Black (900)</option>
+    </select>
+  </div>
+  
+      <!-- Buttons for bold and italic -->
+      <div class="btn-group mt-2" role="group">
+        <button
+          class="btn btn-secondary"
+          [ngClass]="{'active': isBold}"
+          (click)="toggleBold()"
+        >
+          <i class="fa fa-bold"></i> Bold
+        </button>
+        <button
+          class="btn btn-secondary"
+          [ngClass]="{'active': isItalic}"
+          (click)="toggleItalic()"
+        >
+          <i class="fa fa-italic"></i> Italic
+        </button>
+      </div>
+  
+      <!-- Button to add text -->
+      <div class="input-group mt-2">
+        <button
+          id="add-text"
+          class="btn btn-primary w-100"
+          (click)="addText()"
+        >
+          <i class="fa fa-plus"></i> Add Text
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card mt-3">
+    <div class="card-header">Templates</div>
+    <div class="card-body">
+      <div class="row">
+        <!-- Loop through image templates -->
+        <div
+          class="col-6 text-center mb-3"
+          *ngFor="let template of prebuiltTemplates"
+          (click)="loadImageTemplate(template)"
+          style="cursor: pointer;"
+        >
+          <!-- Image template -->
+          <div
+            class="template-thumbnail"
+            style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;"
+          >
+            <img
+              [src]="template.image"
+              alt="Template"
+              class="img-fluid"
+              style="border-radius: 5px; max-height: 100px; object-fit: cover;"
+            />
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+          
           <br/>
           <div class="card">
               <div class="card-header">Add images</div>
