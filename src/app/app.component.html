@@ -33,15 +33,42 @@
               <div class="card-header">Products</div>
               <div class="card-body">
                 <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Post Card (2x) (6 in x 4 in)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(591,399);">Post Card (2x)</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="4' x 6' (92 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(367,550);">Standard Postcard</button>
                 </div>
                 <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Letter (4.25 in x 5.5 in)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(408,528);">Letter</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="5' x 7' (110 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(385,550);">Large Postcard</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="4' x 9' (61 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(244,550);">Panoramic Postcard</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="5' x 5' (110 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(550,550);">Square Postcard</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="8.5' x 11' (65 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(711,550);">US Letter</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="8.27' x 11.69' (66 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(778,550);">A4 Letter</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="8.5' x 14' (65 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(906,550);">Legal Letter</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="5.5' x 8.5' (100 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(425,550);">Half Letter</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="4.33' x 8.66' (127 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(275,550);">DL Size (Envelope)</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="6' x 11' (50 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(300,550);">Jumbo Postcard</button>
+                </div>
+                <div class="col-xl-3 text-right">
+                    <button data-toggle="tooltip" data-placement="bottom" title="4.13' x 5.83' (133 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(387,550);">A6 Postcard</button>
                 </div>
               </div>
           </div>
           <br/>
-          <div class="card">
+          <!-- <div class="card">
             <div class="card-header">Safety Area</div>
             <div class="card-body">
                 <div class="form-group">
@@ -56,7 +83,7 @@
                 </div>
             </div>
           </div>
-          <br/>
+          <br/> -->
           <!-- <div class="card">
             <div class="card-header">Free Drawing Mode</div>
             <div class="card-body">
@@ -346,7 +373,7 @@
               </div>
           </div>
           <br/>
-          <div class="card">
+          <!-- <div class="card">
               <div class="card-header">Custom</div>
               <div class="card-body">
                   <div class="custom-item" *ngIf="canvas.selected  && canvas.selected.type == 'group'">Group Selected</div>
@@ -453,7 +480,7 @@
                           <input type="range" [(ngModel)]="canvas.props.charSpacing" (change)="setCharSpacing()" step="10" min="-200" max="800">{{canvas.props.charSpacing}}</div>
                   </div>
               </div>
-          </div>
+          </div> -->
       </div>
   </div>
   <!-- <div class="row">

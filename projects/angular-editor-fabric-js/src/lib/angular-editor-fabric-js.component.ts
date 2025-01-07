@@ -30,9 +30,9 @@ export class FabricjsEditorComponent implements AfterViewInit {
   public url: string | ArrayBuffer = '';
   public bgUrl: string | HTMLImageElement = '';
   public size: any = {
-    width: 500,
-    height: 700,
-    bleed: 10,
+    width: 550,
+    height: 367,
+    bleed: 15,
   };
   public safetyArea: fabric.Rect;
 
@@ -265,6 +265,44 @@ export class FabricjsEditorComponent implements AfterViewInit {
         this.selectItemAfterAdded(image);
       });
     }
+  }
+
+  loadImageTemplate(template: any) {
+    if (!template) {
+      console.error('No template selected!');
+      return;
+    }
+  
+    // Clear the canvas
+    //this.canvas.clear();
+  
+    // Add the image to the canvas
+    fabric.Image.fromURL(template.image, (img) => {
+      img.set({
+        left: 50,
+        top: 50,
+      });
+      this.extend(img, this.randomId());
+      this.canvas.add(img);
+      this.selectItemAfterAdded(img);
+
+      // Add text objects from the template
+      template.objects.forEach((obj: any) => {
+        const text = new fabric.Textbox(obj.text, {
+          left: obj.left,
+          top: obj.top,
+          fontSize: obj.fontSize,
+          fontFamily: obj.fontFamily,
+          fill: obj.fill,
+          width: obj.width,
+        });
+        this.canvas.add(text);
+      });
+  
+      this.canvas.renderAll();
+    });
+  
+    console.log(`Loaded template: ${template.text}`);
   }
 
   // Block "Upload Image"

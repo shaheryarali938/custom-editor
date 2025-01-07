@@ -269,47 +269,9 @@ export class AppComponent implements OnInit {
     console.log(`Loaded template: ${this.selectedTemplate.name}`);
   }
 
-
-
-
-
   loadImageTemplate(template: any) {
-    if (!template) {
-      console.error('No template selected!');
-      return;
-    }
-  
-    // Clear the canvas
-    this.canvas.getCanvas().clear();
-  
-    // Add the image to the canvas
-    fabric.Image.fromURL(template.image, (img) => {
-      img.set({
-        left: 50,
-        top: 50,
-      });
-      this.canvas.getCanvas().add(img);
-  
-      // Add text objects from the template
-      template.objects.forEach((obj: any) => {
-        const text = new fabric.Textbox(obj.text, {
-          left: obj.left,
-          top: obj.top,
-          fontSize: obj.fontSize,
-          fontFamily: obj.fontFamily,
-          fill: obj.fill,
-          width: obj.width,
-        });
-        this.canvas.getCanvas().add(text);
-      });
-  
-      this.canvas.getCanvas().renderAll();
-    });
-  
-    console.log(`Loaded template: ${template.text}`);
+    this.canvas.loadImageTemplate(template);
   }
-  
-
 
   // Export methods (unchanged)
   public rasterize() {
@@ -336,9 +298,9 @@ export class AppComponent implements OnInit {
     this.canvas.confirmClear();
   }
 
-  public changeBleedSize() {
-    this.canvas.changeBleedSize();
-  }
+  // public changeBleedSize() {
+  //   this.canvas.changeBleedSize();
+  // }
 
   public changeSizeWithMeasures(height: number, width: number) {
     this.canvas.changeSizeWithMeasures(height, width);
