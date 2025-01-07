@@ -10,6 +10,12 @@ import { fabric } from 'fabric'; // Import fabric.js
 export class AppComponent implements OnInit {
   title = 'angular-editor-fabric-js';
 
+  activeTab: string = 'text';
+
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
+
   // Default font properties
   selectedFont: string = 'Arial';
   selectedFontWeight: string = '400'; // Default font weight (Normal)
@@ -150,6 +156,33 @@ export class AppComponent implements OnInit {
     },
   ];
   
+
+  // for images in the inside the image tab 
+  images: string[] = [
+  '../assets/img/bird.png',
+  '../assets/img/branch.png',
+  '../assets/img/candy-stick.png',
+  '../assets/img/cat-animal.png',
+  '../assets/img/christmas-ball.png',
+  '../assets/img/christmas-decorations.png',
+  '../assets/img/christmas-stocking.png',
+  '../assets/img/christmas-tree.png',
+  '../assets/img/christmas.png',
+  '../assets/img/envelope.png',
+  '../assets/img/hohoho.png',
+  '../assets/img/holly.png',
+  '../assets/img/letter.png',
+  '../assets/img/love.png',
+  '../assets/img/merry-christmas.png',
+  '../assets/img/mug.png',
+  '../assets/img/santa-claus.png',
+  '../assets/img/santa-hat.png',
+  '../assets/img/snow.png',
+  '../assets/img/snowman.png',
+  '../assets/img/wreath.png',
+  '../assets/img/yes.png',
+];
+
   
 
   // Selected template from dropdown
