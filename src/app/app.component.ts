@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FabricjsEditorComponent } from 'projects/angular-editor-fabric-js/src/public-api';
-import { fabric } from 'fabric'; // Import fabric.js
+import { fabric } from 'fabric';
 
 @Component({
   selector: 'app-root',
@@ -8,13 +8,16 @@ import { fabric } from 'fabric'; // Import fabric.js
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  fontSizes: number[] = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64];
+selectedFontSize: number = 24; // Default font size
+
   title = 'angular-editor-fabric-js';
 
-  // Default font properties
+  // Font properties
   selectedFont: string = 'Arial';
-  selectedFontWeight: string = '400'; // Default font weight (Normal)
-  isBold: boolean = false; // Track if bold is applied
-  isItalic: boolean = false; // Track if italic is applied
+  selectedFontWeight: string = '400';
+  isBold: boolean = false;
+  isItalic: boolean = false;
 
   @ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
 
@@ -192,86 +195,153 @@ export class AppComponent implements OnInit {
       if ('fonts' in document) {
         document.fonts
           .load(`16px ${font}`)
-          .then(() => {
-            console.log(`Font "${font}" loaded successfully.`);
-          })
-          .catch((err) => {
-            console.warn(`Failed to load font "${font}":`, err);
-          });
+          .then(() => console.log(`Font "${font}" loaded.`))
+          .catch((err) => console.warn(`Failed to load font "${font}":`, err));
       }
     });
+  
+    // Add event listeners for object selection
+    this.canvas.getCanvas().on('selection:created', (e) => this.onTextObjectSelected(e.target));
+    this.canvas.getCanvas().on('selection:updated', (e) => this.onTextObjectSelected(e.target));
+    this.canvas.getCanvas().on('selection:cleared', () => this.clearTextSelection());
   }
-
-  // Toggle Bold
-  toggleBold() {
-    this.isBold = !this.isBold;
-    this.selectedFontWeight = this.isBold ? '700' : '400'; // Bold = 700, Normal = 400
-  }
-
-  // Toggle Italic
-  toggleItalic() {
-    this.isItalic = !this.isItalic;
-  }
-
-  // Add Text to Canvas
+  
   addText() {
-    if (!this.canvas.textString) {
-      console.error('No text entered!');
-      return; // Exit if no text is entered
-    }
+    if (!this.canvas.textString) return;
 
     const text = new fabric.Textbox(this.canvas.textString, {
       left: 100,
       top: 100,
-      fontFamily: this.selectedFont, // Selected font family
-      fontWeight: this.selectedFontWeight, // Apply selected font weight
-      fontStyle: this.isItalic ? 'italic' : 'normal', // Apply italic style if enabled
-      fontSize: 24, // Default font size
-      fill: '#000', // Default text color
+      fontFamily: this.selectedFont,
+      fontWeight: this.selectedFontWeight,
+      fontStyle: this.isItalic ? 'italic' : 'normal',
+      fontSize: 24,
+      fill: '#000',
     });
 
-    this.canvas.getCanvas().add(text); // Add text to the canvas
-    this.canvas.textString = ''; // Clear input field
+    this.canvas.getCanvas().add(text);
+    this.canvas.textString = '';
   }
 
-  // Load Template
-  loadTemplate() {
-    if (!this.selectedTemplate) {
-      console.error('No template selected!');
-      return;
+  updateSelectedText() {
+    const activeObject = this.canvas.getCanvas().getActiveObject();
+  
+    if (activeObject && activeObject.type === 'textbox') {
+      const textbox = activeObject as fabric.Textbox; // Cast to Textbox
+  
+      // Update font properties
+      textbox.set('fontFamily', this.selectedFont);
+      textbox.set('fontWeight', this.selectedFontWeight);
+      textbox.set('fontStyle', this.isItalic ? 'italic' : 'normal');
+      textbox.set('fontSize', this.selectedFontSize);
+  
+      // Force re-rendering of the canvas
+      this.canvas.getCanvas().renderAll();
+    } else {
+      console.warn('No text object selected or active object is not a textbox.');
     }
-
-    const templateData = JSON.parse(this.selectedTemplate.data);
-
-    // Clear the canvas before loading the template
-    this.canvas.getCanvas().clear();
-
-    // Load background color if specified
-    if (templateData.background) {
-      this.canvas.getCanvas().setBackgroundColor(
-        templateData.background,
-        this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas())
-      );
+  }
+  
+  
+  // Bind font properties to selected text
+  onTextObjectSelected(target: any) {
+    if (target && target.type === 'textbox') {
+      this.selectedFont = target.fontFamily || 'Arial';
+      this.selectedFontWeight = target.fontWeight || '400';
+      this.isBold = this.selectedFontWeight === '700';
+      this.isItalic = target.fontStyle === 'italic';
+      this.selectedFontSize = target.fontSize || 24;
     }
+  }
+  
+  // Clear selection when no text is active
+  clearTextSelection() {
+    this.selectedFont = 'Arial';
+    this.selectedFontWeight = '400';
+    this.isBold = false;
+    this.isItalic = false;
+  }
+  
 
-    // Load objects onto the canvas
-    fabric.util.enlivenObjects(
-      templateData.objects,
-      (objects) => {
-        objects.forEach((obj) => {
-          this.canvas.getCanvas().add(obj);
-        });
-        this.canvas.getCanvas().renderAll();
-      },
-      null
-    );
+  toggleBold() {
+    this.isBold = !this.isBold;
+    this.selectedFontWeight = this.isBold ? '700' : '400';
+    this.updateSelectedText();
+  }
 
-    console.log(`Loaded template: ${this.selectedTemplate.name}`);
+  toggleItalic() {
+    this.isItalic = !this.isItalic;
+    this.updateSelectedText();
   }
 
   loadImageTemplate(template: any) {
     this.canvas.loadImageTemplate(template);
   }
+
+
+  backgroundScaleX: number = 1; // Default scaleX
+  backgroundScaleY: number = 1; // Default scaleY
+  backgroundPositionX: number = 0; // Default position X
+  backgroundPositionY: number = 0; // Default position Y
+  
+  public setCanvasImageFromURL() {
+    if (this.canvas.props.canvasImage) {
+      fabric.Image.fromURL(this.canvas.props.canvasImage, (img) => {
+        img.scaleX = this.backgroundScaleX;
+        img.scaleY = this.backgroundScaleY;
+        img.left = this.backgroundPositionX;
+        img.top = this.backgroundPositionY;
+  
+        this.canvas.getCanvas().setBackgroundImage(
+          img,
+          this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas())
+        );
+      });
+    }
+  }
+  
+  public uploadBackgroundImage(event: Event) {
+    const input = event.target as HTMLInputElement;
+  
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+  
+      reader.onload = (e: any) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+          img.scaleX = this.backgroundScaleX;
+          img.scaleY = this.backgroundScaleY;
+          img.left = this.backgroundPositionX;
+          img.top = this.backgroundPositionY;
+  
+          this.canvas.getCanvas().setBackgroundImage(
+            img,
+            this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas())
+          );
+        });
+      };
+  
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  }
+  
+  public updateBackgroundTransform() {
+    const bgImage = this.canvas.getCanvas().backgroundImage as fabric.Image;
+  
+    if (bgImage) {
+      // Update scaling
+      bgImage.scaleX = this.backgroundScaleX;
+      bgImage.scaleY = this.backgroundScaleY;
+  
+      // Update position
+      bgImage.left = this.backgroundPositionX;
+      bgImage.top = this.backgroundPositionY;
+  
+      this.canvas.getCanvas().renderAll();
+    }
+  }
+  
+
 
   // Export methods (unchanged)
   public rasterize() {

@@ -65,3 +65,8 @@
   object-fit: contain; /* Prevent cropping */
   border-radius: 5px;
 }
+
+.max-height {
+  max-height: 300px; /* Adjust this value as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+}

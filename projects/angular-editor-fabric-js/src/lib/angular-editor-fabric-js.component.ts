@@ -266,17 +266,12 @@ export class FabricjsEditorComponent implements AfterViewInit {
       });
     }
   }
-
+  
   loadImageTemplate(template: any) {
-    if (!template) {
-      console.error('No template selected!');
-      return;
-    }
-  
-    // Clear the canvas
-    //this.canvas.clear();
-  
-    // Add the image to the canvas
+    if (!template) return;
+
+    this.canvas.clear();
+    this.addDashedSafetyArea();
     fabric.Image.fromURL(template.image, (img) => {
       img.set({
         left: 50,
@@ -301,8 +296,6 @@ export class FabricjsEditorComponent implements AfterViewInit {
   
       this.canvas.renderAll();
     });
-  
-    console.log(`Loaded template: ${template.text}`);
   }
 
   // Block "Upload Image"
@@ -427,13 +420,17 @@ export class FabricjsEditorComponent implements AfterViewInit {
       };
     })(obj.toObject);
   }
-
   setCanvasImage() {
-    const self = this;
     if (this.props.canvasImage) {
-      this.canvas.setBackgroundColor(new fabric.Pattern({ source: this.props.canvasImage, repeat: 'repeat' }), () => {
-        self.props.canvasFill = '';
-        self.canvas.renderAll();
+      fabric.Image.fromURL(this.props.canvasImage, (img) => {
+        this.canvas.setBackgroundImage(
+          img,
+          this.canvas.renderAll.bind(this.canvas),
+          {
+            scaleX: this.canvas.getWidth() / img.width,
+            scaleY: this.canvas.getHeight() / img.height,
+          }
+        );
       });
     }
   }
