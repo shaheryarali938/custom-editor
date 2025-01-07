@@ -389,16 +389,22 @@ export class FabricjsEditorComponent implements AfterViewInit {
       };
     })(obj.toObject);
   }
-
   setCanvasImage() {
-    const self = this;
     if (this.props.canvasImage) {
-      this.canvas.setBackgroundColor(new fabric.Pattern({ source: this.props.canvasImage, repeat: 'repeat' }), () => {
-        self.props.canvasFill = '';
-        self.canvas.renderAll();
+      fabric.Image.fromURL(this.props.canvasImage, (img) => {
+        this.canvas.setBackgroundImage(
+          img,
+          this.canvas.renderAll.bind(this.canvas),
+          {
+            scaleX: this.canvas.getWidth() / img.width,
+            scaleY: this.canvas.getHeight() / img.height,
+          }
+        );
       });
     }
   }
+  
+  
 
   randomId() {
     return Math.floor(Math.random() * 999999) + 1;

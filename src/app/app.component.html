@@ -77,6 +77,8 @@
                 </div>
             </div>
           </div> --> 
+      <!-- Add Text Section -->
+          <!-- Add Text Section -->
           <div class="card">
             <div class="card-header">Add Text</div>
             <div class="card-body">
@@ -89,10 +91,10 @@
                   placeholder="Enter your text here"
                 />
               </div>
-          
-              <!-- Dropdown for font selection (on a new line) -->
+    
+              <!-- Dropdown for font selection -->
               <div class="input-group mt-2">
-                <select class="form-control" [(ngModel)]="selectedFont">
+                <select class="form-control" [(ngModel)]="selectedFont" (change)="updateSelectedText()">
                     <!-- Sans-serif Fonts -->
                     <option value="Arial" style="font-family: Arial;">Arial</option>
                     <option value="Roboto" style="font-family: Roboto;">Roboto</option>
@@ -136,57 +138,75 @@
                     <option value="Source Code Pro" style="font-family: 'Source Code Pro';">Source Code Pro</option>
                     <option value="Inconsolata" style="font-family: Inconsolata;">Inconsolata</option>
                   </select>
-              </div>
-<!-- Dropdown for font weight -->
+                </div>
+
+                <!-- Dropdown for font weight -->
+                <div class="input-group mt-2">
+                  <select
+                    class="form-control"
+                    [(ngModel)]="selectedFontWeight"
+                    (change)="updateSelectedText()"
+                  >
+                    <option value="100">Thin (100)</option>
+                    <option value="200">Extra Light (200)</option>
+                    <option value="300">Light (300)</option>
+                    <option value="400" selected>Normal (400)</option>
+                    <option value="500">Medium (500)</option>
+                    <option value="600">Semi Bold (600)</option>
+                    <option value="700">Bold (700)</option>
+                    <option value="800">Extra Bold (800)</option>
+                    <option value="900">Black (900)</option>
+                  </select>
+                </div>
+
+                <!-- Dropdown for font size -->
 <div class="input-group mt-2">
-    <select class="form-control" [(ngModel)]="selectedFontWeight">
-      <option value="100">Thin (100)</option>
-      <option value="200">Extra Light (200)</option>
-      <option value="300">Light (300)</option>
-      <option value="400" selected>Normal (400)</option>
-      <option value="500">Medium (500)</option>
-      <option value="600">Semi Bold (600)</option>
-      <option value="700">Bold (700)</option>
-      <option value="800">Extra Bold (800)</option>
-      <option value="900">Black (900)</option>
+    <select
+      class="form-control"
+      [(ngModel)]="selectedFontSize"
+      (change)="updateSelectedText()"
+    >
+      <option *ngFor="let size of fontSizes" [value]="size">
+        {{ size }} px
+      </option>
     </select>
   </div>
-  
-      <!-- Buttons for bold and italic -->
-      <div class="btn-group mt-2" role="group">
-        <button
-          class="btn btn-secondary"
-          [ngClass]="{'active': isBold}"
-          (click)="toggleBold()"
-        >
-          <i class="fa fa-bold"></i> Bold
-        </button>
-        <button
-          class="btn btn-secondary"
-          [ngClass]="{'active': isItalic}"
-          (click)="toggleItalic()"
-        >
-          <i class="fa fa-italic"></i> Italic
-        </button>
-      </div>
-  
-      <!-- Button to add text -->
-      <div class="input-group mt-2">
-        <button
-          id="add-text"
-          class="btn btn-primary w-100"
-          (click)="addText()"
-        >
-          <i class="fa fa-plus"></i> Add Text
-        </button>
-      </div>
-    </div>
-  </div>
+      
+                <!-- Bold and Italic Buttons -->
+                <div class="btn-group mt-2" role="group">
+                  <button
+                    class="btn btn-secondary"
+                    [ngClass]="{ 'active': isBold }"
+                    (click)="toggleBold(); updateSelectedText()"
+                  >
+                    <i class="fa fa-bold"></i> Bold
+                  </button>
+                  <button
+                    class="btn btn-secondary"
+                    [ngClass]="{ 'active': isItalic }"
+                    (click)="toggleItalic(); updateSelectedText()"
+                  >
+                    <i class="fa fa-italic"></i> Italic
+                  </button>
+                </div>
+      
+                <!-- Add Text Button -->
+                <div class="input-group mt-2">
+                  <button
+                    id="add-text"
+                    class="btn btn-primary w-100"
+                    (click)="addText()"
+                  >
+                    <i class="fa fa-plus"></i> Add Text
+                  </button>
+                </div>
+              </div>
+            </div>
 
 
   <div class="card mt-3">
     <div class="card-header">Templates</div>
-    <div class="card-body">
+    <div class="card-body max-height">
       <div class="row">
         <!-- Loop through image templates -->
         <div
@@ -211,6 +231,7 @@
       </div>
     </div>
   </div>
+  
   
   
   
@@ -315,12 +336,70 @@
                       </div>
                   </div>
                   <div class="custom-item">
-                      <div class="custom-item-title">Background Image (url)</div>
-                      <div class="custom-item-body">
-                          <input type="text" class="form-control" placeholder="http://example.jpg" [(ngModel)]="canvas.props.canvasImage" (keyup)="setCanvasImage()">
-                      </div>
+                    <div class="custom-item-title">Background Image</div>
+                    <div class="custom-item-body">
+                      <!-- URL input for background -->
+                      <input
+                        type="text"
+                        class="form-control mb-2"
+                        placeholder="http://example.jpg"
+                        [(ngModel)]="canvas.props.canvasImage"
+                        (keyup)="setCanvasImageFromURL()"
+                      />
+                  
+                      <!-- File input for uploading background -->
+                      <input
+                        type="file"
+                        class="form-control mb-2"
+                        (change)="uploadBackgroundImage($event)"
+                        accept="image/*"
+                      />
+                  
+                      <!-- Sliders to control scaling -->
+                      <label>Scale X:</label>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.1"
+                        [(ngModel)]="backgroundScaleX"
+                        (input)="updateBackgroundTransform()"
+                      />
+                      <label>Scale Y:</label>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.1"
+                        [(ngModel)]="backgroundScaleY"
+                        (input)="updateBackgroundTransform()"
+                      />
+                  
+                      <!-- Sliders to control position -->
+                      <label>Position X:</label>
+                      <input
+                        type="range"
+                        min="-500"
+                        max="500"
+                        step="1"
+                        [(ngModel)]="backgroundPositionX"
+                        (input)="updateBackgroundTransform()"
+                      />
+                      <label>Position Y:</label>
+                      <input
+                        type="range"
+                        min="-500"
+                        max="500"
+                        step="1"
+                        [(ngModel)]="backgroundPositionY"
+                        (input)="updateBackgroundTransform()"
+                      />
+                    </div>
                   </div>
-                  <div class="custom-item">
+                  
+                  
+                  
+                  <!-- <div class="custom-item">
                     <div class="custom-item-title">Upload Background Image</div>
                         <div class="custom-item-body">
                             <div class="card-body text-center">
@@ -336,7 +415,7 @@
                                 </div>
                             </div>
                         </div>
-                  </div>
+                  </div> -->
                   <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                     <div class="custom-item-title">Object Background</div>
                     <div class="custom-item-body">
