@@ -1,114 +1,298 @@
-<div class="container">
-    <div class="row">
-        <div class="col-xl-12 main-title">
-            <!-- <h4>Github: <a href="https://github.com/saqib92/angular-editor-fabric-js">angular-editor-fabric-js</a></h4> -->
+<div class="w-100 vh-100">
+  <div class="row w-100 p-0">
+    <!--  <div class="col-xl-12 main-title">
+       <h4>Github: <a href="https://github.com/saqib92/angular-editor-fabric-js">angular-editor-fabric-js</a></h4> 
+    </div>-->
+    <div class="col-xl-12 p-0">
+      <div class="row w-100 p-0">
+        <div class="col-xl-12 p-2 text-center">
+          <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Export to image"
+            type="button"
+            class="btn btn-primary m-1"
+            (click)="rasterize()"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i> Export to image
+          </button>
+          <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Export to SVG"
+            type="button"
+            class="btn btn-primary m-1"
+            (click)="rasterizeSVG()"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i> Export to SVG
+          </button>
+          <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Export to HTML"
+            type="button"
+            class="btn btn-primary m-1"
+            (click)="exportToHtml()"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i> Export to HTML
+          </button>
+          <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Save in localStorage"
+            type="button"
+            class="btn btn-primary m-1"
+            (click)="saveCanvasToJSON()"
+          >
+            <i class="fa fa-save" aria-hidden="true"></i> Save local
+          </button>
+          <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Load from localStorage"
+            type="button"
+            class="btn btn-primary m-1"
+            (click)="loadCanvasFromJSON()"
+          >
+            <i class="fa fa-save" aria-hidden="true"></i> Load local
+          </button>
+          <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Clean Canvas"
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmClear()"
+          >
+            <i class="fa fa-ban" aria-hidden="true"></i> Clean
+          </button>
         </div>
-        <div class="col-xl-12">
-            <div class="row">
-                <div class="col-xl-12 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="Export to image" type="button" class="btn btn-primary m-1" (click)="rasterize();">
-                        <i class="fa fa-download" aria-hidden="true"></i> Export to image</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Export to SVG" type="button" class="btn btn-primary m-1" (click)="rasterizeSVG();">
-                        <i class="fa fa-download" aria-hidden="true"></i> Export to SVG</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Export to HTML" type="button" class="btn btn-primary m-1" (click)="exportToHtml();">
-                        <i class="fa fa-download" aria-hidden="true"></i> Export to HTML</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Save in localStorage" type="button" class="btn btn-primary m-1"
-                        (click)="saveCanvasToJSON();">
-                        <i class="fa fa-save" aria-hidden="true"></i> Save local</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Load from localStorage" type="button" class="btn btn-primary m-1"
-                        (click)="loadCanvasFromJSON();">
-                        <i class="fa fa-save" aria-hidden="true"></i> Load local</button>
-                    <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button" class="btn btn-danger" (click)="confirmClear();">
-                        <i class="fa fa-ban" aria-hidden="true"></i> Clean</button>
-  
-                    
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <hr>
-    <div class="row">
-        <div class="col-xl-3">
-            <div class="card">
-                <div class="card-header">Products</div>
-                <div class="card-body">
-                  <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="4' x 6' (92 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(367,550);">Standard Postcard</button>
-                  </div>
-                  <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="5' x 7' (110 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(385,550);">Large Postcard</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="4' x 9' (61 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(244,550);">Panoramic Postcard</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="5' x 5' (110 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(550,550);">Square Postcard</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="8.5' x 11' (65 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(711,550);">US Letter</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="8.27' x 11.69' (66 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(778,550);">A4 Letter</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="8.5' x 14' (65 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(906,550);">Legal Letter</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="5.5' x 8.5' (100 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(425,550);">Half Letter</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="4.33' x 8.66' (127 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(275,550);">DL Size (Envelope)</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="6' x 11' (50 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(300,550);">Jumbo Postcard</button>
-                </div>
-                <div class="col-xl-3 text-right">
-                    <button data-toggle="tooltip" data-placement="bottom" title="4.13' x 5.83' (133 DPI)" type="button" class="btn btn-primary m-1" (click)="changeSizeWithMeasures(387,550);">A6 Postcard</button>
-                  </div>
-                </div>
+  </div>
+  <hr class="mb-2 mt-0" />
+  <div class="row w-100 p-0">
+    <div class="col-xl-4">
+      <div class="d-flex align-items-start">
+        <div
+          class="nav flex-column nav-pills"
+          id="v-pills-tab"
+          role="tablist"
+          aria-orientation="vertical"
+        >
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'text' }"
+            id="v-pills-text-tab"
+            (click)="setActiveTab('text')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-text"
+            [attr.aria-selected]="activeTab === 'text'"
+          >
+            <span class="display-5">Aa</span>
+            <span>Text</span>
+          </button>
+
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'images' }"
+            id="v-pills-images-tab"
+            (click)="setActiveTab('images')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-images"
+            [attr.aria-selected]="activeTab === 'images'"
+          >
+            <span
+              ><svg
+                width="26"
+                height="27"
+                viewBox="0 0 26 27"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M24.9027 10.4407C16.0894 9.23 8.48941 15.774 9.00008 24.454M5.66675 7.78733C5.66675 8.49458 5.9477 9.17285 6.4478 9.67295C6.94789 10.173 7.62617 10.454 8.33341 10.454C9.04066 10.454 9.71894 10.173 10.219 9.67295C10.7191 9.17285 11.0001 8.49458 11.0001 7.78733C11.0001 7.08009 10.7191 6.40181 10.219 5.90171C9.71894 5.40162 9.04066 5.12067 8.33341 5.12067C7.62617 5.12067 6.94789 5.40162 6.4478 5.90171C5.9477 6.40181 5.66675 7.08009 5.66675 7.78733Z"
+                  stroke="#1E1E1E"
+                  stroke-opacity="0.8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M1 14.542C4.70667 14.0287 8.03333 15.8193 9.832 18.6753"
+                  stroke="#1E1E1E"
+                  stroke-opacity="0.8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M1 9.65398C1 6.66732 1 5.17398 1.58133 4.03265C2.09265 3.02916 2.90851 2.2133 3.912 1.70198C5.05333 1.12065 6.54667 1.12065 9.53333 1.12065H16.4667C19.4533 1.12065 20.9467 1.12065 22.088 1.70198C23.0915 2.2133 23.9073 3.02916 24.4187 4.03265C25 5.17398 25 6.66732 25 9.65398V16.5873C25 19.574 25 21.0673 24.4187 22.2087C23.9073 23.2121 23.0915 24.028 22.088 24.5393C20.9467 25.1207 19.4533 25.1207 16.4667 25.1207H9.53333C6.54667 25.1207 5.05333 25.1207 3.912 24.5393C2.90851 24.028 2.09265 23.2121 1.58133 22.2087C1 21.0673 1 19.574 1 16.5873V9.65398Z"
+                  stroke="#1E1E1E"
+                  stroke-opacity="0.8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+
+            <span>Images</span>
+          </button>
+
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'graphics' }"
+            id="v-pills-graphics-tab"
+            (click)="setActiveTab('graphics')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-graphics"
+            [attr.aria-selected]="activeTab === 'graphics'"
+          >
+            <div>
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 26 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.7164 0.120667L13.4349 11.6559H26L19.7164 0.120667ZM19.7164 4.39522L22.542 9.58435H16.892L19.7164 4.39522ZM6.11142 12.6916C2.74097 12.6916 0 15.4788 0 18.9061C0 22.3335 2.74097 25.1207 6.11142 25.1207C9.48186 25.1207 12.2228 22.3335 12.2228 18.9061C12.2228 15.4788 9.48186 12.6916 6.11142 12.6916ZM14.26 13.7274V25.1207H25.4642V13.7274H14.26ZM6.11142 14.7631C8.35838 14.7631 10.1857 16.6213 10.1857 18.9061C10.1857 21.191 8.35838 23.0492 6.11142 23.0492C3.86445 23.0492 2.03714 21.191 2.03714 18.9061C2.03714 16.6213 3.86445 14.7631 6.11142 14.7631ZM16.2971 15.7989H23.4271V23.0492H16.2971V15.7989Z"
+                  fill="#1E1E1E"
+                  fill-opacity="0.8"
+                />
+              </svg>
             </div>
-            <br/>
-          <!-- <div class="card">
-              <div class="card-header">Safety Area</div>
-              <div class="card-body">
-                  <div class="form-group">
-                      <div class="input-group mb-3">
-                          <input type="number" class="form-control" [(ngModel)]="canvas.size.bleed" (keyup)="changeBleedSize()">
-                          <div class="input-group-append">
-                              <span class="input-group-text">
-                                  Bleed
-                              </span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+            <span>graphics</span>
+          </button>
+
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'qr-codes' }"
+            id="v-pills-qr-codes-tab"
+            (click)="setActiveTab('qr-codes')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-qr-codes"
+            [attr.aria-selected]="activeTab === 'qr-codes'"
+          >
+            <div>
+              <svg
+                width="26"
+                height="27"
+                viewBox="0 0 26 27"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16.877 11.9547H23.3029C25.1106 11.9547 26 11.0509 26 9.18719V2.87429C26 1.01 25.1106 0.120636 23.3029 0.120636H16.877C15.0831 0.120636 14.1792 1.01 14.1792 2.87429V9.18719C14.1792 11.0509 15.0831 11.9547 16.877 11.9547ZM2.69714 11.9547H9.13748C10.9307 11.9547 11.8346 11.0509 11.8346 9.18719V2.87429C11.8346 1.01 10.9307 0.120636 9.13748 0.120636H2.69714C0.903866 0.120636 0 1.01 0 2.87429V9.18719C0 11.0509 0.903866 11.9547 2.69714 11.9547ZM2.72546 9.96388C2.23134 9.96388 1.99091 9.7096 1.99091 9.18659V2.87489C1.99091 2.36634 2.23134 2.11206 2.72606 2.11206H9.0953C9.58941 2.11206 9.8437 2.36634 9.8437 2.87489V9.1878C9.8437 9.71021 9.58941 9.96448 9.0953 9.96448L2.72546 9.96388ZM16.9047 9.96388C16.4106 9.96388 16.1708 9.7096 16.1708 9.18659V2.87489C16.1708 2.36634 16.4106 2.11206 16.9047 2.11206H23.2884C23.7689 2.11206 24.0091 2.36634 24.0091 2.87489V9.1878C24.0091 9.71021 23.7687 9.96448 23.2884 9.96448L16.9047 9.96388ZM4.70251 7.52054H7.11764C7.32975 7.52054 7.41411 7.43619 7.41411 7.19577V4.85185C7.41411 4.62529 7.32975 4.54094 7.11764 4.54094H4.70251C4.49101 4.54094 4.43437 4.62529 4.43437 4.85125V7.19577C4.43437 7.43558 4.49101 7.52054 4.70251 7.52054ZM18.9667 7.52115H21.368C21.5795 7.52115 21.6645 7.43679 21.6645 7.19637V4.85246C21.6645 4.6259 21.5801 4.54154 21.368 4.54154H18.9667C18.7552 4.54154 18.6847 4.6259 18.6847 4.85185V7.19637C18.6847 7.43619 18.7552 7.52115 18.9667 7.52115ZM2.69714 26.1206H9.13748C10.9307 26.1206 11.8346 25.2313 11.8346 23.367V17.0402C11.8346 15.1904 10.9307 14.2866 9.13748 14.2866H2.69714C0.903866 14.2866 0 15.1904 0 17.0402V23.367C0 25.2313 0.903866 26.1206 2.69714 26.1206ZM15.1253 17.944H17.5404C17.7525 17.944 17.8369 17.8597 17.8369 17.6187V15.2747C17.8369 15.0488 17.7525 14.9644 17.5404 14.9644H15.1253C14.9138 14.9644 14.8571 15.0488 14.8571 15.2747V17.6187C14.8571 17.8597 14.9138 17.944 15.1253 17.944ZM22.625 17.944H25.0395C25.2516 17.944 25.3366 17.8597 25.3366 17.6187V15.2747C25.3366 15.0488 25.2516 14.9644 25.0395 14.9644H22.625C22.4129 14.9644 22.3418 15.0488 22.3418 15.2747V17.6187C22.3418 17.8597 22.4129 17.944 22.625 17.944ZM2.72546 24.1286C2.23134 24.1286 1.99091 23.8743 1.99091 23.3658V17.0529C1.99091 16.5305 2.23134 16.2762 2.72606 16.2762H9.0953C9.58941 16.2762 9.8437 16.5305 9.8437 17.0535V23.3658C9.8437 23.8743 9.58941 24.1286 9.0953 24.1286H2.72546ZM4.70251 21.6991H7.11764C7.32975 21.6991 7.41411 21.6148 7.41411 21.3605V19.0304C7.41411 18.8045 7.32975 18.7195 7.11764 18.7195H4.70251C4.49101 18.7195 4.43437 18.8039 4.43437 19.0304V21.3605C4.43437 21.6148 4.49101 21.6991 4.70251 21.6991ZM18.9107 21.6991H21.3252C21.5373 21.6991 21.6217 21.6148 21.6217 21.3605V19.0304C21.6217 18.8045 21.5373 18.7195 21.3252 18.7195H18.9101C18.6986 18.7195 18.6419 18.8039 18.6419 19.0304V21.3605C18.6419 21.6148 18.6986 21.6991 18.9107 21.6991ZM15.1253 25.4416H17.5404C17.7525 25.4416 17.8369 25.3572 17.8369 25.1168V22.7729C17.8369 22.5463 17.7525 22.462 17.5404 22.462H15.1253C14.9138 22.462 14.8571 22.5463 14.8571 22.7729V25.1168C14.8571 25.3572 14.9138 25.4416 15.1253 25.4416ZM22.625 25.4422H25.0395C25.2516 25.4422 25.3366 25.3578 25.3366 25.1174V22.7735C25.3366 22.5469 25.2516 22.4626 25.0395 22.4626H22.625C22.4129 22.4626 22.3418 22.5469 22.3418 22.7735V25.1174C22.3418 25.3578 22.4129 25.4422 22.625 25.4422Z"
+                  fill="#1E1E1E"
+                  fill-opacity="0.8"
+                />
+              </svg>
             </div>
-          <br/> -->
-            <!-- <div class="card">
-              <div class="card-header">Free Drawing Mode</div>
-              <div class="card-body">
-                  <div class="input-group">
-  
-                      <div class="input-group-append">
-                        <div class="custom-control custom-switch">
-                          <input type="checkbox" class="custom-control-input" checked id="customSwitch1" (click)="drawMode()">
-                          <label class="custom-control-label" for="customSwitch1">Enable / Disable</label>
-                        </div> -->
-                          <!-- <span class="input-group-text">
-  
-                               <button id="add-text" data-toggle="tooltip" data-placement="bottom" title="Drawing Mode" class="btn btn-primary" (click)="drawMode()">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                              </button>
-                          </span> -->
-                      <!-- </div>
-                  </div>
-              </div>
-            </div> --> 
-        <!-- Add Text Section -->
-            <!-- Add Text Section -->
+            <span>QR code</span>
+          </button>
+
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'tables' }"
+            id="v-pills-tables-tab"
+            (click)="setActiveTab('tables')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-tables"
+            [attr.aria-selected]="activeTab === 'tables'"
+          >
+            <div>
+              <svg
+                width="26"
+                height="27"
+                viewBox="0 0 26 27"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.626 26.1206C1.87742 26.1206 1.25287 25.8704 0.752375 25.3699C0.251875 24.8694 0.00108333 24.2443 0 23.4946V2.74664C0 1.99805 0.250791 1.37351 0.752375 0.873011C1.25396 0.372511 1.8785 0.121719 2.626 0.120636H23.3756C24.1231 0.120636 24.7477 0.371427 25.2492 0.873011C25.7508 1.37459 26.0011 1.99914 26 2.74664V23.4963C26 24.2438 25.7497 24.8683 25.2492 25.3699C24.7487 25.8715 24.1237 26.1217 23.374 26.1206H2.626ZM12.1875 17.0271H1.625V23.4946C1.625 23.7871 1.71871 24.0271 1.90612 24.2145C2.09354 24.4019 2.3335 24.4956 2.626 24.4956H12.1875V17.0271ZM13.8125 17.0271V24.4956H23.3756C23.667 24.4956 23.9065 24.4019 24.0939 24.2145C24.2813 24.0271 24.375 23.7877 24.375 23.4963V17.0271H13.8125ZM12.1875 15.4021V7.87026H1.625V15.4021H12.1875ZM13.8125 15.4021H24.375V7.87026H13.8125V15.4021ZM1.625 6.24526H24.375V2.74501C24.375 2.45359 24.2813 2.21418 24.0939 2.02676C23.9065 1.83934 23.667 1.74564 23.3756 1.74564H2.62437C2.33296 1.74564 2.09354 1.83934 1.90612 2.02676C1.71871 2.21418 1.625 2.45414 1.625 2.74664V6.24526Z"
+                  fill="#1E1E1E"
+                  fill-opacity="0.8"
+                />
+              </svg>
+            </div>
+            <span>tables</span>
+          </button>
+
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'design-color' }"
+            id="v-pills-design-color-tab"
+            (click)="setActiveTab('design-color')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-design-color"
+            [attr.aria-selected]="activeTab === 'design-color'"
+          >
+            <div>
+              <svg
+                width="26"
+                height="30"
+                viewBox="0 0 26 30"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21.5378 13.7144L9.90089 25.8638L0 15.5269L9.03286 6.08203V2.83936C9.03286 2.46175 9.10068 2.10775 9.23631 1.77734C9.37194 1.44694 9.55729 1.15902 9.79238 0.913574C10.0275 0.668132 10.3033 0.474609 10.6197 0.333008C10.9362 0.191406 11.2753 0.120605 11.6369 0.120605C11.9986 0.120605 12.3377 0.191406 12.6541 0.333008C12.9706 0.474609 13.2464 0.668132 13.4815 0.913574C13.7166 1.15902 13.9019 1.44694 14.0376 1.77734C14.1732 2.10775 14.241 2.46175 14.241 2.83936V11.9019H12.505V2.83936C12.505 2.59391 12.4191 2.38151 12.2473 2.20215C12.0755 2.02279 11.872 1.93311 11.6369 1.93311C11.4018 1.93311 11.1984 2.02279 11.0266 2.20215C10.8548 2.38151 10.7689 2.59391 10.7689 2.83936V6.84668L3.3229 14.6206H18.2149L19.0965 13.7144L16.2347 10.7266L17.4554 9.45215L21.5378 13.7144ZM9.90089 23.3149L16.4789 16.4331H3.3229L9.90089 23.3149ZM25.4575 22.6353C25.6383 22.9657 25.774 23.3149 25.8644 23.6831C25.9548 24.0513 26 24.4289 26 24.8159C26 25.3918 25.9005 25.9393 25.7016 26.4585C25.5027 26.9777 25.2269 27.4355 24.8743 27.832C24.5216 28.2285 24.1057 28.54 23.6265 28.7666C23.1473 28.9932 22.6228 29.1112 22.0532 29.1206C21.4926 29.1206 20.9682 29.0073 20.4799 28.7808C19.9917 28.5542 19.5667 28.2521 19.205 27.8745C18.8433 27.4969 18.5585 27.0485 18.3505 26.5293C18.1426 26.0101 18.0341 25.4626 18.025 24.8867C18.025 24.141 18.2059 23.4424 18.5676 22.791L22.0532 16.4189L25.4575 22.6353ZM22.0532 27.3081C22.3787 27.3081 22.6771 27.242 22.9484 27.1099C23.2196 26.9777 23.4547 26.7936 23.6536 26.5576C23.8525 26.3216 24.0063 26.0526 24.1148 25.7505C24.2233 25.4484 24.2775 25.1322 24.2775 24.8018C24.2775 24.3392 24.169 23.9144 23.952 23.5273L22.0532 20.0723L20.073 23.6973C19.8651 24.0749 19.7611 24.4714 19.7611 24.8867C19.7611 25.2171 19.8199 25.5286 19.9374 25.8213C20.0549 26.1139 20.2222 26.3688 20.4392 26.5859C20.6562 26.8031 20.8958 26.9777 21.1581 27.1099C21.4203 27.242 21.7187 27.3081 22.0532 27.3081Z"
+                  fill="#1E1E1E"
+                  fill-opacity="0.8"
+                />
+              </svg>
+            </div>
+            <span>design</span>
+          </button>
+
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            [ngClass]="{ active: activeTab === 'background' }"
+            id="v-pills-background-tab"
+            (click)="setActiveTab('background')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-background"
+            [attr.aria-selected]="activeTab === 'background'"
+          >
+            <div>
+              <svg
+                width="26"
+                height="24"
+                viewBox="0 0 26 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M25.6367 0.615301C25.8879 0.90328 26.0146 1.2792 25.9889 1.66052C25.9632 2.04184 25.7873 2.39737 25.4997 2.64904L2.42177 22.8422C2.28022 22.9731 2.11387 23.0743 1.93254 23.1398C1.75121 23.2054 1.55859 23.2339 1.36605 23.2237C1.17352 23.2135 0.984984 23.1648 0.811594 23.0805C0.638204 22.9961 0.483478 22.8779 0.356563 22.7328C0.229648 22.5876 0.133121 22.4185 0.0726868 22.2354C0.0122531 22.0523 -0.0108604 21.859 0.00471303 21.6668C0.0202865 21.4746 0.0742307 21.2875 0.163357 21.1166C0.252482 20.9456 0.374981 20.7942 0.52361 20.6714L23.6015 0.478277C23.8895 0.227019 24.2654 0.100324 24.6467 0.126016C25.028 0.151707 25.385 0.327684 25.6367 0.615301ZM25.6367 9.8104C25.8879 10.0984 26.0146 10.4743 25.9889 10.8556C25.9632 11.2369 25.7873 11.5925 25.4997 11.8441L12.9309 22.8436C12.7882 22.9684 12.6224 23.0638 12.4429 23.1244C12.2634 23.1851 12.0737 23.2098 11.8847 23.1971C11.6956 23.1845 11.5109 23.1347 11.3411 23.0507C11.1713 22.9666 11.0197 22.85 10.895 22.7073C10.7702 22.5647 10.6748 22.3989 10.6142 22.2194C10.5535 22.0399 10.5288 21.8502 10.5415 21.6611C10.5541 21.4721 10.6039 21.2874 10.6879 21.1176C10.772 20.9478 10.8886 20.7962 11.0313 20.6714L23.6001 9.67337C23.7427 9.54852 23.9086 9.45302 24.0882 9.39233C24.2678 9.33163 24.4576 9.30695 24.6468 9.31967C24.8359 9.3324 25.0207 9.38229 25.1906 9.46649C25.3604 9.5507 25.512 9.66756 25.6367 9.8104ZM23.6001 18.1473C23.8757 17.9026 24.2346 17.7727 24.603 17.7843C24.9714 17.7959 25.3214 17.9481 25.5811 18.2096C25.8409 18.4712 25.9906 18.8223 25.9996 19.1908C26.0086 19.5593 25.8761 19.9172 25.6295 20.1911L25.4997 20.3195L22.6149 22.8436C22.3388 23.0856 21.9809 23.2132 21.614 23.2004C21.2471 23.1877 20.8989 23.0355 20.6403 22.7749C20.3818 22.5143 20.2323 22.1649 20.2224 21.7979C20.2124 21.4309 20.3428 21.074 20.587 20.7998L20.7168 20.6714L23.6001 18.1473ZM15.129 0.615301C15.3805 0.903097 15.5074 1.27891 15.482 1.66022C15.4566 2.04153 15.2809 2.39717 14.9934 2.64904L2.42465 13.6485C2.28202 13.7733 2.11622 13.8687 1.93672 13.9293C1.75721 13.99 1.56752 14.0147 1.37847 14.002C1.18942 13.9894 1.00471 13.9396 0.834896 13.8556C0.665079 13.7715 0.513478 13.6549 0.388749 13.5122C0.264019 13.3696 0.168604 13.2038 0.107951 13.0243C0.0472976 12.8448 0.0225943 12.6551 0.0352513 12.4661C0.0479082 12.277 0.0976778 12.0923 0.181718 11.9225C0.265758 11.7527 0.382423 11.6011 0.525052 11.4763L13.0938 0.478277C13.3818 0.227019 13.7578 0.100324 14.1391 0.126016C14.5204 0.151707 14.8759 0.327684 15.1276 0.615301H15.129ZM4.02568 0.478277C4.30176 0.236302 4.65971 0.108702 5.0266 0.12148C5.39349 0.134258 5.7417 0.286452 6.00027 0.547048C6.25884 0.807644 6.40832 1.15703 6.41823 1.524C6.42815 1.89098 6.29777 2.24793 6.05365 2.52211L5.92528 2.65048L2.42465 5.71551C2.14991 5.96667 1.78872 6.10188 1.41659 6.09288C1.04447 6.08388 0.690227 5.93137 0.427951 5.66723C0.165675 5.40309 0.0156699 5.04778 0.00930461 4.6756C0.00293934 4.30342 0.140706 3.94319 0.393797 3.67024L0.52361 3.54187L4.02568 0.478277Z"
+                  fill="#1E1E1E"
+                  fill-opacity="0.8"
+                />
+              </svg>
+            </div>
+            <span>background</span>
+          </button>
+        </div>
+        <div class="tab-content w-100 p-2" id="v-pills-tabContent">
+          <div
+            class="tab-pane fade w-100"
+            [ngClass]="{ 'show active': activeTab === 'text' }"
+            id="v-pills-text"
+            role="tabpanel"
+            aria-labelledby="v-pills-text-tab"
+          >
             <div class="card">
               <div class="card-header">Add Text</div>
-              <div class="card-body">
+              <div class="card-body p-2">
                 <!-- Input for entering text -->
                 <div class="input-group">
                   <input
@@ -118,464 +302,807 @@
                     placeholder="Enter your text here"
                   />
                 </div>
-      
-                <!-- Dropdown for font selection -->
+
+                <!-- Dropdown for font selection (on a new line) -->
                 <div class="input-group mt-2">
-                  <select class="form-control" [(ngModel)]="selectedFont" (change)="updateSelectedText()">
-                      <!-- Sans-serif Fonts -->
-                      <option value="Arial" style="font-family: Arial;">Arial</option>
-                      <option value="Roboto" style="font-family: Roboto;">Roboto</option>
-                      <option value="Open Sans" style="font-family: 'Open Sans';">Open Sans</option>
-                      <option value="Poppins" style="font-family: Poppins;">Poppins</option>
-                      <option value="Lato" style="font-family: Lato;">Lato</option>
-                      <option value="Montserrat" style="font-family: 'Montserrat';">Montserrat</option>
-                      <option value="Nunito" style="font-family: Nunito;">Nunito</option>
-                      <option value="Source Sans Pro" style="font-family: 'Source Sans Pro';">Source Sans Pro</option>
-                      <option value="PT Sans" style="font-family: 'PT Sans';">PT Sans</option>
-                      <option value="Inter" style="font-family: Inter;">Inter</option>
-                    
-                      <!-- Serif Fonts -->
-                      <option value="Times New Roman" style="font-family: 'Times New Roman';">Times New Roman</option>
-                      <option value="Georgia" style="font-family: Georgia;">Georgia</option>
-                      <option value="Playfair Display" style="font-family: 'Playfair Display';">Playfair Display</option>
-                      <option value="Merriweather" style="font-family: Merriweather;">Merriweather</option>
-                      <option value="Crimson Text" style="font-family: 'Crimson Text';">Crimson Text</option>
-                      <option value="Libre Baskerville" style="font-family: 'Libre Baskerville';">Libre Baskerville</option>
-                      <option value="Cormorant Garamond" style="font-family: 'Cormorant Garamond';">Cormorant Garamond</option>
-                      <option value="Lora" style="font-family: Lora;">Lora</option>
-                      <option value="PT Serif" style="font-family: 'PT Serif';">PT Serif</option>
-                      <option value="Cardo" style="font-family: Cardo;">Cardo</option>
-                    
-                      <!-- Display Fonts -->
-                      <option value="Oswald" style="font-family: Oswald;">Oswald</option>
-                      <option value="Bebas Neue" style="font-family: 'Bebas Neue';">Bebas Neue</option>
-                      <option value="Abril Fatface" style="font-family: 'Abril Fatface';">Abril Fatface</option>
-                      <option value="Pacifico" style="font-family: Pacifico;">Pacifico</option>
-                      <option value="Fredoka One" style="font-family: 'Fredoka One';">Fredoka One</option>
-                      <option value="Lobster" style="font-family: Lobster;">Lobster</option>
-                      <option value="Dancing Script" style="font-family: 'Dancing Script';">Dancing Script</option>
-                      <option value="Chewy" style="font-family: Chewy;">Chewy</option>
-                      <option value="Cookie" style="font-family: Cookie;">Cookie</option>
-                      <option value="Satisfy" style="font-family: Satisfy;">Satisfy</option>
-                    
-                      <!-- Monospace Fonts -->
-                      <option value="Courier New" style="font-family: 'Courier New';">Courier New</option>
-                      <option value="Lucida Console" style="font-family: 'Lucida Console';">Lucida Console</option>
-                      <option value="Fira Code" style="font-family: 'Fira Code';">Fira Code</option>
-                      <option value="Source Code Pro" style="font-family: 'Source Code Pro';">Source Code Pro</option>
-                      <option value="Inconsolata" style="font-family: Inconsolata;">Inconsolata</option>
-                    </select>
-                  </div>
-  
-                  <!-- Dropdown for font weight -->
-                  <div class="input-group mt-2">
-                    <select
+                  <select class="form-control" [(ngModel)]="selectedFont">
+                    <!-- Sans-serif Fonts -->
+                    <option value="Arial" style="font-family: Arial">
+                      Arial
+                    </option>
+                    <option value="Roboto" style="font-family: Roboto">
+                      Roboto
+                    </option>
+                    <option value="Open Sans" style="font-family: 'Open Sans'">
+                      Open Sans
+                    </option>
+                    <option value="Poppins" style="font-family: Poppins">
+                      Poppins
+                    </option>
+                    <option value="Lato" style="font-family: Lato">Lato</option>
+                    <option
+                      value="Montserrat"
+                      style="font-family: 'Montserrat'"
+                    >
+                      Montserrat
+                    </option>
+                    <option value="Nunito" style="font-family: Nunito">
+                      Nunito
+                    </option>
+                    <option
+                      value="Source Sans Pro"
+                      style="font-family: 'Source Sans Pro'"
+                    >
+                      Source Sans Pro
+                    </option>
+                    <option value="PT Sans" style="font-family: 'PT Sans'">
+                      PT Sans
+                    </option>
+                    <option value="Inter" style="font-family: Inter">
+                      Inter
+                    </option>
+
+                    <!-- Serif Fonts -->
+                    <option
+                      value="Times New Roman"
+                      style="font-family: 'Times New Roman'"
+                    >
+                      Times New Roman
+                    </option>
+                    <option value="Georgia" style="font-family: Georgia">
+                      Georgia
+                    </option>
+                    <option
+                      value="Playfair Display"
+                      style="font-family: 'Playfair Display'"
+                    >
+                      Playfair Display
+                    </option>
+                    <option
+                      value="Merriweather"
+                      style="font-family: Merriweather"
+                    >
+                      Merriweather
+                    </option>
+                    <option
+                      value="Crimson Text"
+                      style="font-family: 'Crimson Text'"
+                    >
+                      Crimson Text
+                    </option>
+                    <option
+                      value="Libre Baskerville"
+                      style="font-family: 'Libre Baskerville'"
+                    >
+                      Libre Baskerville
+                    </option>
+                    <option
+                      value="Cormorant Garamond"
+                      style="font-family: 'Cormorant Garamond'"
+                    >
+                      Cormorant Garamond
+                    </option>
+                    <option value="Lora" style="font-family: Lora">Lora</option>
+                    <option value="PT Serif" style="font-family: 'PT Serif'">
+                      PT Serif
+                    </option>
+                    <option value="Cardo" style="font-family: Cardo">
+                      Cardo
+                    </option>
+
+                    <!-- Display Fonts -->
+                    <option value="Oswald" style="font-family: Oswald">
+                      Oswald
+                    </option>
+                    <option
+                      value="Bebas Neue"
+                      style="font-family: 'Bebas Neue'"
+                    >
+                      Bebas Neue
+                    </option>
+                    <option
+                      value="Abril Fatface"
+                      style="font-family: 'Abril Fatface'"
+                    >
+                      Abril Fatface
+                    </option>
+                    <option value="Pacifico" style="font-family: Pacifico">
+                      Pacifico
+                    </option>
+                    <option
+                      value="Fredoka One"
+                      style="font-family: 'Fredoka One'"
+                    >
+                      Fredoka One
+                    </option>
+                    <option value="Lobster" style="font-family: Lobster">
+                      Lobster
+                    </option>
+                    <option
+                      value="Dancing Script"
+                      style="font-family: 'Dancing Script'"
+                    >
+                      Dancing Script
+                    </option>
+                    <option value="Chewy" style="font-family: Chewy">
+                      Chewy
+                    </option>
+                    <option value="Cookie" style="font-family: Cookie">
+                      Cookie
+                    </option>
+                    <option value="Satisfy" style="font-family: Satisfy">
+                      Satisfy
+                    </option>
+
+                    <!-- Monospace Fonts -->
+                    <option
+                      value="Courier New"
+                      style="font-family: 'Courier New'"
+                    >
+                      Courier New
+                    </option>
+                    <option
+                      value="Lucida Console"
+                      style="font-family: 'Lucida Console'"
+                    >
+                      Lucida Console
+                    </option>
+                    <option value="Fira Code" style="font-family: 'Fira Code'">
+                      Fira Code
+                    </option>
+                    <option
+                      value="Source Code Pro"
+                      style="font-family: 'Source Code Pro'"
+                    >
+                      Source Code Pro
+                    </option>
+                    <option
+                      value="Inconsolata"
+                      style="font-family: Inconsolata"
+                    >
+                      Inconsolata
+                    </option>
+                  </select>
+                </div>
+                <!-- Dropdown for font weight -->
+                <div class="input-group mt-2">
+                  <select class="form-control" [(ngModel)]="selectedFontWeight">
+                    <option value="100">Thin (100)</option>
+                    <option value="200">Extra Light (200)</option>
+                    <option value="300">Light (300)</option>
+                    <option value="400" selected>Normal (400)</option>
+                    <option value="500">Medium (500)</option>
+                    <option value="600">Semi Bold (600)</option>
+                    <option value="700">Bold (700)</option>
+                    <option value="800">Extra Bold (800)</option>
+                    <option value="900">Black (900)</option>
+                  </select>
+                </div>
+
+                <!-- Buttons for bold and italic -->
+                <div class="btn-group mt-2" role="group">
+                  <button
+                    class="btn btn-secondary"
+                    [ngClass]="{ active: isBold }"
+                    (click)="toggleBold()"
+                  >
+                    <i class="fa fa-bold"></i> Bold
+                  </button>
+                  <button
+                    class="btn btn-secondary"
+                    [ngClass]="{ active: isItalic }"
+                    (click)="toggleItalic()"
+                  >
+                    <i class="fa fa-italic"></i> Italic
+                  </button>
+                </div>
+
+                <!-- Button to add text -->
+                <div class="input-group mt-2">
+                  <button
+                    id="add-text"
+                    class="btn btn-primary w-100"
+                    (click)="addText()"
+                  >
+                    <i class="fa fa-plus"></i> Add Text
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Safety Area</div>
+              <div class="card-body p-2">
+                <div class="form-group">
+                  <div class="input-group mb-3">
+                    <input
+                      type="number"
                       class="form-control"
-                      [(ngModel)]="selectedFontWeight"
-                      (change)="updateSelectedText()"
-                    >
-                      <option value="100">Thin (100)</option>
-                      <option value="200">Extra Light (200)</option>
-                      <option value="300">Light (300)</option>
-                      <option value="400" selected>Normal (400)</option>
-                      <option value="500">Medium (500)</option>
-                      <option value="600">Semi Bold (600)</option>
-                      <option value="700">Bold (700)</option>
-                      <option value="800">Extra Bold (800)</option>
-                      <option value="900">Black (900)</option>
-                    </select>
+                      [(ngModel)]="canvas.size.bleed"
+                      (keyup)="changeBleedSize()"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text"> Bleed </span>
+                    </div>
                   </div>
-  
-                  <!-- Dropdown for font size -->
-  <div class="input-group mt-2">
-      <select
-        class="form-control"
-        [(ngModel)]="selectedFontSize"
-        (change)="updateSelectedText()"
-      >
-        <option *ngFor="let size of fontSizes" [value]="size">
-          {{ size }} px
-        </option>
-      </select>
-    </div>
-        
-                  <!-- Bold and Italic Buttons -->
-                  <div class="btn-group mt-2" role="group">
-                    <button
-                      class="btn btn-secondary"
-                      [ngClass]="{ 'active': isBold }"
-                      (click)="toggleBold(); updateSelectedText()"
-                    >
-                      <i class="fa fa-bold"></i> Bold
-                    </button>
-                    <button
-                      class="btn btn-secondary"
-                      [ngClass]="{ 'active': isItalic }"
-                      (click)="toggleItalic(); updateSelectedText()"
-                    >
-                      <i class="fa fa-italic"></i> Italic
-                    </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'images' }"
+            id="v-pills-images"
+            role="tabpanel"
+            aria-labelledby="v-pills-images-tab"
+          >
+            <div class="card max-height">
+              <div class="card-header">Add images</div>
+              <div class="card-body p-2 w-100 row w-100">
+                <div class="col-4 p-2" *ngFor="let img of images">
+                  <div class="image-container">
+                    <img
+                      class="images-item w-100"
+                      (click)="getImgPolaroid($event)"
+                      [src]="img"
+                      alt="Image"
+                    />
                   </div>
-        
-                  <!-- Add Text Button -->
-                  <div class="input-group mt-2">
+                </div>
+              </div>
+            </div>
+            <br />
+            <div class="card">
+              <div class="card-header">Upload image</div>
+              <div class="card-body p-2 text-center">
+                <img
+                  id="testImage"
+                  *ngIf="canvas.url"
+                  class="images-item col-4-upload"
+                  [src]="canvas.url"
+                  (click)="addImageOnCanvas(canvas.url)"
+                />
+                <input class="w-100" type="file" (change)="readUrl($event)" />
+                <br />
+                <br />
+                <div
+                  class="btn-group btn-group-justified"
+                  role="group"
+                  aria-label="..."
+                >
+                  <div class="btn-group" role="group">
                     <button
-                      id="add-text"
-                      class="btn btn-primary w-100"
-                      (click)="addText()"
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="removeWhite(canvas.url)"
                     >
-                      <i class="fa fa-plus"></i> Add Text
+                      <i class="fa fa-times" aria-hidden="true"></i> Remove
                     </button>
                   </div>
                 </div>
               </div>
-  
-  
-    <div class="card mt-3">
-      <div class="card-header">Templates</div>
-      <div class="card-body max-height">
-        <div class="row">
-          <!-- Loop through image templates -->
+            </div>
+          </div>
+
           <div
-            class="col-6 text-center mb-3"
-            *ngFor="let template of prebuiltTemplates"
-            (click)="loadImageTemplate(template)"
-            style="cursor: pointer;"
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'graphics' }"
+            id="v-pills-graphics"
+            role="tabpanel"
+            aria-labelledby="v-pills-graphics-tab"
           >
-            <!-- Image template -->
-            <div
-              class="template-thumbnail"
-              style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;"
-            >
-              <img
-                [src]="template.image"
-                alt="Template"
-                class="img-fluid"
-                style="border-radius: 5px; max-height: 100px; object-fit: cover;"
-              />
+            <div class="card">
+              <div class="card-header">Add figure</div>
+              <div class="card-body p-2 text-center max-height">
+                <div
+                  class="btn-group btn-group-vertical"
+                  role="group"
+                  aria-label="..."
+                >
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="addFigure('rectangle')"
+                  >
+                    Rectangle
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="addFigure('square')"
+                  >
+                    Square
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="addFigure('triangle')"
+                  >
+                    Triangle
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="addFigure('circle')"
+                  >
+                    Circle
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Products</div>
+              <div class="card-body p-2">
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Post Card (2x) (6 in x 4 in)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(591, 399)"
+                  >
+                    Post Card (2x)
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Letter (4.25 in x 5.5 in)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(408, 528)"
+                  >
+                    Letter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'qr-codes' }"
+            id="v-pills-qr-codes"
+            role="tabpanel"
+            aria-labelledby="v-pills-qr-codes-tab"
+          >
+            Qr code content
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'tables' }"
+            id="v-pills-tables"
+            role="tabpanel"
+            aria-labelledby="v-pills-tables-tab"
+          >
+            Table content
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'design-color' }"
+            id="v-pills-design-color"
+            role="tabpanel"
+            aria-labelledby="v-pills-design-color-tab"
+          >
+            <div class="card">
+              <div class="card-header">Templates</div>
+              <div class="card-body">
+                <div class="row w-100">
+                  <!-- Loop through image templates -->
+                  <div
+                    class="col-4 w-100 mb-3"
+                    *ngFor="let template of prebuiltTemplates"
+                    (click)="loadImageTemplate(template)"
+                    style="cursor: pointer"
+                  >
+                    <!-- Image template -->
+                    <div
+                      class="template-thumbnail"
+                      style="
+                        border: 1px solid #ddd;
+                        padding: 5px;
+                        border-radius: 5px;
+                      "
+                    >
+                      <img
+                        [src]="template.image"
+                        alt="Template"
+                        class="img-fluid w-100"
+                        style="
+                          border-radius: 5px;
+                          max-height: 100px;
+                          object-fit: cover;
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'background' }"
+            id="v-pills-background"
+            role="tabpanel"
+            aria-labelledby="v-pills-background-tab"
+          >
+            <div class="card" *ngIf="!canvas.selected">
+              <div class="card-header">Canvas</div>
+              <div class="card-body p-2">
+                <div class="custom-item" *ngIf="!canvas.props.canvasImage">
+                  <div class="custom-item-title">Background Color</div>
+                  <div class="custom-item-body">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [cpPosition]="'bottom'"
+                      [(colorPicker)]="canvas.props.canvasFill"
+                      [style.background]="canvas.props.canvasFill"
+                      [value]="canvas.props.canvasFill"
+                      (colorPickerChange)="setCanvasFill()"
+                    />
+                  </div>
+                </div>
+                <div class="custom-item">
+                  <div class="custom-item-title">Background Image (url)</div>
+                  <div class="custom-item-body">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="http://example.jpg"
+                      [(ngModel)]="canvas.props.canvasImage"
+                      (keyup)="setCanvasImage()"
+                    />
+                  </div>
+                </div>
+                <div class="custom-item" *ngIf="!canvas.props.canvasImage">
+                  <div class="custom-item-title">Object Background</div>
+                  <div class="custom-item-body">
+                    <input
+                      type="color"
+                      class="form-control"
+                      (change)="onObjectColorChange($event)"
+                      value="#efefef"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
-    
-    
-            
-            <br/>
-            <div class="card">
-                <div class="card-header">Add images</div>
-                <div class="card-body max-height">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/bird.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/branch.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/candy-stick.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/cat-animal.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/christmas-ball.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/christmas-decorations.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/christmas-stocking.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/christmas-tree.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/christmas.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/envelope.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/hohoho.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/holly.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/letter.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/love.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/merry-christmas.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/mug.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/santa-claus.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/santa-hat.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/snow.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/snowman.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/wreath.png">
-                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/yes.png">
+
+    <div>
+      <!-- <div class="card">
+            <div class="card-header">Free Drawing Mode</div>
+            <div class="card-body p-2">
+                <div class="input-group">
+
+                    <div class="input-group-append">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" checked id="customSwitch1" (click)="drawMode()">
+                        <label class="custom-control-label" for="customSwitch1">Enable / Disable</label>
+                      </div> -->
+      <!-- <span class="input-group-text">
+
+                             <button id="add-text" data-toggle="tooltip" data-placement="bottom" title="Drawing Mode" class="btn btn-primary" (click)="drawMode()">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </span> -->
+      <!-- </div>
                 </div>
             </div>
-            <br/>
-            <div class="card">
-                <div class="card-header">Upload image</div>
-                <div class="card-body text-center">
-                    <img id="testImage" *ngIf="canvas.url" class="images-item-upload" [src]="canvas.url" (click)="addImageOnCanvas(canvas.url);">
-                    <input type="file" (change)="readUrl($event);">
-                    <br/>
-                    <br/>
-                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.url);">
-                                <i class="fa fa-times" aria-hidden="true"></i> Remove</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div class="card">
-                <div class="card-header">Add figure</div>
-                <div class="card-body text-center max-height">
-                    <div class="btn-group btn-group-vertical" role="group" aria-label="...">
-                        <button type="button" class="btn btn-primary" (click)="addFigure('rectangle');">Rectangle</button>
-                        <button type="button" class="btn btn-primary" (click)="addFigure('square');">Square</button>
-                        <button type="button" class="btn btn-primary" (click)="addFigure('triangle');">Triangle</button>
-                        <button type="button" class="btn btn-primary" (click)="addFigure('circle');">Circle</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-6">
-          <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
-        </div>
-        <div class="col-xl-3">
-            <div class="card">
-                <div class="card-header">Options</div>
-                <div class="card-body text-center">
-                    <div class="btn-group" role="group" aria-label="...">
-                        <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button" class="btn btn-outline-danger" 
-                            (click)="removeSelected();">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                        <button data-toggle="tooltip" data-placement="bottom" title="Send to back" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected"
-                            (click)="sendToBack();">
-                            <i class="fa fa-level-down" aria-hidden="true"></i>
-                        </button>
-                        <button data-toggle="tooltip" data-placement="bottom" title="Send to front" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected"
-                            (click)="bringToFront();">
-                            <i class="fa fa-level-up" aria-hidden="true"></i>
-                        </button>
-                        <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected || canvas.selected.type == 'group'"
-                            (click)="clone();">
-                            <i class="fa fa-clone" aria-hidden="true"></i>
-                        </button>
-                        <button data-toggle="tooltip" data-placement="bottom" title="Unselect" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected"
-                            (click)="cleanSelect()">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div class="card" *ngIf="!canvas.selected">
-                <div class="card-header">Canvas</div>
-                <div class="card-body">
-                    <div class="custom-item" *ngIf="!canvas.props.canvasImage">
-                        <div class="custom-item-title">Background Color</div>
-                        <div class="custom-item-body">
-                            <input type="text" class="form-control" [cpPosition]="'bottom'" [(colorPicker)]="canvas.props.canvasFill" [style.background]="canvas.props.canvasFill"
-                                [value]="canvas.props.canvasFill" (colorPickerChange)="setCanvasFill()">
-                        </div>
-                    </div>
-                    <div class="custom-item">
-                      <div class="custom-item-title">Background Image</div>
-                      <div class="custom-item-body">
-                        <!-- URL input for background -->
-                        <input
-                          type="text"
-                          class="form-control mb-2"
-                          placeholder="http://example.jpg"
-                          [(ngModel)]="canvas.props.canvasImage"
-                          (keyup)="setCanvasImageFromURL()"
-                        />
-                    
-                        <!-- File input for uploading background -->
-                        <input
-                          type="file"
-                          class="form-control mb-2"
-                          (change)="uploadBackgroundImage($event)"
-                          accept="image/*"
-                        />
-                    
-                        <!-- Sliders to control scaling -->
-                        <label>Scale X:</label>
-                        <input
-                          type="range"
-                          min="0.1"
-                          max="5"
-                          step="0.1"
-                          [(ngModel)]="backgroundScaleX"
-                          (input)="updateBackgroundTransform()"
-                        />
-                        <label>Scale Y:</label>
-                        <input
-                          type="range"
-                          min="0.1"
-                          max="5"
-                          step="0.1"
-                          [(ngModel)]="backgroundScaleY"
-                          (input)="updateBackgroundTransform()"
-                        />
-                    
-                        <!-- Sliders to control position -->
-                        <label>Position X:</label>
-                        <input
-                          type="range"
-                          min="-500"
-                          max="500"
-                          step="1"
-                          [(ngModel)]="backgroundPositionX"
-                          (input)="updateBackgroundTransform()"
-                        />
-                        <label>Position Y:</label>
-                        <input
-                          type="range"
-                          min="-500"
-                          max="500"
-                          step="1"
-                          [(ngModel)]="backgroundPositionY"
-                          (input)="updateBackgroundTransform()"
-                        />
-                      </div>
-                    </div>
-                    
-                    
-                    
-                    <!-- <div class="custom-item">
-                      <div class="custom-item-title">Upload Background Image</div>
-                          <div class="custom-item-body">
-                              <div class="card-body text-center">
-                                  <img id="testImage" *ngIf="canvas.bgUrl" class="images-item-upload" [src]="canvas.bgUrl">
-                                  <input type="file" (change)="readBgUrl($event);">
-                                  <br/>
-                                  <br/>
-                                  <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                                      <div class="btn-group" role="group">
-                                          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.bgUrl);">
-                                              <i class="fa fa-times" aria-hidden="true"></i> Remove Background</button>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                    </div> -->
-                    <div class="custom-item" *ngIf="!canvas.props.canvasImage">
-                      <div class="custom-item-title">Object Background</div>
-                      <div class="custom-item-body">
-                          <input type="color" class="form-control" (change)="onObjectColorChange($event)" value="#efefef">
-                      </div>
-                    </div>
-                </div>
-            </div>
-            <br/>
-          <!-- <div class="card">
-                <div class="card-header">Custom</div>
-                <div class="card-body">
-                    <div class="custom-item" *ngIf="canvas.selected  && canvas.selected.type == 'group'">Group Selected</div>
-                    <div class="custom-item" *ngIf="!canvas.selected">No items selected</div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.selected.type != 'group'">
-                        <div class="custom-item-title">ID</div>
-                        <div class="custom-item-body">
-                            <input type="text" class="form-control" [(ngModel)]="canvas.props.id" (keyup)="setId()">
-                        </div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.selected.type != 'group'">
-                        <div class="custom-item-title">Opacity</div>
-                        <div class="custom-item-body">
-                            <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">{{canvas.props.opacity}}</div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor || canvas.selected && canvas.figureEditor">
-                        <div class="custom-item-title">Fill</div>
-                        <div class="custom-item-body">
-                            <input type="text" class="form-control" [cpPosition]="'bottom'" [(colorPicker)]="canvas.props.fill" [style.background]="canvas.props.fill"
-                                [value]="canvas.props.fill" (colorPickerChange)="setFill()">
-                        </div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-                        <div class="custom-item-title">Font family</div>
-                        <div class="custom-item-body">
-                            <select [(ngModel)]="canvas.props.fontFamily" class="form-control" (change)="setFontFamily()">
-                                <option value="arial">Arial</option>
-                                <option value="helvetica" selected>Helvetica</option>
-                                <option value="verdana">Verdana</option>
-                                <option value="courier">Courier</option>
-                                <option value="Roboto">Roboto</option>
-                                <option value="Open Sans">Open Sans</option>
-                                <option value="Zilla Slab">Zilla Slab</option>
-                                <option value="Lato">Lato</option>
-                                <option value="Bellefair">Bellefair</option>
-                                <option value="Fresca">Fresca</option>
-                                <option value="Raleway">Raleway</option>
-                                <option value="Open Sans Condensed">Open Sans Condensed</option>
-                                <option value="Indie Flower">Indie Flower</option>
-                                <option value="Josefin Sans">Josefin Sans</option>
-                                <option value="Inconsolata">Inconsolata</option>
-                                <option value="Pacifico">Pacifico</option>
-                                <option value="Gloria Hallelujah">Gloria Hallelujah</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-                        <div class="custom-item-title">Text Align</div>
-                        <div class="custom-item-body text-center">
-                            <div class="btn-group" role="group" aria-label="...">
-                                <button type="button" class="btn btn-primary" [ngClass]="{'active': canvas.props.textAlign == 'left' }" (click)="setTextAlign('left')">
-                                    <i class="fa fa-align-left"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary" [ngClass]="{'active': canvas.props.textAlign == 'center' }" (click)="setTextAlign('center')">
-                                    <i class="fa fa-align-center"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary" [ngClass]="{'active': canvas.props.textAlign == 'right' }" (click)="setTextAlign('right')">
-                                    <i class="fa fa-align-right"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary" [ngClass]="{'active': canvas.props.textAlign == 'justify' }" (click)="setTextAlign('justify')">
-                                    <i class="fa fa-align-justify"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-                        <div class="custom-item-title">Style</div>
-                        <div class="custom-item-body text-center">
-                            <div class="btn-group" role="group" aria-label="...">
-                                <button type="button" class="btn btn-primary btn-sm" [ngClass]="{'active': canvas.props.fontWeight }" (click)="setBold()">
-                                    <i class="fa fa-bold"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" [ngClass]="{'active': canvas.props.fontStyle }" (click)="setFontStyle()">
-                                    <i class="fa fa-italic"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" [ngClass]="{'active': hasTextDecoration('underline') }"
-                                    (click)="setTextDecoration('underline')">
-                                    <i class="fa fa-underline"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" [ngClass]="{'active': hasTextDecoration('overline') }"
-                                    (click)="setTextDecoration('overline')">
-                                    <i class="fa fa-underline fa-flip-vertical"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" [ngClass]="{'active': hasTextDecoration('line-through') }"
-                                    (click)="setTextDecoration('line-through')">
-                                    <i class="fa fa-strikethrough"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-                        <div class="custom-item-title">Font Size</div>
-                        <div class="custom-item-body">
-                            <input type="range" [(ngModel)]="canvas.props.fontSize" (change)="setFontSize()" step="1" min="1" max="120">{{canvas.props.fontSize}}</div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-                        <div class="custom-item-title">Line Height</div>
-                        <div class="custom-item-body">
-                            <input type="range" [(ngModel)]="canvas.props.lineHeight" (change)="setLineHeight()" step="0.1" min="0" max="10">{{canvas.props.lineHeight}}</div>
-                    </div>
-                    <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-                        <div class="custom-item-title">Char Spacing</div>
-                        <div class="custom-item-body">
-                            <input type="range" [(ngModel)]="canvas.props.charSpacing" (change)="setCharSpacing()" step="10" min="-200" max="800">{{canvas.props.charSpacing}}</div>
-                    </div>
-                </div>
           </div> -->
-        </div>
     </div>
-    <!-- <div class="row">
-        <div class="col-xl-12">
-            <br/>
-            <div class="card">
-                <div class="card-header">
-                    <button type="button" class="btn btn-primary btn-sm" (click)="rasterizeJSON()">
-                        <i class="fa fa-refresh" aria-hidden="true"></i> Render to json</button>
-                </div>
-                <div class="card-body">
-                    <pre>{{canvas.json}}</pre>
-                </div>
-            </div>
+
+    <!-- canvas sectiion -->
+    <div class="col-xl-6 p-0">
+      <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
+    </div>
+
+    <div class="col-xl-2 p-0">
+      <div class="card">
+        <div class="card-header">Options</div>
+        <div class="card-body p-2 text-center">
+          <div class="btn-group" role="group" aria-label="...">
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Delete element"
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="removeSelected()"
+            >
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Send to back"
+              type="button"
+              class="btn btn-outline-primary"
+              [disabled]="!canvas.selected"
+              (click)="sendToBack()"
+            >
+              <i class="fa fa-level-down" aria-hidden="true"></i>
+            </button>
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Send to front"
+              type="button"
+              class="btn btn-outline-primary"
+              [disabled]="!canvas.selected"
+              (click)="bringToFront()"
+            >
+              <i class="fa fa-level-up" aria-hidden="true"></i>
+            </button>
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Clone"
+              type="button"
+              class="btn btn-outline-primary"
+              [disabled]="!canvas.selected || canvas.selected.type == 'group'"
+              (click)="clone()"
+            >
+              <i class="fa fa-clone" aria-hidden="true"></i>
+            </button>
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Unselect"
+              type="button"
+              class="btn btn-outline-primary"
+              [disabled]="!canvas.selected"
+              (click)="cleanSelect()"
+            >
+              <i class="fa fa-remove" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-    </div> -->
-    <br>
-    <br>
+      </div>
+
+      <br />
+      <div class="card">
+        <div class="card-header">Custom</div>
+        <div class="card-body p-2">
+          <div
+            class="custom-item"
+            *ngIf="canvas.selected && canvas.selected.type == 'group'"
+          >
+            Group Selected
+          </div>
+          <div class="custom-item" *ngIf="!canvas.selected">
+            No items selected
+          </div>
+          <div
+            class="custom-item"
+            *ngIf="canvas.selected && canvas.selected.type != 'group'"
+          >
+            <div class="custom-item-title">ID</div>
+            <div class="custom-item-body">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="canvas.props.id"
+                (keyup)="setId()"
+              />
+            </div>
+          </div>
+          <div
+            class="custom-item"
+            *ngIf="canvas.selected && canvas.selected.type != 'group'"
+          >
+            <div class="custom-item-title">Opacity</div>
+            <div class="custom-item-body">
+              <input
+                type="range"
+                [(ngModel)]="canvas.props.opacity"
+                (change)="setOpacity()"
+              />{{ canvas.props.opacity }}
+            </div>
+          </div>
+          <div
+            class="custom-item"
+            *ngIf="
+              (canvas.selected && canvas.textEditor) ||
+              (canvas.selected && canvas.figureEditor)
+            "
+          >
+            <div class="custom-item-title">Fill</div>
+            <div class="custom-item-body">
+              <input
+                type="text"
+                class="form-control"
+                [cpPosition]="'bottom'"
+                [(colorPicker)]="canvas.props.fill"
+                [style.background]="canvas.props.fill"
+                [value]="canvas.props.fill"
+                (colorPickerChange)="setFill()"
+              />
+            </div>
+          </div>
+          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+            <div class="custom-item-title">Font family</div>
+            <div class="custom-item-body">
+              <select
+                [(ngModel)]="canvas.props.fontFamily"
+                class="form-control"
+                (change)="setFontFamily()"
+              >
+                <option value="arial">Arial</option>
+                <option value="helvetica" selected>Helvetica</option>
+                <option value="verdana">Verdana</option>
+                <option value="courier">Courier</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Open Sans">Open Sans</option>
+                <option value="Zilla Slab">Zilla Slab</option>
+                <option value="Lato">Lato</option>
+                <option value="Bellefair">Bellefair</option>
+                <option value="Fresca">Fresca</option>
+                <option value="Raleway">Raleway</option>
+                <option value="Open Sans Condensed">Open Sans Condensed</option>
+                <option value="Indie Flower">Indie Flower</option>
+                <option value="Josefin Sans">Josefin Sans</option>
+                <option value="Inconsolata">Inconsolata</option>
+                <option value="Pacifico">Pacifico</option>
+                <option value="Gloria Hallelujah">Gloria Hallelujah</option>
+              </select>
+            </div>
+          </div>
+          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+            <div class="custom-item-title">Text Align</div>
+            <div class="custom-item-body text-center">
+              <div class="btn-group" role="group" aria-label="...">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [ngClass]="{ active: canvas.props.textAlign == 'left' }"
+                  (click)="setTextAlign('left')"
+                >
+                  <i class="fa fa-align-left"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [ngClass]="{ active: canvas.props.textAlign == 'center' }"
+                  (click)="setTextAlign('center')"
+                >
+                  <i class="fa fa-align-center"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [ngClass]="{ active: canvas.props.textAlign == 'right' }"
+                  (click)="setTextAlign('right')"
+                >
+                  <i class="fa fa-align-right"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [ngClass]="{ active: canvas.props.textAlign == 'justify' }"
+                  (click)="setTextAlign('justify')"
+                >
+                  <i class="fa fa-align-justify"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+            <div class="custom-item-title">Style</div>
+            <div class="custom-item-body text-center">
+              <div class="btn-group" role="group" aria-label="...">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [ngClass]="{ active: canvas.props.fontWeight }"
+                  (click)="setBold()"
+                >
+                  <i class="fa fa-bold"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [ngClass]="{ active: canvas.props.fontStyle }"
+                  (click)="setFontStyle()"
+                >
+                  <i class="fa fa-italic"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [ngClass]="{ active: hasTextDecoration('underline') }"
+                  (click)="setTextDecoration('underline')"
+                >
+                  <i class="fa fa-underline"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [ngClass]="{ active: hasTextDecoration('overline') }"
+                  (click)="setTextDecoration('overline')"
+                >
+                  <i class="fa fa-underline fa-flip-vertical"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  [ngClass]="{ active: hasTextDecoration('line-through') }"
+                  (click)="setTextDecoration('line-through')"
+                >
+                  <i class="fa fa-strikethrough"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+            <div class="custom-item-title">Font Size</div>
+            <div class="custom-item-body">
+              <input
+                type="range"
+                [(ngModel)]="canvas.props.fontSize"
+                (change)="setFontSize()"
+                step="1"
+                min="1"
+                max="120"
+              />{{ canvas.props.fontSize }}
+            </div>
+          </div>
+          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+            <div class="custom-item-title">Line Height</div>
+            <div class="custom-item-body">
+              <input
+                type="range"
+                [(ngModel)]="canvas.props.lineHeight"
+                (change)="setLineHeight()"
+                step="0.1"
+                min="0"
+                max="10"
+              />{{ canvas.props.lineHeight }}
+            </div>
+          </div>
+          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+            <div class="custom-item-title">Char Spacing</div>
+            <div class="custom-item-body">
+              <input
+                type="range"
+                [(ngModel)]="canvas.props.charSpacing"
+                (change)="setCharSpacing()"
+                step="10"
+                min="-200"
+                max="800"
+              />{{ canvas.props.charSpacing }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  
+
+  <!-- <div class="row w-100">
+      <div class="col-xl-12">
+          <br/>
+          <div class="card">
+              <div class="card-header">
+                  <button type="button" class="btn btn-primary btn-sm" (click)="rasterizeJSON()">
+                      <i class="fa fa-refresh" aria-hidden="true"></i> Render to json</button>
+              </div>
+              <div class="card-body p-2">
+                  <pre>{{canvas.json}}</pre>
+              </div>
+          </div>
+      </div>
+  </div> -->
+
+  <br />
+  <br />
+</div>
