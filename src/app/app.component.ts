@@ -401,9 +401,9 @@ selectedFontSize: number = 24; // Default font size
     this.canvas.confirmClear();
   }
 
-  public changeBleedSize() {
-    this.canvas.changeBleedSize();
-  }
+  // public changeBleedSize() {
+  //   this.canvas.changeBleedSize();
+  // }
 
   public changeSizeWithMeasures(height: number, width: number) {
     this.canvas.changeSizeWithMeasures(height, width);

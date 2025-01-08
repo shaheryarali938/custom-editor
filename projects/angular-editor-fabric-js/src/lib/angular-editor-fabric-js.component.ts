@@ -715,6 +715,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
   confirmClear() {
     if (confirm('Are you sure?')) {
       this.canvas.clear();
+      this.addDashedSafetyArea();
     }
   }
 
