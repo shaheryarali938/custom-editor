@@ -225,6 +225,7 @@
             </div>
             <span>tables</span>
           </button>
+
           <button
             class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
             [ngClass]="{ active: activeTab === 'design-color' }"
@@ -252,6 +253,7 @@
             </div>
             <span>design</span>
           </button>
+
           <button
             class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
             [ngClass]="{ active: activeTab === 'background' }"
@@ -507,6 +509,24 @@
                 </div>
               </div>
             </div>
+            <div class="card">
+              <div class="card-header">Safety Area</div>
+              <div class="card-body p-2">
+                <div class="form-group">
+                  <div class="input-group mb-3">
+                    <input
+                      type="number"
+                      class="form-control"
+                      [(ngModel)]="canvas.size.bleed"
+                      (keyup)="changeBleedSize()"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text"> Bleed </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div
@@ -563,6 +583,7 @@
               </div>
             </div>
           </div>
+
           <div
             class="tab-pane fade"
             [ngClass]="{ 'show active': activeTab === 'graphics' }"
@@ -647,24 +668,7 @@
             role="tabpanel"
             aria-labelledby="v-pills-qr-codes-tab"
           >
-            <div class="card">
-              <div class="card-header">Safety Area</div>
-              <div class="card-body p-2">
-                <div class="form-group">
-                  <div class="input-group mb-3">
-                    <input
-                      type="number"
-                      class="form-control"
-                      [(ngModel)]="canvas.size.bleed"
-                      (keyup)="changeBleedSize()"
-                    />
-                    <div class="input-group-append">
-                      <span class="input-group-text"> Bleed </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            Qr code content
           </div>
 
           <div
@@ -673,6 +677,16 @@
             id="v-pills-tables"
             role="tabpanel"
             aria-labelledby="v-pills-tables-tab"
+          >
+            Table content
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'design-color' }"
+            id="v-pills-design-color"
+            role="tabpanel"
+            aria-labelledby="v-pills-design-color-tab"
           >
             <div class="card">
               <div class="card-header">Templates</div>
@@ -710,14 +724,14 @@
               </div>
             </div>
           </div>
+
           <div
             class="tab-pane fade"
-            [ngClass]="{ 'show active': activeTab === 'design-color' }"
-            id="v-pills-design-color"
+            [ngClass]="{ 'show active': activeTab === 'background' }"
+            id="v-pills-background"
             role="tabpanel"
-            aria-labelledby="v-pills-design-color-tab"
+            aria-labelledby="v-pills-background-tab"
           >
-            <br />
             <div class="card" *ngIf="!canvas.selected">
               <div class="card-header">Canvas</div>
               <div class="card-body p-2">
@@ -760,15 +774,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            class="tab-pane fade"
-            [ngClass]="{ 'show active': activeTab === 'background' }"
-            id="v-pills-background"
-            role="tabpanel"
-            aria-labelledby="v-pills-background-tab"
-          >
-            background Content
           </div>
         </div>
       </div>
