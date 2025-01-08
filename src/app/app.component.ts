@@ -8,7 +8,7 @@ import { fabric } from 'fabric';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  fontSizes: number[] = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64];
+ fontSizes: number[] = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64];
 selectedFontSize: number = 24; // Default font size
 
   title = 'angular-editor-fabric-js';
