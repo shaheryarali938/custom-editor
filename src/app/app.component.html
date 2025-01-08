@@ -632,29 +632,137 @@
             </div>
             <div class="card">
               <div class="card-header">Products</div>
-              <div class="card-body p-2">
+              <div class="card-body">
                 <div class="col-xl-3 text-right">
                   <button
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    title="Post Card (2x) (6 in x 4 in)"
+                    title="4' x 6' (92 DPI)"
                     type="button"
                     class="btn btn-primary m-1"
-                    (click)="changeSizeWithMeasures(591, 399)"
+                    (click)="changeSizeWithMeasures(367, 550)"
                   >
-                    Post Card (2x)
+                    Standard Postcard
                   </button>
                 </div>
                 <div class="col-xl-3 text-right">
                   <button
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    title="Letter (4.25 in x 5.5 in)"
+                    title="5' x 7' (110 DPI)"
                     type="button"
                     class="btn btn-primary m-1"
-                    (click)="changeSizeWithMeasures(408, 528)"
+                    (click)="changeSizeWithMeasures(385, 550)"
                   >
-                    Letter
+                    Large Postcard
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="4' x 9' (61 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(244, 550)"
+                  >
+                    Panoramic Postcard
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="5' x 5' (110 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(550, 550)"
+                  >
+                    Square Postcard
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="8.5' x 11' (65 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(711, 550)"
+                  >
+                    US Letter
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="8.27' x 11.69' (66 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(778, 550)"
+                  >
+                    A4 Letter
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="8.5' x 14' (65 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(906, 550)"
+                  >
+                    Legal Letter
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="5.5' x 8.5' (100 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(425, 550)"
+                  >
+                    Half Letter
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="4.33' x 8.66' (127 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(275, 550)"
+                  >
+                    DL Size (Envelope)
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="6' x 11' (50 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(300, 550)"
+                  >
+                    Jumbo Postcard
+                  </button>
+                </div>
+                <div class="col-xl-3 text-right">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="4.13' x 5.83' (133 DPI)"
+                    type="button"
+                    class="btn btn-primary m-1"
+                    (click)="changeSizeWithMeasures(387, 550)"
+                  >
+                    A6 Postcard
                   </button>
                 </div>
               </div>
@@ -734,7 +842,7 @@
           >
             <div class="card" *ngIf="!canvas.selected">
               <div class="card-header">Canvas</div>
-              <div class="card-body p-2">
+              <div class="card-body">
                 <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                   <div class="custom-item-title">Background Color</div>
                   <div class="custom-item-body">
@@ -750,17 +858,93 @@
                   </div>
                 </div>
                 <div class="custom-item">
-                  <div class="custom-item-title">Background Image (url)</div>
+                  <div class="custom-item-title">Background Image</div>
                   <div class="custom-item-body">
+                    <!-- URL input for background -->
                     <input
                       type="text"
-                      class="form-control"
+                      class="form-control mb-2"
                       placeholder="http://example.jpg"
                       [(ngModel)]="canvas.props.canvasImage"
-                      (keyup)="setCanvasImage()"
+                      (keyup)="setCanvasImageFromURL()"
                     />
+
+                    <!-- File input for uploading background -->
+                    <input
+                      type="file"
+                      class="form-control mb-2"
+                      (change)="uploadBackgroundImage($event)"
+                      accept="image/*"
+                    />
+
+                    <!-- Sliders to control scaling -->
+                    <div class="d-flex align-items-center">
+                      <label>Scale X:</label>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.1"
+                        [(ngModel)]="backgroundScaleX"
+                        (input)="updateBackgroundTransform()"
+                      />
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <label>Scale Y:</label>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.1"
+                        [(ngModel)]="backgroundScaleY"
+                        (input)="updateBackgroundTransform()"
+                      />
+                    </div>
+
+                    <!-- Sliders to control position -->
+                    <div class="d-flex align-items-center">
+                      <label>Position X:</label>
+                      <input
+                        type="range"
+                        min="-500"
+                        max="500"
+                        step="1"
+                        [(ngModel)]="backgroundPositionX"
+                        (input)="updateBackgroundTransform()"
+                      />
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                      <label>Position Y:</label>
+                      <input
+                        type="range"
+                        min="-500"
+                        max="500"
+                        step="1"
+                        [(ngModel)]="backgroundPositionY"
+                        (input)="updateBackgroundTransform()"
+                      />
+                    </div>
                   </div>
                 </div>
+
+                <!-- <div class="custom-item">
+                      <div class="custom-item-title">Upload Background Image</div>
+                          <div class="custom-item-body">
+                              <div class="card-body text-center">
+                                  <img id="testImage" *ngIf="canvas.bgUrl" class="images-item-upload" [src]="canvas.bgUrl">
+                                  <input type="file" (change)="readBgUrl($event);">
+                                  <br/>
+                                  <br/>
+                                  <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                      <div class="btn-group" role="group">
+                                          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.bgUrl);">
+                                              <i class="fa fa-times" aria-hidden="true"></i> Remove Background</button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                    </div> -->
                 <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                   <div class="custom-item-title">Object Background</div>
                   <div class="custom-item-body">
