@@ -11,7 +11,7 @@
             data-placement="bottom"
             title="Export to image"
             type="button"
-            class="btn btn-primary m-1"
+            class="btn btn-yellow m-1"
             (click)="rasterize()"
           >
             <i class="fa fa-download" aria-hidden="true"></i> Export to image
@@ -21,7 +21,7 @@
             data-placement="bottom"
             title="Export to SVG"
             type="button"
-            class="btn btn-primary m-1"
+            class="btn btn-yellow m-1"
             (click)="rasterizeSVG()"
           >
             <i class="fa fa-download" aria-hidden="true"></i> Export to SVG
@@ -31,7 +31,7 @@
             data-placement="bottom"
             title="Export to HTML"
             type="button"
-            class="btn btn-primary m-1"
+            class="btn btn-yellow m-1"
             (click)="exportToHtml()"
           >
             <i class="fa fa-download" aria-hidden="true"></i> Export to HTML
@@ -41,7 +41,7 @@
             data-placement="bottom"
             title="Save in localStorage"
             type="button"
-            class="btn btn-primary m-1"
+            class="btn btn-yellow m-1"
             (click)="saveCanvasToJSON()"
           >
             <i class="fa fa-save" aria-hidden="true"></i> Save local
@@ -51,7 +51,7 @@
             data-placement="bottom"
             title="Load from localStorage"
             type="button"
-            class="btn btn-primary m-1"
+            class="btn btn-yellow m-1"
             (click)="loadCanvasFromJSON()"
           >
             <i class="fa fa-save" aria-hidden="true"></i> Load local
@@ -81,7 +81,7 @@
           aria-orientation="vertical"
         >
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'text' }"
             id="v-pills-text-tab"
             (click)="setActiveTab('text')"
@@ -90,12 +90,34 @@
             aria-controls="v-pills-text"
             [attr.aria-selected]="activeTab === 'text'"
           >
-            <span class="display-5">Aa</span>
+            <svg
+              width="26"
+              height="20"
+              viewBox="0 0 26 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M7.36684 0C7.7281 0 8.05147 0.224094 8.17831 0.562355L12.3963 11.8102C12.4012 11.8226 12.406 11.8352 12.4104 11.8479L14.6783 17.8955C14.8463 18.3437 14.6192 18.8433 14.1711 19.0113C13.7229 19.1794 13.2234 18.9523 13.0553 18.5041L10.9912 12.9999H3.74247L1.67837 18.5041C1.51031 18.9523 1.01076 19.1794 0.56259 19.0113C0.114423 18.8433 -0.112647 18.3437 0.0554158 17.8955L2.32329 11.8479C2.32771 11.8352 2.33242 11.8226 2.33741 11.8102L6.55536 0.562355C6.6822 0.224094 7.00557 0 7.36684 0ZM4.39246 11.2666H10.3412L7.36684 3.3349L4.39246 11.2666ZM20.8 6.93327C19.3535 6.93327 18.1111 7.7776 17.5894 9.0055C17.4022 9.44603 16.8934 9.65141 16.4528 9.46423C16.0123 9.27706 15.8069 8.76821 15.9941 8.32768C16.793 6.44752 18.6716 5.19995 20.8 5.19995C22.2503 5.19995 23.5589 5.70722 24.5084 6.64005C25.4602 7.57516 26 8.88792 26 10.3999V18.1998C26 18.6785 25.612 19.0665 25.1333 19.0665C24.6547 19.0665 24.2667 18.6785 24.2667 18.1998V10.3999C24.2667 9.31191 23.8856 8.45803 23.2937 7.87649C22.6994 7.29266 21.8414 6.93327 20.8 6.93327Z"
+                fill="#1E1E1E"
+                fill-opacity="0.8"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M20.0488 11.11C21.9368 10.8879 24.0321 10.8332 25.1333 10.8332C25.612 10.8332 26 11.2212 26 11.6999V12.5124C26 14.8226 25.3221 16.5203 24.1055 17.6285C22.9043 18.7228 21.3106 19.1206 19.7167 19.1206C18.6292 19.1206 17.5987 18.7586 16.8315 18.0519C16.0556 17.3373 15.6001 16.3162 15.6001 15.1123C15.6001 13.7446 16.2395 12.7599 17.1417 12.1206C18.0048 11.5091 19.0858 11.2234 20.0487 11.11L20.0488 11.11ZM20.2513 12.8314C19.4392 12.9271 18.6786 13.156 18.1438 13.5349C17.6482 13.8861 17.3334 14.3676 17.3334 15.1123C17.3334 15.8585 17.6054 16.4082 18.0057 16.7769C18.4147 17.1536 19.0092 17.3873 19.7167 17.3873C21.0478 17.3873 22.1624 17.054 22.9383 16.3472C23.6905 15.6619 24.2543 14.5066 24.2665 12.5762C23.1552 12.5993 21.6361 12.6685 20.2514 12.8314"
+                fill="#1E1E1E"
+                fill-opacity="0.8"
+              />
+            </svg>
+
             <span>Text</span>
           </button>
 
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'images' }"
             id="v-pills-images-tab"
             (click)="setActiveTab('images')"
@@ -143,7 +165,7 @@
           </button>
 
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'graphics' }"
             id="v-pills-graphics-tab"
             (click)="setActiveTab('graphics')"
@@ -171,7 +193,7 @@
           </button>
           <!--
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'qr-codes' }"
             id="v-pills-qr-codes-tab"
             (click)="setActiveTab('qr-codes')"
@@ -200,7 +222,7 @@
 
           <!--
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'tables' }"
             id="v-pills-tables-tab"
             (click)="setActiveTab('tables')"
@@ -228,7 +250,7 @@
           </button>-->
 
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'design-color' }"
             id="v-pills-design-color-tab"
             (click)="setActiveTab('design-color')"
@@ -256,7 +278,7 @@
           </button>
 
           <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2"
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
             [ngClass]="{ active: activeTab === 'background' }"
             id="v-pills-background-tab"
             (click)="setActiveTab('background')"
@@ -283,7 +305,7 @@
             <span>background</span>
           </button>
         </div>
-        <div class="tab-content w-100 p-2" id="v-pills-tabContent">
+        <div class="tab-content w-100 px-2" id="v-pills-tabContent">
           <div
             class="tab-pane fade w-100"
             [ngClass]="{ 'show active': activeTab === 'text' }"
@@ -291,9 +313,9 @@
             role="tabpanel"
             aria-labelledby="v-pills-text-tab"
           >
-            <div class="card">
-              <div class="card-header">Add Text</div>
-              <div class="card-body p-2">
+            <div class="card mb-2">
+              <div class="card-header bg-yellow">Add Text</div>
+              <div class="card-body p-2 bg-light-gray">
                 <!-- Input for entering text -->
                 <div class="input-group">
                   <input
@@ -483,14 +505,14 @@
                 <!-- Buttons for bold and italic -->
                 <div class="btn-group mt-2" role="group">
                   <button
-                    class="btn btn-secondary"
+                    class="btn bg-text mr-2"
                     [ngClass]="{ active: isBold }"
                     (click)="toggleBold()"
                   >
                     <i class="fa fa-bold"></i> Bold
                   </button>
                   <button
-                    class="btn btn-secondary"
+                    class="btn bg-text"
                     [ngClass]="{ active: isItalic }"
                     (click)="toggleItalic()"
                   >
@@ -502,7 +524,7 @@
                 <div class="input-group mt-2">
                   <button
                     id="add-text"
-                    class="btn btn-primary w-100"
+                    class="btn btn-yellow w-100"
                     (click)="addText()"
                   >
                     <i class="fa fa-plus"></i> Add Text
@@ -511,8 +533,8 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-header">Safety Area</div>
-              <div class="card-body p-2">
+              <div class="card-header bg-yellow">Safety Area</div>
+              <div class="card-body p-2 bg-light-gray">
                 <div class="form-group">
                   <div class="input-group mb-3">
                     <input
@@ -538,7 +560,7 @@
             aria-labelledby="v-pills-images-tab"
           >
             <div class="card max-height">
-              <div class="card-header">Add images</div>
+              <div class="card-header bg-yellow">Add images</div>
               <div class="card-body p-2 w-100 row w-100">
                 <div class="col-4 p-2" *ngFor="let img of images">
                   <div class="image-container">
@@ -554,7 +576,7 @@
             </div>
             <br />
             <div class="card">
-              <div class="card-header">Upload image</div>
+              <div class="card-header bg-yellow">Upload image</div>
               <div class="card-body p-2 text-center">
                 <img
                   id="testImage"
@@ -592,8 +614,8 @@
             role="tabpanel"
             aria-labelledby="v-pills-graphics-tab"
           >
-            <div class="card">
-              <div class="card-header">Add figure</div>
+            <div class="card mb-2">
+              <div class="card-header bg-yellow">Add figure</div>
               <div class="card-body p-2 text-center max-height">
                 <div
                   class="btn-group btn-group-vertical"
@@ -632,7 +654,7 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-header">Products</div>
+              <div class="card-header bg-yellow">Products</div>
               <div class="card-body row p-0">
                 <div class="col-xl-6">
                   <button
@@ -798,7 +820,7 @@
             aria-labelledby="v-pills-design-color-tab"
           >
             <div class="card">
-              <div class="card-header">Templates</div>
+              <div class="card-header bg-yellow">Templates</div>
               <div class="card-body">
                 <div class="row w-100">
                   <!-- Loop through image templates -->
@@ -842,7 +864,7 @@
             aria-labelledby="v-pills-background-tab"
           >
             <div class="card" *ngIf="!canvas.selected">
-              <div class="card-header">Canvas</div>
+              <div class="card-header bg-yellow">Canvas</div>
               <div class="card-body">
                 <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                   <div class="custom-item-title">Background Color</div>
@@ -994,8 +1016,8 @@
 
     <div class="col-xl-2 p-0">
       <div class="card">
-        <div class="card-header">Options</div>
-        <div class="card-body p-2 text-center">
+        <div class="card-header bg-yellow">Options</div>
+        <div class="card-body p-2 text-center bg-light-gray">
           <div class="btn-group" role="group" aria-label="...">
             <button
               data-toggle="tooltip"
