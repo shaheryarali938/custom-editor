@@ -55,7 +55,7 @@
 
 .max-height {
   overflow-y: auto;
-  max-height: 500px;
+  max-height: 65vh;
 
   /* Scrollbar styling for Firefox */
   scrollbar-width: thin;
@@ -103,5 +103,30 @@
   border-radius: 5px;
 }
 
+.nav-link.active{
+  background-color: rgb(250, 250, 91);
+  color: black;
+}
 
+.btn-yellow{
+  background-color: rgb(250, 250, 91);
+  color: black;
+}
 
+.bg-yellow{
+  background-color: rgb(250, 250, 91);
+  color: black;
+}
+
+.bg-light-gray{
+  background-color: #eeeeee;
+}
+
+.bg-text{
+  background-color: #c89eda;
+  border-radius: 6px !important;
+}
+
+.bg-text:hover{
+  background-color: #be7cda;
+}
