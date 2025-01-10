@@ -198,8 +198,13 @@ ngOnInit() {
   changeSizeWithMeasures(height: number, width: number) {
     this.canvas.setWidth(width);
     this.canvas.setHeight(height);
+  
+    // Add safety area after resizing
     this.addDashedSafetyArea();
+  
+    console.log(`Canvas resized to: Width=${width}, Height=${height}`);
   }
+  
 
   addDashedSafetyArea(): void {
     if (!this.size.bleed || this.size.bleed < 0) {

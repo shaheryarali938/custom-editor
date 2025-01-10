@@ -463,8 +463,15 @@ addText() {
   // }
 
   public changeSizeWithMeasures(height: number, width: number) {
+    // Clear the canvas before applying new size
+    this.canvas.getCanvas().clear();
+  
+    // Call the existing changeSizeWithMeasures function in fabric.ts
     this.canvas.changeSizeWithMeasures(height, width);
+  
+    console.log(`Canvas size changed to ${width}x${height}`);
   }
+  
 
   // public addText() {
   //   if (!this.canvas.textString) {
