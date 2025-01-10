@@ -163,6 +163,53 @@
 
             <span>Images</span>
           </button>
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+            [ngClass]="{ active: activeTab === 'product' }"
+            id="v-pills-product-tab"
+            (click)="setActiveTab('product')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-product"
+            [attr.aria-selected]="activeTab === 'product'"
+          >
+            <span
+              ><svg
+                width="26"
+                height="27"
+                viewBox="0 0 26 27"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M24.9027 10.4407C16.0894 9.23 8.48941 15.774 9.00008 24.454M5.66675 7.78733C5.66675 8.49458 5.9477 9.17285 6.4478 9.67295C6.94789 10.173 7.62617 10.454 8.33341 10.454C9.04066 10.454 9.71894 10.173 10.219 9.67295C10.7191 9.17285 11.0001 8.49458 11.0001 7.78733C11.0001 7.08009 10.7191 6.40181 10.219 5.90171C9.71894 5.40162 9.04066 5.12067 8.33341 5.12067C7.62617 5.12067 6.94789 5.40162 6.4478 5.90171C5.9477 6.40181 5.66675 7.08009 5.66675 7.78733Z"
+                  stroke="#1E1E1E"
+                  stroke-opacity="0.8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M1 14.542C4.70667 14.0287 8.03333 15.8193 9.832 18.6753"
+                  stroke="#1E1E1E"
+                  stroke-opacity="0.8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M1 9.65398C1 6.66732 1 5.17398 1.58133 4.03265C2.09265 3.02916 2.90851 2.2133 3.912 1.70198C5.05333 1.12065 6.54667 1.12065 9.53333 1.12065H16.4667C19.4533 1.12065 20.9467 1.12065 22.088 1.70198C23.0915 2.2133 23.9073 3.02916 24.4187 4.03265C25 5.17398 25 6.66732 25 9.65398V16.5873C25 19.574 25 21.0673 24.4187 22.2087C23.9073 23.2121 23.0915 24.028 22.088 24.5393C20.9467 25.1207 19.4533 25.1207 16.4667 25.1207H9.53333C6.54667 25.1207 5.05333 25.1207 3.912 24.5393C2.90851 24.028 2.09265 23.2121 1.58133 22.2087C1 21.0673 1 19.574 1 16.5873V9.65398Z"
+                  stroke="#1E1E1E"
+                  stroke-opacity="0.8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+
+            <span>product</span>
+          </button>
 
           <button
             class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
@@ -329,10 +376,11 @@
                 <!-- Dropdown for font selection (on a new line) -->
                 <div class="input-group mt-2">
                   <select
-                  class="form-control"
-                  [(ngModel)]="selectedFont"
-                  (change)="onFontFamilyChange()"
-                >                    <!-- Sans-serif Fonts -->
+                    class="form-control"
+                    [(ngModel)]="selectedFont"
+                    (change)="onFontFamilyChange()"
+                  >
+                    <!-- Sans-serif Fonts -->
                     <option value="Arial" style="font-family: Arial">
                       Arial
                     </option>
@@ -511,11 +559,11 @@
                     [(ngModel)]="selectedFontSize"
                     (change)="onFontSizeChange()"
                   >
-                    <option *ngFor="let size of fontSizes" [value]="size">{{ size }}px</option>
+                    <option *ngFor="let size of fontSizes" [value]="size">
+                      {{ size }}px
+                    </option>
                   </select>
                 </div>
-                
-                
 
                 <!-- Buttons for bold and italic -->
                 <div class="btn-group mt-2" role="group">
@@ -681,6 +729,24 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'qr-codes' }"
+            id="v-pills-qr-codes"
+            role="tabpanel"
+            aria-labelledby="v-pills-qr-codes-tab"
+          >
+            Qr code content
+          </div>
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'product' }"
+            id="v-pills-product"
+            role="tabpanel"
+            aria-labelledby="v-pills-product-tab"
+          >
             <div class="card">
               <div class="card-header bg-yellow">Products</div>
               <div class="card-body row p-0">
@@ -810,7 +876,7 @@
                     data-placement="bottom"
                     title="4.13' x 5.83' (133 DPI)"
                     type="button"
-                    class="btn btn-primary m-1"
+                    class="btn btn-primary m-1 w-100"
                     (click)="changeSizeWithMeasures(387, 550)"
                   >
                     A6 Postcard
@@ -818,16 +884,6 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <div
-            class="tab-pane fade"
-            [ngClass]="{ 'show active': activeTab === 'qr-codes' }"
-            id="v-pills-qr-codes"
-            role="tabpanel"
-            aria-labelledby="v-pills-qr-codes-tab"
-          >
-            Qr code content
           </div>
 
           <div
@@ -1069,17 +1125,16 @@
               <i class="fa fa-level-down" aria-hidden="true"></i>
             </button> -->
 
-
             <button
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title="Undo last change"
-            type="button"
-            class="btn btn-outline-primary"
-            (click)="sendToBack()"
-          >
-          <i class="fa fa-level-down" aria-hidden="true"></i>
-          </button>
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Undo last change"
+              type="button"
+              class="btn btn-outline-primary"
+              (click)="sendToBack()"
+            >
+              <i class="fa fa-level-down" aria-hidden="true"></i>
+            </button>
 
             <button
               data-toggle="tooltip"
