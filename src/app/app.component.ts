@@ -11,6 +11,25 @@ export class AppComponent implements OnInit {
  fontSizes: number[] = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64];
 selectedFontSize: number = 24; // Default font size
 
+
+// Add Text Method
+addText() {
+  if (!this.canvas.textString) return;
+
+  const text = new fabric.Textbox(this.canvas.textString, {
+    left: 100,
+    top: 100,
+    fontFamily: this.selectedFont,
+    fontWeight: this.selectedFontWeight,
+    fontStyle: this.isItalic ? 'italic' : 'normal',
+    fontSize: this.selectedFontSize, // Use selected font size
+    fill: '#000',
+  });
+
+  this.canvas.getCanvas().add(text);
+  this.canvas.textString = ''; // Clear the input field
+}
+
   title = 'angular-editor-fabric-js';
 
   activeTab: string = 'text';
@@ -25,7 +44,11 @@ selectedFontSize: number = 24; // Default font size
   isBold: boolean = false;
   isItalic: boolean = false;
 
+  
+  
   @ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
+
+  
 
   // Pre-built templates
   prebuiltTemplates = [
@@ -237,43 +260,76 @@ selectedFontSize: number = 24; // Default font size
     this.canvas.getCanvas().on('selection:created', (e) => this.onTextObjectSelected(e.target));
     this.canvas.getCanvas().on('selection:updated', (e) => this.onTextObjectSelected(e.target));
     this.canvas.getCanvas().on('selection:cleared', () => this.clearTextSelection());
+
   }
   
-  addText() {
-    if (!this.canvas.textString) return;
-
-    const text = new fabric.Textbox(this.canvas.textString, {
-      left: 100,
-      top: 100,
-      fontFamily: this.selectedFont,
-      fontWeight: this.selectedFontWeight,
-      fontStyle: this.isItalic ? 'italic' : 'normal',
-      fontSize: 24,
-      fill: '#000',
-    });
-
-    this.canvas.getCanvas().add(text);
-    this.canvas.textString = '';
+  onFontFamilyChange() {
+    const activeObject = this.canvas.getCanvas().getActiveObject();
+  
+    if (activeObject && activeObject.type === 'textbox') {
+      const textbox = activeObject as fabric.Textbox; // Explicitly cast to Textbox
+      textbox.set('fontFamily', this.selectedFont); // Update the font family
+      this.canvas.getCanvas().renderAll(); // Re-render the canvas
+    } else {
+      console.warn('No text object selected or active object is not a textbox.');
+    }
   }
+  
+  
+  // addText() {
+  //   if (!this.canvas.textString) return;
+
+  //   const text = new fabric.Textbox(this.canvas.textString, {
+  //     left: 100,
+  //     top: 100,
+  //     fontFamily: this.selectedFont,
+  //     fontWeight: this.selectedFontWeight,
+  //     fontStyle: this.isItalic ? 'italic' : 'normal',
+  //     fontSize: 24,
+  //     fill: '#000',
+  //   });
+
+  //   this.canvas.getCanvas().add(text);
+  //   this.canvas.textString = '';
+  // }
+
+  
 
   updateSelectedText() {
     const activeObject = this.canvas.getCanvas().getActiveObject();
   
     if (activeObject && activeObject.type === 'textbox') {
-      const textbox = activeObject as fabric.Textbox; // Cast to Textbox
+      const textbox = activeObject as fabric.Textbox;
   
-      // Update font properties
+      // Update all font-related properties
       textbox.set('fontFamily', this.selectedFont);
       textbox.set('fontWeight', this.selectedFontWeight);
       textbox.set('fontStyle', this.isItalic ? 'italic' : 'normal');
       textbox.set('fontSize', this.selectedFontSize);
   
-      // Force re-rendering of the canvas
+      // Re-render the canvas to reflect changes
       this.canvas.getCanvas().renderAll();
     } else {
       console.warn('No text object selected or active object is not a textbox.');
     }
   }
+  
+
+  onFontSizeChange() {
+    const activeObject = this.canvas.getCanvas().getActiveObject();
+  
+    if (activeObject && activeObject.type === 'textbox') {
+      const textbox = activeObject as fabric.Textbox; // Cast to Textbox
+      textbox.set('fontSize', this.selectedFontSize); // Update the font size
+      this.canvas.getCanvas().renderAll(); // Re-render the canvas
+    } else {
+      console.warn('No text object selected or active object is not a textbox.');
+    }
+  }
+
+  
+  
+  
   
   
   // Bind font properties to selected text
@@ -283,7 +339,7 @@ selectedFontSize: number = 24; // Default font size
       this.selectedFontWeight = target.fontWeight || '400';
       this.isBold = this.selectedFontWeight === '700';
       this.isItalic = target.fontStyle === 'italic';
-      this.selectedFontSize = target.fontSize || 24;
+      this.selectedFontSize = target.fontSize || 24; // Update the font size
     }
   }
   
@@ -301,6 +357,7 @@ selectedFontSize: number = 24; // Default font size
     this.selectedFontWeight = this.isBold ? '700' : '400';
     this.updateSelectedText();
   }
+  
 
   toggleItalic() {
     this.isItalic = !this.isItalic;
@@ -401,9 +458,9 @@ selectedFontSize: number = 24; // Default font size
     this.canvas.confirmClear();
   }
 
-  public changeBleedSize() {
-    this.canvas.changeBleedSize();
-  }
+  // public changeBleedSize() {
+  //   this.canvas.changeBleedSize();
+  // }
 
   public changeSizeWithMeasures(height: number, width: number) {
     this.canvas.changeSizeWithMeasures(height, width);

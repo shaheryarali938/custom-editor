@@ -9,6 +9,42 @@ import { fabric } from 'fabric';
 export class FabricjsEditorComponent implements AfterViewInit {
   @ViewChild('htmlCanvas') htmlCanvas: ElementRef;
 
+
+  private canvasHistory: string[] = [];
+private historyIndex: number = -1;
+
+
+saveState() {
+  if (this.historyIndex < this.canvasHistory.length - 1) {
+    this.canvasHistory.splice(this.historyIndex + 1); // Clear redo history
+  }
+  this.canvasHistory.push(JSON.stringify(this.canvas)); // Save canvas state
+  this.historyIndex = this.canvasHistory.length - 1;
+}
+
+
+undo() {
+  if (this.historyIndex > 0) {
+    this.historyIndex--;
+    const state = this.canvasHistory[this.historyIndex];
+    this.canvas.loadFromJSON(state, () => this.canvas.renderAll()); // Load previous state
+  } else {
+    console.log('No more states to undo');
+  }
+}
+
+ngOnInit() {
+  this.canvas = new fabric.Canvas('canvasId');
+
+  // Attach event listeners to save state
+  this.canvas.on('object:modified', () => this.saveState());
+  this.canvas.on('object:added', () => this.saveState());
+  this.canvas.on('object:removed', () => this.saveState());
+
+}
+
+
+
   private canvas: fabric.Canvas;
   public props = {
     canvasFill: '#ffffff',
@@ -218,6 +254,8 @@ export class FabricjsEditorComponent implements AfterViewInit {
       this.textString = '';
     }
   }
+
+  
 
   // Block "Add images"
 

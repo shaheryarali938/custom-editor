@@ -36,7 +36,7 @@
           >
             <i class="fa fa-download" aria-hidden="true"></i> Export to HTML
           </button>
-          <button
+          <!-- <button
             data-toggle="tooltip"
             data-placement="bottom"
             title="Save in localStorage"
@@ -45,8 +45,8 @@
             (click)="saveCanvasToJSON()"
           >
             <i class="fa fa-save" aria-hidden="true"></i> Save local
-          </button>
-          <button
+          </button> -->
+          <!-- <button
             data-toggle="tooltip"
             data-placement="bottom"
             title="Load from localStorage"
@@ -55,7 +55,7 @@
             (click)="loadCanvasFromJSON()"
           >
             <i class="fa fa-save" aria-hidden="true"></i> Load local
-          </button>
+          </button> -->
           <button
             data-toggle="tooltip"
             data-placement="bottom"
@@ -328,8 +328,11 @@
 
                 <!-- Dropdown for font selection (on a new line) -->
                 <div class="input-group mt-2">
-                  <select class="form-control" [(ngModel)]="selectedFont">
-                    <!-- Sans-serif Fonts -->
+                  <select
+                  class="form-control"
+                  [(ngModel)]="selectedFont"
+                  (change)="onFontFamilyChange()"
+                >                    <!-- Sans-serif Fonts -->
                     <option value="Arial" style="font-family: Arial">
                       Arial
                     </option>
@@ -488,8 +491,8 @@
                   </select>
                 </div>
                 <!-- Dropdown for font weight -->
-                <div class="input-group mt-2">
-                  <select class="form-control" [(ngModel)]="selectedFontWeight">
+                <!-- <div class="input-group mt-2">
+                  <select class="form-control" [(ngModel)]="selectedFontWeight" (change)="onFontWeightChange()">
                     <option value="100">Thin (100)</option>
                     <option value="200">Extra Light (200)</option>
                     <option value="300">Light (300)</option>
@@ -500,7 +503,19 @@
                     <option value="800">Extra Bold (800)</option>
                     <option value="900">Black (900)</option>
                   </select>
+                </div> -->
+
+                <div class="input-group mt-2">
+                  <select
+                    class="form-control"
+                    [(ngModel)]="selectedFontSize"
+                    (change)="onFontSizeChange()"
+                  >
+                    <option *ngFor="let size of fontSizes" [value]="size">{{ size }}px</option>
+                  </select>
                 </div>
+                
+                
 
                 <!-- Buttons for bold and italic -->
                 <div class="btn-group mt-2" role="group">
@@ -529,6 +544,18 @@
                   >
                     <i class="fa fa-plus"></i> Add Text
                   </button>
+                </div>
+              </div>
+
+              <div class="custom-item" *ngIf="!canvas.props.canvasImage">
+                <div class="custom-item-title">Text Color</div>
+                <div class="custom-item-body">
+                  <input
+                    type="color"
+                    class="form-control"
+                    (change)="onObjectColorChange($event)"
+                    value="#efefef"
+                  />
                 </div>
               </div>
             </div>
@@ -1030,7 +1057,7 @@
             >
               <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
-            <button
+            <!-- <button
               data-toggle="tooltip"
               data-placement="bottom"
               title="Send to back"
@@ -1040,14 +1067,26 @@
               (click)="sendToBack()"
             >
               <i class="fa fa-level-down" aria-hidden="true"></i>
-            </button>
+            </button> -->
+
+
+            <button
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Undo last change"
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="sendToBack()"
+          >
+          <i class="fa fa-level-down" aria-hidden="true"></i>
+          </button>
+
             <button
               data-toggle="tooltip"
               data-placement="bottom"
               title="Send to front"
               type="button"
               class="btn btn-outline-primary"
-              [disabled]="!canvas.selected"
               (click)="bringToFront()"
             >
               <i class="fa fa-level-up" aria-hidden="true"></i>
@@ -1058,12 +1097,11 @@
               title="Clone"
               type="button"
               class="btn btn-outline-primary"
-              [disabled]="!canvas.selected || canvas.selected.type == 'group'"
               (click)="clone()"
             >
               <i class="fa fa-clone" aria-hidden="true"></i>
             </button>
-            <button
+            <!-- <button
               data-toggle="tooltip"
               data-placement="bottom"
               title="Unselect"
@@ -1073,7 +1111,7 @@
               (click)="cleanSelect()"
             >
               <i class="fa fa-remove" aria-hidden="true"></i>
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
