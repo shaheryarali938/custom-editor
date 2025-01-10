@@ -104,17 +104,17 @@
 }
 
 .nav-link.active{
-  background-color: #fedc00;
+  background-color: #FDC323;
   color: black;
 }
 
 .btn-yellow{
-  background-color: #fedc00;
+  background-color: #FDC323;
   color: black;
 }
 
 .bg-yellow{
-  background-color: #fedc00;
+  background-color: #FDC323;
   color: black;
 }
 
@@ -123,10 +123,21 @@
 }
 
 .bg-text{
-  background-color: #c89eda;
+  background-color: #000000;
   border-radius: 6px !important;
 }
 
 .bg-text:hover{
-  background-color: #be7cda;
+  background-color: #000000;
+}
+
+.btn.btn-primary{
+    color: #000000;
+
+}
+
+.btn.btn-primary:hover{
+  color: #000000;
+  background-color: #FDC323;
+
 }
