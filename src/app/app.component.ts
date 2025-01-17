@@ -21,9 +21,6 @@ backCanvasData: any | null = null;  // Stores JSON data for the back canvas
 
 @ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
 
-
-
-
 toggleSide() {
   const canvasJSON = this.canvas.getCanvas().toJSON();
 
@@ -46,6 +43,7 @@ toggleSide() {
   }
 
   this.isFront = !this.isFront; // Toggle side
+  this.addDashedSafetyArea();
 }
 
 
@@ -426,6 +424,10 @@ addText() {
     this.canvas.loadImageTemplate(template);
   }
 
+  addDashedSafetyArea() {
+    this.canvas.addDashedSafetyArea();
+  }
+
 
   backgroundScaleX: number = 1; // Default scaleX
   backgroundScaleY: number = 1; // Default scaleY
@@ -494,26 +496,32 @@ addText() {
   // Export methods (unchanged)
   public rasterize() {
     this.canvas.rasterize();
+    this.addDashedSafetyArea();
   }
 
   public rasterizeSVG() {
     this.canvas.rasterizeSVG();
+    this.addDashedSafetyArea();
   }
 
   public exportToHtml() {
     this.canvas.exportToHtml();
+    this.addDashedSafetyArea();
   }
 
   public saveCanvasToJSON() {
     this.canvas.saveCanvasToJSON();
+    this.addDashedSafetyArea();
   }
 
   public loadCanvasFromJSON() {
     this.canvas.loadCanvasFromJSON();
+    this.addDashedSafetyArea();
   }
 
   public confirmClear() {
     this.canvas.confirmClear();
+    this.addDashedSafetyArea();
   }
 
   // public changeBleedSize() {
@@ -602,14 +610,17 @@ addText() {
 
   public sendToBack() {
     this.canvas.sendToBack();
+    this.addDashedSafetyArea();
   }
 
   public bringToFront() {
     this.canvas.bringToFront();
+    this.addDashedSafetyArea();
   }
 
   public clone() {
     this.canvas.clone();
+    this.addDashedSafetyArea();
   }
 
   public cleanSelect() {
