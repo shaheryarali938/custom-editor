@@ -30,6 +30,7 @@ toggleSide() {
     if (this.backCanvasData) {
       this.canvas.getCanvas().loadFromJSON(this.backCanvasData, () => {
         this.canvas.getCanvas().renderAll(); // Render back side
+        this.addDashedSafetyArea();
       });
     }
   } else {
@@ -38,12 +39,12 @@ toggleSide() {
     if (this.frontCanvasData) {
       this.canvas.getCanvas().loadFromJSON(this.frontCanvasData, () => {
         this.canvas.getCanvas().renderAll(); // Render front side
+        this.addDashedSafetyArea();
       });
     }
   }
 
   this.isFront = !this.isFront; // Toggle side
-  this.addDashedSafetyArea();
 }
 
 
