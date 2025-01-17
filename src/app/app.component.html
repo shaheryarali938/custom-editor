@@ -1,8 +1,6 @@
 <div class="w-100 vh-100">
   <div class="row w-100 p-0">
-    <!--  <div class="col-xl-12 main-title">
-       <h4>Github: <a href="https://github.com/saqib92/angular-editor-fabric-js">angular-editor-fabric-js</a></h4> 
-    </div>-->
+
     <div class="col-xl-12 p-0">
       <div class="row w-100 p-0">
         <div class="col-xl-12 p-2 text-center">
@@ -36,26 +34,7 @@
           >
             <i class="fa fa-download" aria-hidden="true"></i> Export to HTML
           </button>
-          <!-- <button
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title="Save in localStorage"
-            type="button"
-            class="btn btn-yellow m-1"
-            (click)="saveCanvasToJSON()"
-          >
-            <i class="fa fa-save" aria-hidden="true"></i> Save local
-          </button> -->
-          <!-- <button
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title="Load from localStorage"
-            type="button"
-            class="btn btn-yellow m-1"
-            (click)="loadCanvasFromJSON()"
-          >
-            <i class="fa fa-save" aria-hidden="true"></i> Load local
-          </button> -->
+          
           <button
             data-toggle="tooltip"
             data-placement="bottom"
@@ -238,63 +217,7 @@
             </div>
             <span>graphics</span>
           </button>
-          <!--
-          <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
-            [ngClass]="{ active: activeTab === 'qr-codes' }"
-            id="v-pills-qr-codes-tab"
-            (click)="setActiveTab('qr-codes')"
-            type="button"
-            role="tab"
-            aria-controls="v-pills-qr-codes"
-            [attr.aria-selected]="activeTab === 'qr-codes'"
-          >
-            <div>
-              <svg
-                width="26"
-                height="27"
-                viewBox="0 0 26 27"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M16.877 11.9547H23.3029C25.1106 11.9547 26 11.0509 26 9.18719V2.87429C26 1.01 25.1106 0.120636 23.3029 0.120636H16.877C15.0831 0.120636 14.1792 1.01 14.1792 2.87429V9.18719C14.1792 11.0509 15.0831 11.9547 16.877 11.9547ZM2.69714 11.9547H9.13748C10.9307 11.9547 11.8346 11.0509 11.8346 9.18719V2.87429C11.8346 1.01 10.9307 0.120636 9.13748 0.120636H2.69714C0.903866 0.120636 0 1.01 0 2.87429V9.18719C0 11.0509 0.903866 11.9547 2.69714 11.9547ZM2.72546 9.96388C2.23134 9.96388 1.99091 9.7096 1.99091 9.18659V2.87489C1.99091 2.36634 2.23134 2.11206 2.72606 2.11206H9.0953C9.58941 2.11206 9.8437 2.36634 9.8437 2.87489V9.1878C9.8437 9.71021 9.58941 9.96448 9.0953 9.96448L2.72546 9.96388ZM16.9047 9.96388C16.4106 9.96388 16.1708 9.7096 16.1708 9.18659V2.87489C16.1708 2.36634 16.4106 2.11206 16.9047 2.11206H23.2884C23.7689 2.11206 24.0091 2.36634 24.0091 2.87489V9.1878C24.0091 9.71021 23.7687 9.96448 23.2884 9.96448L16.9047 9.96388ZM4.70251 7.52054H7.11764C7.32975 7.52054 7.41411 7.43619 7.41411 7.19577V4.85185C7.41411 4.62529 7.32975 4.54094 7.11764 4.54094H4.70251C4.49101 4.54094 4.43437 4.62529 4.43437 4.85125V7.19577C4.43437 7.43558 4.49101 7.52054 4.70251 7.52054ZM18.9667 7.52115H21.368C21.5795 7.52115 21.6645 7.43679 21.6645 7.19637V4.85246C21.6645 4.6259 21.5801 4.54154 21.368 4.54154H18.9667C18.7552 4.54154 18.6847 4.6259 18.6847 4.85185V7.19637C18.6847 7.43619 18.7552 7.52115 18.9667 7.52115ZM2.69714 26.1206H9.13748C10.9307 26.1206 11.8346 25.2313 11.8346 23.367V17.0402C11.8346 15.1904 10.9307 14.2866 9.13748 14.2866H2.69714C0.903866 14.2866 0 15.1904 0 17.0402V23.367C0 25.2313 0.903866 26.1206 2.69714 26.1206ZM15.1253 17.944H17.5404C17.7525 17.944 17.8369 17.8597 17.8369 17.6187V15.2747C17.8369 15.0488 17.7525 14.9644 17.5404 14.9644H15.1253C14.9138 14.9644 14.8571 15.0488 14.8571 15.2747V17.6187C14.8571 17.8597 14.9138 17.944 15.1253 17.944ZM22.625 17.944H25.0395C25.2516 17.944 25.3366 17.8597 25.3366 17.6187V15.2747C25.3366 15.0488 25.2516 14.9644 25.0395 14.9644H22.625C22.4129 14.9644 22.3418 15.0488 22.3418 15.2747V17.6187C22.3418 17.8597 22.4129 17.944 22.625 17.944ZM2.72546 24.1286C2.23134 24.1286 1.99091 23.8743 1.99091 23.3658V17.0529C1.99091 16.5305 2.23134 16.2762 2.72606 16.2762H9.0953C9.58941 16.2762 9.8437 16.5305 9.8437 17.0535V23.3658C9.8437 23.8743 9.58941 24.1286 9.0953 24.1286H2.72546ZM4.70251 21.6991H7.11764C7.32975 21.6991 7.41411 21.6148 7.41411 21.3605V19.0304C7.41411 18.8045 7.32975 18.7195 7.11764 18.7195H4.70251C4.49101 18.7195 4.43437 18.8039 4.43437 19.0304V21.3605C4.43437 21.6148 4.49101 21.6991 4.70251 21.6991ZM18.9107 21.6991H21.3252C21.5373 21.6991 21.6217 21.6148 21.6217 21.3605V19.0304C21.6217 18.8045 21.5373 18.7195 21.3252 18.7195H18.9101C18.6986 18.7195 18.6419 18.8039 18.6419 19.0304V21.3605C18.6419 21.6148 18.6986 21.6991 18.9107 21.6991ZM15.1253 25.4416H17.5404C17.7525 25.4416 17.8369 25.3572 17.8369 25.1168V22.7729C17.8369 22.5463 17.7525 22.462 17.5404 22.462H15.1253C14.9138 22.462 14.8571 22.5463 14.8571 22.7729V25.1168C14.8571 25.3572 14.9138 25.4416 15.1253 25.4416ZM22.625 25.4422H25.0395C25.2516 25.4422 25.3366 25.3578 25.3366 25.1174V22.7735C25.3366 22.5469 25.2516 22.4626 25.0395 22.4626H22.625C22.4129 22.4626 22.3418 22.5469 22.3418 22.7735V25.1174C22.3418 25.3578 22.4129 25.4422 22.625 25.4422Z"
-                  fill="#1E1E1E"
-                  fill-opacity="0.8"
-                />
-              </svg>
-            </div>
-            <span>QR code</span>
-          </button>-->
-
-          <!--
-          <button
-            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
-            [ngClass]="{ active: activeTab === 'tables' }"
-            id="v-pills-tables-tab"
-            (click)="setActiveTab('tables')"
-            type="button"
-            role="tab"
-            aria-controls="v-pills-tables"
-            [attr.aria-selected]="activeTab === 'tables'"
-          >
-            <div>
-              <svg
-                width="26"
-                height="27"
-                viewBox="0 0 26 27"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.626 26.1206C1.87742 26.1206 1.25287 25.8704 0.752375 25.3699C0.251875 24.8694 0.00108333 24.2443 0 23.4946V2.74664C0 1.99805 0.250791 1.37351 0.752375 0.873011C1.25396 0.372511 1.8785 0.121719 2.626 0.120636H23.3756C24.1231 0.120636 24.7477 0.371427 25.2492 0.873011C25.7508 1.37459 26.0011 1.99914 26 2.74664V23.4963C26 24.2438 25.7497 24.8683 25.2492 25.3699C24.7487 25.8715 24.1237 26.1217 23.374 26.1206H2.626ZM12.1875 17.0271H1.625V23.4946C1.625 23.7871 1.71871 24.0271 1.90612 24.2145C2.09354 24.4019 2.3335 24.4956 2.626 24.4956H12.1875V17.0271ZM13.8125 17.0271V24.4956H23.3756C23.667 24.4956 23.9065 24.4019 24.0939 24.2145C24.2813 24.0271 24.375 23.7877 24.375 23.4963V17.0271H13.8125ZM12.1875 15.4021V7.87026H1.625V15.4021H12.1875ZM13.8125 15.4021H24.375V7.87026H13.8125V15.4021ZM1.625 6.24526H24.375V2.74501C24.375 2.45359 24.2813 2.21418 24.0939 2.02676C23.9065 1.83934 23.667 1.74564 23.3756 1.74564H2.62437C2.33296 1.74564 2.09354 1.83934 1.90612 2.02676C1.71871 2.21418 1.625 2.45414 1.625 2.74664V6.24526Z"
-                  fill="#1E1E1E"
-                  fill-opacity="0.8"
-                />
-              </svg>
-            </div>
-            <span>tables</span>
-          </button>-->
+       
 
           <button
             class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
@@ -538,20 +461,7 @@
                     </option>
                   </select>
                 </div>
-                <!-- Dropdown for font weight -->
-                <!-- <div class="input-group mt-2">
-                  <select class="form-control" [(ngModel)]="selectedFontWeight" (change)="onFontWeightChange()">
-                    <option value="100">Thin (100)</option>
-                    <option value="200">Extra Light (200)</option>
-                    <option value="300">Light (300)</option>
-                    <option value="400" selected>Normal (400)</option>
-                    <option value="500">Medium (500)</option>
-                    <option value="600">Semi Bold (600)</option>
-                    <option value="700">Bold (700)</option>
-                    <option value="800">Extra Bold (800)</option>
-                    <option value="900">Black (900)</option>
-                  </select>
-                </div> -->
+     
 
                 <div class="input-group mt-2">
                   <select
@@ -607,25 +517,7 @@
                 </div>
               </div>
             </div>
-            <!--
-            <div class="card">
-              <div class="card-header bg-yellow">Safety Area</div>
-              <div class="card-body p-2 bg-light-gray">
-                <div class="form-group">
-                  <div class="input-group mb-3">
-                    <input
-                      type="number"
-                      class="form-control"
-                      [(ngModel)]="canvas.size.bleed"
-                      (keyup)="changeBleedSize()"
-                    />
-                    <div class="input-group-append">
-                      <span class="input-group-text"> Bleed </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
+         
           </div>
 
           <div
@@ -1035,23 +927,7 @@
                   </div>
                 </div>
 
-                <!-- <div class="custom-item">
-                      <div class="custom-item-title">Upload Background Image</div>
-                          <div class="custom-item-body">
-                              <div class="card-body text-center">
-                                  <img id="testImage" *ngIf="canvas.bgUrl" class="images-item-upload" [src]="canvas.bgUrl">
-                                  <input type="file" (change)="readBgUrl($event);">
-                                  <br/>
-                                  <br/>
-                                  <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                                      <div class="btn-group" role="group">
-                                          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.bgUrl);">
-                                              <i class="fa fa-times" aria-hidden="true"></i> Remove Background</button>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                    </div> -->
+     
                 <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                   <div class="custom-item-title">Object Background</div>
                   <div class="custom-item-body">
@@ -1071,26 +947,7 @@
     </div>
 
     <div>
-      <!-- <div class="card">
-            <div class="card-header">Free Drawing Mode</div>
-            <div class="card-body p-2">
-                <div class="input-group">
-
-                    <div class="input-group-append">
-                      <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" checked id="customSwitch1" (click)="drawMode()">
-                        <label class="custom-control-label" for="customSwitch1">Enable / Disable</label>
-                      </div> -->
-      <!-- <span class="input-group-text">
-
-                             <button id="add-text" data-toggle="tooltip" data-placement="bottom" title="Drawing Mode" class="btn btn-primary" (click)="drawMode()">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
-                        </span> -->
-      <!-- </div>
-                </div>
-            </div>
-          </div> -->
+   
     </div>
 
     <!-- canvas sectiion -->
@@ -1113,17 +970,7 @@
             >
               <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
-            <!-- <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Send to back"
-              type="button"
-              class="btn btn-outline-primary"
-              [disabled]="!canvas.selected"
-              (click)="sendToBack()"
-            >
-              <i class="fa fa-level-down" aria-hidden="true"></i>
-            </button> -->
+
 
             <button
               data-toggle="tooltip"
@@ -1156,253 +1003,29 @@
             >
               <i class="fa fa-clone" aria-hidden="true"></i>
             </button>
-            <!-- <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Unselect"
-              type="button"
-              class="btn btn-outline-primary"
-              [disabled]="!canvas.selected"
-              (click)="cleanSelect()"
-            >
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </button> -->
+
           </div>
+          <br>
+          <br>
+
+          <button (click)="toggleSide()" class="btn btn-primary">
+            Switch to {{ isFront ? 'Back' : 'Front' }} Side
+          </button>
+
+          <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
+
+          
         </div>
+
+        
       </div>
-      <!--
-      <br />
-      <!-- <div class="card">
-        <div class="card-header">Custom</div>
-        <div class="card-body p-2">
-          <div
-            class="custom-item"
-            *ngIf="canvas.selected && canvas.selected.type == 'group'"
-          >
-            Group Selected
-          </div>
-          <div class="custom-item" *ngIf="!canvas.selected">
-            No items selected
-          </div>
-          <div
-            class="custom-item"
-            *ngIf="canvas.selected && canvas.selected.type != 'group'"
-          >
-            <div class="custom-item-title">ID</div>
-            <div class="custom-item-body">
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="canvas.props.id"
-                (keyup)="setId()"
-              />
-            </div>
-          </div>
-          <div
-            class="custom-item"
-            *ngIf="canvas.selected && canvas.selected.type != 'group'"
-          >
-            <div class="custom-item-title">Opacity</div>
-            <div class="custom-item-body">
-              <input
-                type="range"
-                [(ngModel)]="canvas.props.opacity"
-                (change)="setOpacity()"
-              />{{ canvas.props.opacity }}
-            </div>
-          </div>
-          <div
-            class="custom-item"
-            *ngIf="
-              (canvas.selected && canvas.textEditor) ||
-              (canvas.selected && canvas.figureEditor)
-            "
-          >
-            <div class="custom-item-title">Fill</div>
-            <div class="custom-item-body">
-              <input
-                type="text"
-                class="form-control"
-                [cpPosition]="'bottom'"
-                [(colorPicker)]="canvas.props.fill"
-                [style.background]="canvas.props.fill"
-                [value]="canvas.props.fill"
-                (colorPickerChange)="setFill()"
-              />
-            </div>
-          </div>
-          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-            <div class="custom-item-title">Font family</div>
-            <div class="custom-item-body">
-              <select
-                [(ngModel)]="canvas.props.fontFamily"
-                class="form-control"
-                (change)="setFontFamily()"
-              >
-                <option value="arial">Arial</option>
-                <option value="helvetica" selected>Helvetica</option>
-                <option value="verdana">Verdana</option>
-                <option value="courier">Courier</option>
-                <option value="Roboto">Roboto</option>
-                <option value="Open Sans">Open Sans</option>
-                <option value="Zilla Slab">Zilla Slab</option>
-                <option value="Lato">Lato</option>
-                <option value="Bellefair">Bellefair</option>
-                <option value="Fresca">Fresca</option>
-                <option value="Raleway">Raleway</option>
-                <option value="Open Sans Condensed">Open Sans Condensed</option>
-                <option value="Indie Flower">Indie Flower</option>
-                <option value="Josefin Sans">Josefin Sans</option>
-                <option value="Inconsolata">Inconsolata</option>
-                <option value="Pacifico">Pacifico</option>
-                <option value="Gloria Hallelujah">Gloria Hallelujah</option>
-              </select>
-            </div>
-          </div>
-          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-            <div class="custom-item-title">Text Align</div>
-            <div class="custom-item-body text-center">
-              <div class="btn-group" role="group" aria-label="...">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  [ngClass]="{ active: canvas.props.textAlign == 'left' }"
-                  (click)="setTextAlign('left')"
-                >
-                  <i class="fa fa-align-left"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  [ngClass]="{ active: canvas.props.textAlign == 'center' }"
-                  (click)="setTextAlign('center')"
-                >
-                  <i class="fa fa-align-center"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  [ngClass]="{ active: canvas.props.textAlign == 'right' }"
-                  (click)="setTextAlign('right')"
-                >
-                  <i class="fa fa-align-right"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  [ngClass]="{ active: canvas.props.textAlign == 'justify' }"
-                  (click)="setTextAlign('justify')"
-                >
-                  <i class="fa fa-align-justify"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-            <div class="custom-item-title">Style</div>
-            <div class="custom-item-body text-center">
-              <div class="btn-group" role="group" aria-label="...">
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  [ngClass]="{ active: canvas.props.fontWeight }"
-                  (click)="setBold()"
-                >
-                  <i class="fa fa-bold"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  [ngClass]="{ active: canvas.props.fontStyle }"
-                  (click)="setFontStyle()"
-                >
-                  <i class="fa fa-italic"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  [ngClass]="{ active: hasTextDecoration('underline') }"
-                  (click)="setTextDecoration('underline')"
-                >
-                  <i class="fa fa-underline"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  [ngClass]="{ active: hasTextDecoration('overline') }"
-                  (click)="setTextDecoration('overline')"
-                >
-                  <i class="fa fa-underline fa-flip-vertical"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  [ngClass]="{ active: hasTextDecoration('line-through') }"
-                  (click)="setTextDecoration('line-through')"
-                >
-                  <i class="fa fa-strikethrough"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-            <div class="custom-item-title">Font Size</div>
-            <div class="custom-item-body">
-              <input
-                type="range"
-                [(ngModel)]="canvas.props.fontSize"
-                (change)="setFontSize()"
-                step="1"
-                min="1"
-                max="120"
-              />{{ canvas.props.fontSize }}
-            </div>
-          </div>
-          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-            <div class="custom-item-title">Line Height</div>
-            <div class="custom-item-body">
-              <input
-                type="range"
-                [(ngModel)]="canvas.props.lineHeight"
-                (change)="setLineHeight()"
-                step="0.1"
-                min="0"
-                max="10"
-              />{{ canvas.props.lineHeight }}
-            </div>
-          </div>
-          <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
-            <div class="custom-item-title">Char Spacing</div>
-            <div class="custom-item-body">
-              <input
-                type="range"
-                [(ngModel)]="canvas.props.charSpacing"
-                (change)="setCharSpacing()"
-                step="10"
-                min="-200"
-                max="800"
-              />{{ canvas.props.charSpacing }}
-            </div>
-          </div>
-        </div>
-      </div>-->
+
+
+      
+     
     </div>
   </div>
 
-  <!-- <div class="row w-100">
-      <div class="col-xl-12">
-          <br/>
-          <div class="card">
-              <div class="card-header">
-                  <button type="button" class="btn btn-primary btn-sm" (click)="rasterizeJSON()">
-                      <i class="fa fa-refresh" aria-hidden="true"></i> Render to json</button>
-              </div>
-              <div class="card-body p-2">
-                  <pre>{{canvas.json}}</pre>
-              </div>
-          </div>
-      </div>
-  </div> -->
 
   <br />
   <br />

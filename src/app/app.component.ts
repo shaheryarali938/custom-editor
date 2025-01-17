@@ -11,6 +11,60 @@ export class AppComponent implements OnInit {
  fontSizes: number[] = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64];
 selectedFontSize: number = 24; // Default font size
 
+isFront: boolean = true; // Tracks whether the front side is active
+frontCanvas: fabric.Canvas;
+backCanvas: fabric.Canvas;
+
+frontCanvasData: any | null = null; // Stores JSON data for the front canvas
+backCanvasData: any | null = null;  // Stores JSON data for the back canvas
+
+
+@ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
+
+
+
+
+toggleSide() {
+  const canvasJSON = this.canvas.getCanvas().toJSON();
+
+  if (this.isFront) {
+    this.frontCanvasData = canvasJSON; // Save front side design
+    this.canvas.getCanvas().clear(); // Clear the canvas
+    if (this.backCanvasData) {
+      this.canvas.getCanvas().loadFromJSON(this.backCanvasData, () => {
+        this.canvas.getCanvas().renderAll(); // Render back side
+      });
+    }
+  } else {
+    this.backCanvasData = canvasJSON; // Save back side design
+    this.canvas.getCanvas().clear(); // Clear the canvas
+    if (this.frontCanvasData) {
+      this.canvas.getCanvas().loadFromJSON(this.frontCanvasData, () => {
+        this.canvas.getCanvas().renderAll(); // Render front side
+      });
+    }
+  }
+
+  this.isFront = !this.isFront; // Toggle side
+}
+
+
+saveDesigns() {
+  const canvasJSON = this.canvas.getCanvas().toJSON();
+
+  if (this.isFront) {
+    this.frontCanvasData = canvasJSON;
+  } else {
+    this.backCanvasData = canvasJSON;
+  }
+
+  console.log('Front Design:', this.frontCanvasData);
+  console.log('Back Design:', this.backCanvasData);
+}
+
+
+
+
 
 // Add Text Method
 addText() {
@@ -46,7 +100,7 @@ addText() {
 
   
   
-  @ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
+  // @ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
 
   
 
@@ -260,6 +314,10 @@ addText() {
     this.canvas.getCanvas().on('selection:created', (e) => this.onTextObjectSelected(e.target));
     this.canvas.getCanvas().on('selection:updated', (e) => this.onTextObjectSelected(e.target));
     this.canvas.getCanvas().on('selection:cleared', () => this.clearTextSelection());
+
+    this.frontCanvas = new fabric.Canvas('frontCanvas');
+    this.backCanvas = new fabric.Canvas('backCanvas');
+    this.backCanvas.dispose(); // Initially dispose of the back canvas
 
   }
   
