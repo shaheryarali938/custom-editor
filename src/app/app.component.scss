@@ -147,3 +147,11 @@
     width: 150px !important;
     font-size: 14px !important;
 }
+
+.btn-group-vertical {
+  gap: 7px;
+}
+
+.btn-group-vertical > button {
+  border-radius: 5px !important;
+}
