@@ -45,6 +45,7 @@ toggleSide() {
   }
 
   this.isFront = !this.isFront; // Toggle side
+  this.addDashedSafetyArea();
 }
 
 
@@ -532,9 +533,11 @@ addText() {
   public changeSizeWithMeasures(height: number, width: number) {
     // Clear the canvas before applying new size
     this.canvas.getCanvas().clear();
-  
+    this.frontCanvasData = null;
+    this.backCanvasData = null;
     // Call the existing changeSizeWithMeasures function in fabric.ts
     this.canvas.changeSizeWithMeasures(height, width);
+    this.addDashedSafetyArea();
   
     console.log(`Canvas size changed to ${width}x${height}`);
   }
