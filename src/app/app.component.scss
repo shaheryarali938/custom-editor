@@ -155,3 +155,22 @@
 .btn-group-vertical > button {
   border-radius: 5px !important;
 }
+.form-control{
+  padding: 4px 21px !important;
+}
+
+.note {
+  background-color: #f9f9f9; /* Light background */
+  border-left: 5px solid #FDC323; /* Green left border */
+  padding: 20px 25px;
+  font-size: 16px;
+  color: #333;
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  line-height: 1.6; /* More space between lines */
+}
+.note strong {
+  color: #007bff; /* Blue color for important terms */
+}
