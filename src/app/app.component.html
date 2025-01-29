@@ -754,10 +754,10 @@
                   <button
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    title="6' x 11' (50 DPI)"
+                    title="6' x 11' (80 DPI)"
                     type="button"
                     class="btn btn-primary m-1"
-                    (click)="changeSizeWithMeasures(300, 550)"
+                    (click)="changeSizeWithMeasures(480, 880)"
                   >
                     Jumbo (6 x 11)
                   </button>
@@ -1011,7 +1011,11 @@
           <button (click)="toggleSide()" class="btn btn-primary">
             Switch to {{ isFront ? 'Back' : 'Front' }}
           </button>
-
+          <br>
+          <br>
+          <button (click)="preview()" class="btn btn-primary">
+            Preview
+          </button>
           <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
 
           
@@ -1029,4 +1033,24 @@
 
   <br />
   <br />
+</div>
+
+<!-- Modal -->
+<div #previewModal class="modal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="previewModalLabel">Canvas Preview</h5>
+              <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <img #modalImage src="" alt="Canvas Preview" class="img-fluid">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+          </div>
+      </div>
+  </div>
 </div>

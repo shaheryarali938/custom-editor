@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FabricjsEditorComponent } from 'projects/angular-editor-fabric-js/src/public-api';
 import { fabric } from 'fabric';
 
@@ -20,6 +20,8 @@ backCanvasData: any | null = null;  // Stores JSON data for the back canvas
 
 
 @ViewChild('canvas', { static: false }) canvas: FabricjsEditorComponent;
+@ViewChild('previewModal') previewModal: ElementRef;
+@ViewChild('modalImage') modalImage: ElementRef;
 
 toggleSide() {
   const canvasJSON = this.canvas.getCanvas().toJSON();
@@ -498,8 +500,69 @@ addText() {
   // Export methods (unchanged)
   public rasterize() {
     this.canvas.rasterize();
+    // var frontImage: HTMLImageElement; 
+    // var backImage: HTMLImageElement;
+    // if (this.isFront) {
+    //   frontImage = this.canvas.rasterize();
+    //   this.toggleSide();
+    //   backImage = this.canvas.rasterize();
+    // } else {
+    //   backImage = this.canvas.rasterize();
+    //   this.toggleSide();
+    //   frontImage = this.canvas.rasterize();
+    // }
+    // this.toggleSide();
+    // this.downLoadImage(frontImage, backImage);
     this.addDashedSafetyArea();
   }
+
+  // private downLoadImage(frontImage: HTMLImageElement, backImage: HTMLImageElement) {
+  //   const canvas = document.createElement('canvas');
+  //   const context = canvas.getContext('2d');
+  //   const padding = 20;
+  //   const labelHeight = 30;
+
+  //   const loadImage = (img: HTMLImageElement) => {
+  //       return new Promise<HTMLImageElement>((resolve) => {
+  //           img.onload = () => resolve(img);
+  //       });
+  //   };
+
+  //   Promise.all([loadImage(frontImage), loadImage(backImage)]).then(([loadedFrontImage, loadedBackImage]) => {
+  //       // Set canvas dimensions
+  //       canvas.width = Math.max(loadedFrontImage.width, loadedBackImage.width) + 2 * padding;
+  //       canvas.height = loadedFrontImage.height + loadedBackImage.height + 3 * padding + 2 * labelHeight;
+
+  //       // Draw front image with label
+  //       context.fillStyle = '#000';
+  //       context.fillRect(padding, padding, canvas.width - 2 * padding, labelHeight);
+  //       context.fillStyle = '#fff';
+  //       context.font = '20px Arial';
+  //       context.fillText('Front Canvas', padding + 10, padding + 20);
+  //       context.drawImage(loadedFrontImage, padding, padding + labelHeight);
+
+  //       // Draw back image with label
+  //       const backImageY = padding + loadedFrontImage.height + padding + labelHeight;
+  //       context.fillStyle = '#000';
+  //       context.fillRect(padding, backImageY, canvas.width - 2 * padding, labelHeight);
+  //       context.fillStyle = '#fff';
+  //       context.fillText('Back Canvas', padding + 10, backImageY + 20);
+  //       context.drawImage(loadedBackImage, padding, backImageY + labelHeight);
+
+  //       // Create download link
+  //       const downloadLink = document.createElement('a');
+  //       document.body.appendChild(downloadLink);
+  //       downloadLink.href = canvas.toDataURL('image/png');
+  //       downloadLink.target = '_self';
+  //       downloadLink.download = Date.now() + '.png';
+  //       downloadLink.click();
+  //       document.body.removeChild(downloadLink);
+  //   });
+
+  //   // Trigger image loading
+  //   frontImage.src = frontImage.src;
+  //   backImage.src = backImage.src;
+  // }
 
   public rasterizeSVG() {
     this.canvas.rasterizeSVG();
@@ -524,6 +587,16 @@ addText() {
   public confirmClear() {
     this.canvas.confirmClear();
     this.addDashedSafetyArea();
+  }
+
+  preview(){
+    const canvasDataUrl = this.canvas.GetCanvasDataUrl();
+    this.modalImage.nativeElement.src = canvasDataUrl;
+    this.previewModal.nativeElement.style.display = 'block';
+  }
+
+  closeModal() {
+    this.previewModal.nativeElement.style.display = 'none';
   }
 
   // public changeBleedSize() {

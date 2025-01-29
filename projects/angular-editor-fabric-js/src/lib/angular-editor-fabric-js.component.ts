@@ -151,7 +151,11 @@ ngOnInit() {
 
 
   /*------------------------Block elements------------------------*/
-
+  // Preview Canvas
+  GetCanvasDataUrl(){
+    return this.canvas.toDataURL({ format: 'png' });
+  }
+  
   // Block "Size"
 
   addSafeAreaAndBleed(event: fabric.IEvent): void {
