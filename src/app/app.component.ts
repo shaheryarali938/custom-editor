@@ -666,6 +666,47 @@ export class AppComponent implements OnInit {
     this.addDashedSafetyArea();
   }
 
+  // public clone() {
+  //   const activeObjects = this.canvas.getCanvas().getActiveObjects();
+  
+  //   if (!activeObjects || activeObjects.length === 0) {
+  //     console.warn("No objects selected for cloning.");
+  //     return;
+  //   }
+  
+  //   const clonedObjects: fabric.Object[] = [];
+  
+  //   activeObjects.forEach((object) => {
+  //     object.clone((cloned: fabric.Object) => {
+  //       cloned.set({
+  //         left: object.left + 20, // Offset cloned object to avoid overlap
+  //         top: object.top + 20,
+  //         evented: true, // Ensure new objects are interactive
+  //       });
+  
+  //       clonedObjects.push(cloned);
+  
+  //       this.canvas.getCanvas().add(cloned);
+  //       this.canvas.getCanvas().renderAll();
+  //     });
+  //   });
+  
+  //   // Deselect previous objects and select new cloned ones
+  //   this.canvas.getCanvas().discardActiveObject();
+  //   const selection = new fabric.ActiveSelection(clonedObjects, {
+  //     canvas: this.canvas.getCanvas(),
+  //   });
+  
+  //   this.canvas.getCanvas().setActiveObject(selection);
+  //   this.canvas.getCanvas().renderAll();
+  // }
+  
+
+  // public clone() {
+  //   this.canvas.clone();
+  //   this.addDashedSafetyArea();
+  // }
+
   public clone() {
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
   
@@ -679,14 +720,32 @@ export class AppComponent implements OnInit {
     activeObjects.forEach((object) => {
       object.clone((cloned: fabric.Object) => {
         cloned.set({
-          left: object.left + 20, // Offset cloned object to avoid overlap
-          top: object.top + 20,
+          left: (object.left || 0) + 20, // Offset cloned object to avoid overlap
+          top: (object.top || 0) + 20,
           evented: true, // Ensure new objects are interactive
         });
   
-        clonedObjects.push(cloned);
+        // Special Handling for Text Objects (Keep Same Font and Properties)
+        if (object.type === "textbox") {
+          const textObject = object as fabric.Textbox;
+          const clonedText = new fabric.Textbox(textObject.text, {
+            left: cloned.left,
+            top: cloned.top,
+            fontFamily: textObject.fontFamily,
+            fontSize: textObject.fontSize,
+            fontWeight: textObject.fontWeight,
+            fontStyle: textObject.fontStyle,
+            fill: textObject.fill,
+            width: textObject.width,
+          });
   
-        this.canvas.getCanvas().add(cloned);
+          clonedObjects.push(clonedText);
+          this.canvas.getCanvas().add(clonedText);
+        } else {
+          clonedObjects.push(cloned);
+          this.canvas.getCanvas().add(cloned);
+        }
+  
         this.canvas.getCanvas().renderAll();
       });
     });
@@ -701,11 +760,6 @@ export class AppComponent implements OnInit {
     this.canvas.getCanvas().renderAll();
   }
   
-
-  // public clone() {
-  //   this.canvas.clone();
-  //   this.addDashedSafetyArea();
-  // }
 
   public cleanSelect() {
     this.canvas.cleanSelect();
