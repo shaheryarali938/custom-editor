@@ -667,9 +667,45 @@ export class AppComponent implements OnInit {
   }
 
   public clone() {
-    this.canvas.clone();
-    this.addDashedSafetyArea();
+    const activeObjects = this.canvas.getCanvas().getActiveObjects();
+  
+    if (!activeObjects || activeObjects.length === 0) {
+      console.warn("No objects selected for cloning.");
+      return;
+    }
+  
+    const clonedObjects: fabric.Object[] = [];
+  
+    activeObjects.forEach((object) => {
+      object.clone((cloned: fabric.Object) => {
+        cloned.set({
+          left: object.left + 20, // Offset cloned object to avoid overlap
+          top: object.top + 20,
+          evented: true, // Ensure new objects are interactive
+        });
+  
+        clonedObjects.push(cloned);
+  
+        this.canvas.getCanvas().add(cloned);
+        this.canvas.getCanvas().renderAll();
+      });
+    });
+  
+    // Deselect previous objects and select new cloned ones
+    this.canvas.getCanvas().discardActiveObject();
+    const selection = new fabric.ActiveSelection(clonedObjects, {
+      canvas: this.canvas.getCanvas(),
+    });
+  
+    this.canvas.getCanvas().setActiveObject(selection);
+    this.canvas.getCanvas().renderAll();
   }
+  
+
+  // public clone() {
+  //   this.canvas.clone();
+  //   this.addDashedSafetyArea();
+  // }
 
   public cleanSelect() {
     this.canvas.cleanSelect();
