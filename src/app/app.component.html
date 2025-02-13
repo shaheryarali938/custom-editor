@@ -1,6 +1,5 @@
 <div class="w-100 vh-100">
   <div class="row w-100 p-0">
-
     <div class="col-xl-12 p-0">
       <div class="row w-100 p-0">
         <div class="col-xl-12 p-2 text-center">
@@ -34,7 +33,7 @@
           >
             <i class="fa fa-download" aria-hidden="true"></i> Export to HTML
           </button>
-          
+
           <button
             data-toggle="tooltip"
             data-placement="bottom"
@@ -49,7 +48,9 @@
       </div>
     </div>
   </div>
+
   <hr class="mb-2 mt-0" />
+
   <div class="row w-100 p-0">
     <div class="col-xl-4">
       <div class="d-flex align-items-start">
@@ -217,7 +218,6 @@
             </div>
             <span>graphics</span>
           </button>
-       
 
           <button
             class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
@@ -461,7 +461,6 @@
                     </option>
                   </select>
                 </div>
-     
 
                 <div class="input-group mt-2">
                   <select
@@ -511,13 +510,12 @@
                   <input
                     type="color"
                     class="form-control"
-                    (change)="onObjectColorChange($event)"
-                    value="#efefef"
+                    (input)="onObjectColorChange($event)"
+                    value="#000000"
                   />
                 </div>
               </div>
             </div>
-         
           </div>
 
           <div
@@ -927,7 +925,6 @@
                   </div>
                 </div>
 
-     
                 <div class="custom-item" *ngIf="!canvas.props.canvasImage">
                   <div class="custom-item-title">Object Background</div>
                   <div class="custom-item-body">
@@ -946,9 +943,7 @@
       </div>
     </div>
 
-    <div>
-   
-    </div>
+    <div></div>
 
     <!-- canvas sectiion -->
     <div class="col-xl-6 p-0">
@@ -970,7 +965,6 @@
             >
               <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
-
 
             <button
               data-toggle="tooltip"
@@ -1003,59 +997,69 @@
             >
               <i class="fa fa-clone" aria-hidden="true"></i>
             </button>
-
           </div>
-          <br>
-          <br>
+          <br />
+          <br />
 
           <button (click)="toggleSide()" class="btn btn-primary">
-            Switch to {{ isFront ? 'Back' : 'Front' }}
+            Switch to {{ isFront ? "Back" : "Front" }}
           </button>
-          <br>
-          <br>
-          <button (click)="preview()" class="btn btn-primary">
-            Preview
-          </button>
+          <br />
+          <br />
+          <button (click)="preview()" class="btn btn-primary">Preview</button>
           <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
-
-          
         </div>
-
-        
       </div>
-
 
       <div class="note">
         <h5><b>Note</b></h5>
 
-        <p>The "<strong>-----</strong>" represents the <strong>safe area</strong>, ensuring that critical content stays within the protected zone. The "<strong>____</strong>" denotes the <strong>bleed area</strong>, which is the extra space beyond the trim to avoid any unintended cut-off during printing or production.</p>
+        <p>
+          The "<strong>-----</strong>" represents the
+          <strong>safe area</strong>, ensuring that critical content stays
+          within the protected zone. The "<strong>____</strong>" denotes the
+          <strong>bleed area</strong>, which is the extra space beyond the trim
+          to avoid any unintended cut-off during printing or production.
+        </p>
+      </div>
     </div>
-     
-    </div>
-    
   </div>
-
 
   <br />
   <br />
 </div>
 
-<!-- Modal -->
-<div #previewModal class="modal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true" style="display: none;">
+<!--Preview Modal -->
+<div
+  #previewModal
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="previewModalLabel"
+  aria-hidden="true"
+  style="display: none"
+>
   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="previewModalLabel">Canvas Preview</h5>
-              <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <img #modalImage src="" alt="Canvas Preview" class="img-fluid">
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewModalLabel">Canvas Preview</h5>
+        <button
+          type="button"
+          class="close"
+          (click)="closeModal()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <img #modalImage src="" alt="Canvas Preview" class="img-fluid" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+      </div>
+    </div>
   </div>
 </div>
