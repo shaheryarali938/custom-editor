@@ -483,9 +483,77 @@ export class AppComponent implements OnInit {
   //   this.updateSelectedText();
   // }
 
+  // loadImageTemplate(template: any) {
+  //   this.canvas.loadImageTemplate(template);
+  // }
+
+
   loadImageTemplate(template: any) {
-    this.canvas.loadImageTemplate(template);
+    const existingObjects = this.canvas.getCanvas().getObjects(); // Get existing objects
+  
+    // Preserve the background image if it exists
+    const backgroundImage = this.canvas.getCanvas().backgroundImage;
+    
+    this.canvas.getCanvas().clear(); // Clear canvas but NOT the background
+  
+    if (backgroundImage) {
+      this.canvas.getCanvas().setBackgroundImage(backgroundImage, 
+        this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas()));
+    }
+  
+    // Load the template design image
+    if (template.image) {
+      fabric.Image.fromURL(template.image, (img) => {
+        const canvasWidth = this.canvas.getCanvas().getWidth();
+        const canvasHeight = this.canvas.getCanvas().getHeight();
+  
+        img.set({
+          left: canvasWidth / 2 - img.width / 2, // Center horizontally
+          top: canvasHeight / 2 - img.height / 2, // Center vertically
+          scaleX: 1, // Keep original scale
+          scaleY: 1,
+          selectable: true, // Make it resizable
+          evented: true,
+          hasControls: true, // Enable resize handles
+          hasBorders: true,
+        });
+  
+        this.canvas.getCanvas().add(img);
+        this.canvas.getCanvas().setActiveObject(img); // Select the image
+        this.canvas.getCanvas().renderAll();
+      });
+    }
+  
+    // Load new template text objects
+    template.objects.forEach((objData) => {
+      let newObject;
+      
+      if (objData.type === "textbox") {
+        newObject = new fabric.Textbox(objData.text, {
+          left: objData.left,
+          top: objData.top,
+          fontFamily: objData.fontFamily,
+          fontSize: objData.fontSize,
+          fill: objData.fill,
+          width: objData.width,
+        });
+      }
+      
+      // Add the new object to the canvas
+      if (newObject) {
+        this.canvas.getCanvas().add(newObject);
+      }
+    });
+  
+    // Re-add the existing objects to the canvas
+    existingObjects.forEach((obj) => {
+      this.canvas.getCanvas().add(obj);
+    });
+  
+    this.canvas.getCanvas().renderAll(); // Render everything
   }
+  
+  
 
   addDashedSafetyArea() {
     this.canvas.addDashedSafetyArea();
