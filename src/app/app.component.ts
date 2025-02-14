@@ -7,6 +7,7 @@ import { fabric } from "fabric";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
+
 export class AppComponent implements OnInit {
   fontSizes: number[] = [
     8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64,
@@ -333,40 +334,38 @@ export class AppComponent implements OnInit {
 
   // onFontFamilyChange() {
   //   const activeObjects = this.canvas.getCanvas().getActiveObjects();
-  
+
   //   if (!activeObjects || activeObjects.length === 0) {
   //     console.warn("No text objects selected.");
   //     return;
   //   }
-  
+
   //   activeObjects.forEach((object) => {
   //     if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
   //       object.set("fontFamily", this.selectedFont);
   //     }
   //   });
-  
+
   //   this.canvas.getCanvas().discardActiveObject(); // Deselect to apply changes
   //   this.canvas.getCanvas().renderAll(); // Re-render canvas
   // }
-  
+
   onFontFamilyChange() {
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
-  
+
     if (!activeObjects || activeObjects.length === 0) {
       console.warn("No text objects selected.");
       return;
     }
-  
+
     activeObjects.forEach((object) => {
       if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
         object.set("fontFamily", this.selectedFont);
       }
     });
-  
+
     this.canvas.getCanvas().renderAll(); // Re-render canvas
   }
-  
-  
 
   updateSelectedText() {
     const activeObject = this.canvas.getCanvas().getActiveObject();
@@ -404,25 +403,24 @@ export class AppComponent implements OnInit {
   // }
 
   // Bind font properties to selected text
-  
+
   onFontSizeChange() {
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
-  
+
     if (!activeObjects || activeObjects.length === 0) {
       console.warn("No text objects selected.");
       return;
     }
-  
+
     activeObjects.forEach((object) => {
       if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
         object.set("fontSize", this.selectedFontSize);
       }
     });
-  
+
     this.canvas.getCanvas().renderAll(); // Re-render canvas
   }
-  
-  
+
   onTextObjectSelected(target: any) {
     if (target && target.type === "textbox") {
       this.selectedFont = target.fontFamily || "Arial";
@@ -447,37 +445,38 @@ export class AppComponent implements OnInit {
   //   this.updateSelectedText();
   // }
 
+  // toggle bold text
   toggleBold() {
     this.isBold = !this.isBold;
     this.selectedFontWeight = this.isBold ? "700" : "400";
-  
+
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
     if (!activeObjects || activeObjects.length === 0) return;
-  
+
     activeObjects.forEach((object) => {
       if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
         object.set("fontWeight", this.selectedFontWeight);
       }
     });
-  
+
     this.canvas.getCanvas().renderAll();
   }
-  
+
+  // toggle ittalic text
   toggleItalic() {
     this.isItalic = !this.isItalic;
-  
+
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
     if (!activeObjects || activeObjects.length === 0) return;
-  
+
     activeObjects.forEach((object) => {
       if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
         object.set("fontStyle", this.isItalic ? "italic" : "normal");
       }
     });
-  
+
     this.canvas.getCanvas().renderAll();
   }
-  
 
   // toggleItalic() {
   //   this.isItalic = !this.isItalic;
@@ -756,14 +755,14 @@ export class AppComponent implements OnInit {
 
   // public clone() {
   //   const activeObjects = this.canvas.getCanvas().getActiveObjects();
-  
+
   //   if (!activeObjects || activeObjects.length === 0) {
   //     console.warn("No objects selected for cloning.");
   //     return;
   //   }
-  
+
   //   const clonedObjects: fabric.Object[] = [];
-  
+
   //   activeObjects.forEach((object) => {
   //     object.clone((cloned: fabric.Object) => {
   //       cloned.set({
@@ -771,24 +770,23 @@ export class AppComponent implements OnInit {
   //         top: object.top + 20,
   //         evented: true, // Ensure new objects are interactive
   //       });
-  
+
   //       clonedObjects.push(cloned);
-  
+
   //       this.canvas.getCanvas().add(cloned);
   //       this.canvas.getCanvas().renderAll();
   //     });
   //   });
-  
+
   //   // Deselect previous objects and select new cloned ones
   //   this.canvas.getCanvas().discardActiveObject();
   //   const selection = new fabric.ActiveSelection(clonedObjects, {
   //     canvas: this.canvas.getCanvas(),
   //   });
-  
+
   //   this.canvas.getCanvas().setActiveObject(selection);
   //   this.canvas.getCanvas().renderAll();
   // }
-  
 
   // public clone() {
   //   this.canvas.clone();
@@ -796,58 +794,57 @@ export class AppComponent implements OnInit {
   // }
 
   public clone() {
-  const activeObjects = this.canvas.getCanvas().getActiveObjects();
+    const activeObjects = this.canvas.getCanvas().getActiveObjects();
 
-  if (!activeObjects || activeObjects.length === 0) {
-    console.warn("No objects selected for cloning.");
-    return;
-  }
+    if (!activeObjects || activeObjects.length === 0) {
+      console.warn("No objects selected for cloning.");
+      return;
+    }
 
-  const clonedObjects: fabric.Object[] = [];
+    const clonedObjects: fabric.Object[] = [];
 
-  activeObjects.forEach((object) => {
-    object.clone((cloned: fabric.Object) => {
-      cloned.set({
-        left: (object.left || 0) + 20, // Offset cloned object to avoid overlap
-        top: (object.top || 0) + 20,
-        evented: true, // Ensure new objects are interactive
-      });
-
-      // Special Handling for Text Objects (Keep Same Font and Properties)
-      if (object.type === "textbox") {
-        const textObject = object as fabric.Textbox;
-        const clonedText = new fabric.Textbox(textObject.text, {
-          left: cloned.left,
-          top: cloned.top,
-          fontFamily: textObject.fontFamily,
-          fontSize: textObject.fontSize,
-          fontWeight: textObject.fontWeight,
-          fontStyle: textObject.fontStyle,
-          fill: textObject.fill,
-          width: textObject.width,
+    activeObjects.forEach((object) => {
+      object.clone((cloned: fabric.Object) => {
+        cloned.set({
+          left: (object.left || 0) + 20, // Offset cloned object to avoid overlap
+          top: (object.top || 0) + 20,
+          evented: true, // Ensure new objects are interactive
         });
 
-        clonedObjects.push(clonedText);
-        this.canvas.getCanvas().add(clonedText);
-      } else {
-        clonedObjects.push(cloned);
-        this.canvas.getCanvas().add(cloned);
-      }
+        // Special Handling for Text Objects (Keep Same Font and Properties)
+        if (object.type === "textbox") {
+          const textObject = object as fabric.Textbox;
+          const clonedText = new fabric.Textbox(textObject.text, {
+            left: cloned.left,
+            top: cloned.top,
+            fontFamily: textObject.fontFamily,
+            fontSize: textObject.fontSize,
+            fontWeight: textObject.fontWeight,
+            fontStyle: textObject.fontStyle,
+            fill: textObject.fill,
+            width: textObject.width,
+          });
 
-      this.canvas.getCanvas().renderAll();
+          clonedObjects.push(clonedText);
+          this.canvas.getCanvas().add(clonedText);
+        } else {
+          clonedObjects.push(cloned);
+          this.canvas.getCanvas().add(cloned);
+        }
+
+        this.canvas.getCanvas().renderAll();
+      });
     });
-  });
 
-  // Deselect previous objects and select new cloned ones
-  this.canvas.getCanvas().discardActiveObject();
-  const selection = new fabric.ActiveSelection(clonedObjects, {
-    canvas: this.canvas.getCanvas(),
-  });
+    // Deselect previous objects and select new cloned ones
+    this.canvas.getCanvas().discardActiveObject();
+    const selection = new fabric.ActiveSelection(clonedObjects, {
+      canvas: this.canvas.getCanvas(),
+    });
 
-  this.canvas.getCanvas().setActiveObject(selection);
-  this.canvas.getCanvas().renderAll();
-}
-
+    this.canvas.getCanvas().setActiveObject(selection);
+    this.canvas.getCanvas().renderAll();
+  }
 
   public cleanSelect() {
     this.canvas.cleanSelect();
@@ -920,9 +917,9 @@ export class AppComponent implements OnInit {
   // onObjectColorChange(event: Event) {
   //   const inputElement = event.target as HTMLInputElement;
   //   const selectedColor = inputElement.value; // Get selected color
-  
+
   //   const activeObject = this.canvas.getCanvas().getActiveObject();
-  
+
   //   if (activeObject && activeObject.type === "textbox") {
   //     activeObject.set("fill", selectedColor); // Apply color directly
   //     this.canvas.getCanvas().renderAll(); // Re-render the canvas
@@ -934,19 +931,17 @@ export class AppComponent implements OnInit {
   onObjectColorChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const selectedColor = inputElement.value; // Get selected color
-  
+
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
-  
+
     if (!activeObjects || activeObjects.length === 0) return;
-  
+
     activeObjects.forEach((object) => {
       if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
         object.set("fill", selectedColor);
       }
     });
-  
+
     this.canvas.getCanvas().renderAll();
   }
-  
-  
 }
