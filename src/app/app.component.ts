@@ -483,10 +483,6 @@ export class AppComponent implements OnInit {
   //   this.updateSelectedText();
   // }
 
-  // loadImageTemplate(template: any) {
-  //   this.canvas.loadImageTemplate(template);
-  // }
-
 
   loadImageTemplate(template: any) {
     const existingObjects = this.canvas.getCanvas().getObjects(); // Get existing objects
