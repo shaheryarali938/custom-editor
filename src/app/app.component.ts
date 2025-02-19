@@ -229,6 +229,127 @@ export class AppComponent implements OnInit {
         },
       ],
     },
+    {
+      image: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg",
+      text: "Real Estate Template", // Name of the template
+      objects: [
+        // Permit Indicia Text
+        {
+          type: "textbox",
+          left: 410,
+          top: 0,
+          width: 70,
+          height: 52,
+          fontSize: 7,
+          fontFamily: "Myriad Pro",
+          text: "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
+          fill: "#000000",
+          textAlign: "center",
+          lineHeight: 1.2,
+        },
+        // Red Text Box
+        {
+          type: "textbox",
+          left: -4,
+          top: -1,
+          width: 252,
+          height: 46,
+          fontSize: 10,
+          fontFamily: "Your Font",
+          text: "I can pay you cash for your house, so please, contact me ASAP if you'd like to sell.",
+          fill: "#D9002E",
+          padding: 4,
+        },
+        // Image 1
+        {
+          type: "image",
+          left: 245,
+          top: 52,
+          width: 166,
+          height: 79,
+          src: "../assets/img/candy-stick.png", // Replace with the actual image path
+        },
+        // Image 2
+        {
+          type: "image",
+          left: 375,
+          top: 458,
+          width: 110,
+          height: 52,
+          src: "../assets/img/candy-stick.png", // Replace with the actual image path
+        },
+        // Flip Over Text
+        {
+          type: "textbox",
+          left: 118,
+          top: 122,
+          width: 362,
+          height: 35,
+          fontSize: 10,
+          fontFamily: "Your Font",
+          text: "Flip over for something very important!",
+          fill: "#D9002E",
+        },
+        // Image 3
+        {
+          type: "image",
+          left: 278,
+          top: 127,
+          width: 202,
+          height: 38,
+          src: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg", // Replace with the actual image path
+        },
+        // Main Text Box
+        {
+          type: "textbox",
+          left: 0,
+          top: 467,
+          width: 472,
+          height: 351,
+          fontSize: 10,
+          fontFamily: "Your Font",
+          text: "Hi [Name],\nMy name is [Your Name] and\nI want to buy your house at\n[Address]\nI can pay you CASH no matter\nwhat the condition is of the home.\nCall me now to receive a Fair Cash Offer!\n\n[Phone Number]\n\nP.S. No Realtor Fees, No Appraisals,\nNo Repairs, No Hassles!\nCall Me Right Away!",
+          fill: "#D9002E",
+          textAlign: "center",
+          padding: 4,
+        },
+        // Address Text Box
+        {
+          type: "textbox",
+          left: 134,
+          top: 186,
+          width: 337,
+          height: 30,
+          fontSize: 13,
+          fontFamily: "Ctorres",
+          text: "[Address Line 1]\n[Address Line 2]",
+          fill: "#000000",
+          padding: 4,
+        },
+        // Image 4
+        {
+          type: "image",
+          left: 0,
+          top: 76,
+          width: 100,
+          height: 97,
+          src: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg", // Replace with the actual image path
+        },
+        // Contact Info Text Box
+        {
+          type: "textbox",
+          left: 134,
+          top: 223,
+          width: 307,
+          height: 67,
+          fontSize: 10,
+          fontFamily: "Your Font",
+          text: "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
+          fill: "#D9002E",
+          padding: 4,
+        },
+      ],
+    },
   ];
 
   // for images in the inside the image tab
