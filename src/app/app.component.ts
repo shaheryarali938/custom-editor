@@ -7,16 +7,11 @@ import { fabric } from "fabric";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
+
 export class AppComponent implements OnInit {
   fontSizes: number[] = [
     8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64,
   ];
-
-  // showProductData: boolean = false;
-
-  // toggleProductData() {
-  //   this.showProductData = !this.showProductData;
-  // }
   selectedFontSize: number = 24; // Default font size
 
   isFront: boolean = true; // Tracks whether the front side is active
@@ -90,43 +85,12 @@ export class AppComponent implements OnInit {
 
   title = "angular-editor-fabric-js";
 
-  // all product sizes with their dimensions
-  productSizes = [
-    { label: "Standard (4 x 6)", width: 367, height: 550, tooltip: "4' x 6' (92 DPI)" },
-    { label: "Large (5 x 7)", width: 385, height: 550, tooltip: "5' x 7' (110 DPI)" },
-    { label: "Panoramic (4 x 9)", width: 244, height: 550, tooltip: "4' x 9' (61 DPI)" },
-    { label: "Square (5 x 5)", width: 550, height: 550, tooltip: "5' x 5' (110 DPI)" },
-    { label: "US Letter (8 x 11)", width: 711, height: 550, tooltip: "8.5' x 11' (65 DPI)" },
-    { label: "A4 Letter (8 x 11)", width: 778, height: 550, tooltip: "8.27' x 11.69' (66 DPI)" },
-    { label: "Legal Letter (8 x 14)", width: 906, height: 550, tooltip: "8.5' x 14' (65 DPI)" },
-    { label: "Half Letter (5 x 8)", width: 425, height: 550, tooltip: "5.5' x 8.5' (100 DPI)" },
-    { label: "DL Size (4 x 8)", width: 275, height: 550, tooltip: "4.33' x 8.66' (127 DPI)" },
-    { label: "A6 Postcard (4 x 5)", width: 387, height: 550, tooltip: "4.13' x 5.83' (133 DPI)" }
-  ];
-
   activeTab: string = "text";
-  showProductData: boolean = false;
-
-  toggleProductData() {
-    this.showProductData = false;
-    this.activeTab = "text";
-  }
-
-  setActiveTab(tab: string): void {
-    if (tab === 'product') {
-      this.showProductData = true; // Show popup modal when clicking on Product tab
-    } else {
-      this.showProductData = false; // Hide the modal for all other tabs
-      this.activeTab = tab; // Set active tab normally
-    }
-  }
   
 
-  // changeSizeWithMeasures(width: number, height: number) {
-  //   console.log(`Selected size: ${width}x${height}`);
-  //   this.showProductData = false;
-  //   this.activeTab = "text";
-  // }
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
 
   // Default font properties
   selectedFont: string = "Arial";
@@ -641,29 +605,28 @@ export class AppComponent implements OnInit {
   //   this.updateSelectedText();
   // }
 
-  loadImageTemplate(template: any) {
-    const existingObjects = this.canvas.getCanvas().getObjects(); // Get existing objects
 
+  loadImageTemplate(template: any) {
+    this.showProductData = false;
+
+    const existingObjects = this.canvas.getCanvas().getObjects(); // Get existing objects
+  
     // Preserve the background image if it exists
     const backgroundImage = this.canvas.getCanvas().backgroundImage;
-
+    
     this.canvas.getCanvas().clear(); // Clear canvas but NOT the background
-
+  
     if (backgroundImage) {
-      this.canvas
-        .getCanvas()
-        .setBackgroundImage(
-          backgroundImage,
-          this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas())
-        );
+      this.canvas.getCanvas().setBackgroundImage(backgroundImage, 
+        this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas()));
     }
-
+  
     // Load the template design image
     if (template.image) {
       fabric.Image.fromURL(template.image, (img) => {
         const canvasWidth = this.canvas.getCanvas().getWidth();
         const canvasHeight = this.canvas.getCanvas().getHeight();
-
+  
         img.set({
           left: canvasWidth / 2 - img.width / 2, // Center horizontally
           top: canvasHeight / 2 - img.height / 2, // Center vertically
@@ -674,17 +637,17 @@ export class AppComponent implements OnInit {
           hasControls: true, // Enable resize handles
           hasBorders: true,
         });
-
+  
         this.canvas.getCanvas().add(img);
         this.canvas.getCanvas().setActiveObject(img); // Select the image
         this.canvas.getCanvas().renderAll();
       });
     }
-
+  
     // Load new template text objects
     template.objects.forEach((objData) => {
       let newObject;
-
+      
       if (objData.type === "textbox") {
         newObject = new fabric.Textbox(objData.text, {
           left: objData.left,
@@ -695,20 +658,22 @@ export class AppComponent implements OnInit {
           width: objData.width,
         });
       }
-
+      
       // Add the new object to the canvas
       if (newObject) {
         this.canvas.getCanvas().add(newObject);
       }
     });
-
+  
     // Re-add the existing objects to the canvas
     existingObjects.forEach((obj) => {
       this.canvas.getCanvas().add(obj);
     });
-
+  
     this.canvas.getCanvas().renderAll(); // Render everything
   }
+  
+  
 
   addDashedSafetyArea() {
     this.canvas.addDashedSafetyArea();
@@ -886,6 +851,12 @@ export class AppComponent implements OnInit {
   //   this.canvas.changeBleedSize();
   // }
 
+  showProductData: boolean = false;
+
+  toggleProductData() {
+    this.showProductData = false;
+  }
+
   public changeSizeWithMeasures(height: number, width: number) {
     // Clear the canvas before applying new size
     this.canvas.getCanvas().clear();
@@ -894,11 +865,9 @@ export class AppComponent implements OnInit {
     // Call the existing changeSizeWithMeasures function in fabric.ts
     this.canvas.changeSizeWithMeasures(height, width);
     this.addDashedSafetyArea();
-    this.showProductData = false;
-    this.activeTab = "text";
 
     console.log(`Canvas size changed to ${width}x${height}`);
-  }
+    this.showProductData = true;  }
 
   // public addText() {
   //   if (!this.canvas.textString) {

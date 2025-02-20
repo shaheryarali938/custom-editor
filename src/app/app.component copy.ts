@@ -92,102 +92,16 @@ export class AppComponent implements OnInit {
 
   // all product sizes with their dimensions
   productSizes = [
-    {
-      label: "Standard (4 x 6)",
-      width: 367,
-      height: 550,
-      tooltip: "4' x 6' (92 DPI)",
-    },
-    {
-      label: "Large (5 x 7)",
-      width: 385,
-      height: 550,
-      tooltip: "5' x 7' (110 DPI)",
-    },
-    {
-      label: "Panoramic (4 x 9)",
-      width: 244,
-      height: 550,
-      tooltip: "4' x 9' (61 DPI)",
-    },
-    {
-      label: "Square (5 x 5)",
-      width: 550,
-      height: 550,
-      tooltip: "5' x 5' (110 DPI)",
-    },
-    {
-      label: "US Letter (8 x 11)",
-      width: 711,
-      height: 550,
-      tooltip: "8.5' x 11' (65 DPI)",
-    },
-    {
-      label: "A4 Letter (8 x 11)",
-      width: 778,
-      height: 550,
-      tooltip: "8.27' x 11.69' (66 DPI)",
-    },
-    {
-      label: "Legal Letter (8 x 14)",
-      width: 906,
-      height: 550,
-      tooltip: "8.5' x 14' (65 DPI)",
-    },
-    {
-      label: "Half Letter (5 x 8)",
-      width: 425,
-      height: 550,
-      tooltip: "5.5' x 8.5' (100 DPI)",
-    },
-    {
-      label: "DL Size (4 x 8)",
-      width: 275,
-      height: 550,
-      tooltip: "4.33' x 8.66' (127 DPI)",
-    },
-    {
-      label: "A6 Postcard (4 x 5)",
-      width: 387,
-      height: 550,
-      tooltip: "4.13' x 5.83' (133 DPI)",
-    },
-    {
-      label: "Tabloid (11 x 17)",
-      width: 1100,
-      height: 850,
-      tooltip: "11' x 17' (55 DPI)",
-    },
-    {
-      label: "Ledger (17 x 11)",
-      width: 1700,
-      height: 1100,
-      tooltip: "17' x 11' (45 DPI)",
-    },
-    {
-      label: "B5 (6.9 x 9.8)",
-      width: 690,
-      height: 980,
-      tooltip: "6.9' x 9.8' (95 DPI)",
-    },
-    {
-      label: "B4 (9.8 x 13.9)",
-      width: 980,
-      height: 1390,
-      tooltip: "9.8' x 13.9' (80 DPI)",
-    },
-    {
-      label: "Executive (7.25 x 10.5)",
-      width: 725,
-      height: 1050,
-      tooltip: "7.25' x 10.5' (90 DPI)",
-    },
-    {
-      label: "C5 Envelope (6.4 x 9)",
-      width: 640,
-      height: 900,
-      tooltip: "6.4' x 9' (100 DPI)",
-    },
+    { label: "Standard (4 x 6)", width: 367, height: 550, tooltip: "4' x 6' (92 DPI)" },
+    { label: "Large (5 x 7)", width: 385, height: 550, tooltip: "5' x 7' (110 DPI)" },
+    { label: "Panoramic (4 x 9)", width: 244, height: 550, tooltip: "4' x 9' (61 DPI)" },
+    { label: "Square (5 x 5)", width: 550, height: 550, tooltip: "5' x 5' (110 DPI)" },
+    { label: "US Letter (8 x 11)", width: 711, height: 550, tooltip: "8.5' x 11' (65 DPI)" },
+    { label: "A4 Letter (8 x 11)", width: 778, height: 550, tooltip: "8.27' x 11.69' (66 DPI)" },
+    { label: "Legal Letter (8 x 14)", width: 906, height: 550, tooltip: "8.5' x 14' (65 DPI)" },
+    { label: "Half Letter (5 x 8)", width: 425, height: 550, tooltip: "5.5' x 8.5' (100 DPI)" },
+    { label: "DL Size (4 x 8)", width: 275, height: 550, tooltip: "4.33' x 8.66' (127 DPI)" },
+    { label: "A6 Postcard (4 x 5)", width: 387, height: 550, tooltip: "4.13' x 5.83' (133 DPI)" }
   ];
 
   activeTab: string = "text";
@@ -208,11 +122,11 @@ export class AppComponent implements OnInit {
   }
   
 
-  changeProductSizeWithMeasures(width: number, height: number) {
-    console.log(`Selected size: ${width}x${height}`);
-    this.showProductData = false;
-    // this.activeTab = "text";
-  }
+  // changeSizeWithMeasures(width: number, height: number) {
+  //   console.log(`Selected size: ${width}x${height}`);
+  //   this.showProductData = false;
+  //   this.activeTab = "text";
+  // }
 
   // Default font properties
   selectedFont: string = "Arial";
@@ -980,6 +894,8 @@ export class AppComponent implements OnInit {
     // Call the existing changeSizeWithMeasures function in fabric.ts
     this.canvas.changeSizeWithMeasures(height, width);
     this.addDashedSafetyArea();
+    this.showProductData = false;
+    this.activeTab = "text";
 
     console.log(`Canvas size changed to ${width}x${height}`);
   }
