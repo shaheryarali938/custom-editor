@@ -263,6 +263,33 @@
             <span>graphics</span>
           </button>
 
+          <button
+            class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+            [ngClass]="{ active: activeTab === 'design-color' }"
+            id="v-pills-design-color-tab"
+            (click)="setActiveTab('design-color')"
+            type="button"
+            role="tab"
+            aria-controls="v-pills-design-color"
+            [attr.aria-selected]="activeTab === 'design-color'"
+          >
+            <div>
+              <svg
+                width="26"
+                height="30"
+                viewBox="0 0 26 30"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21.5378 13.7144L9.90089 25.8638L0 15.5269L9.03286 6.08203V2.83936C9.03286 2.46175 9.10068 2.10775 9.23631 1.77734C9.37194 1.44694 9.55729 1.15902 9.79238 0.913574C10.0275 0.668132 10.3033 0.474609 10.6197 0.333008C10.9362 0.191406 11.2753 0.120605 11.6369 0.120605C11.9986 0.120605 12.3377 0.191406 12.6541 0.333008C12.9706 0.474609 13.2464 0.668132 13.4815 0.913574C13.7166 1.15902 13.9019 1.44694 14.0376 1.77734C14.1732 2.10775 14.241 2.46175 14.241 2.83936V11.9019H12.505V2.83936C12.505 2.59391 12.4191 2.38151 12.2473 2.20215C12.0755 2.02279 11.872 1.93311 11.6369 1.93311C11.4018 1.93311 11.1984 2.02279 11.0266 2.20215C10.8548 2.38151 10.7689 2.59391 10.7689 2.83936V6.84668L3.3229 14.6206H18.2149L19.0965 13.7144L16.2347 10.7266L17.4554 9.45215L21.5378 13.7144ZM9.90089 23.3149L16.4789 16.4331H3.3229L9.90089 23.3149ZM25.4575 22.6353C25.6383 22.9657 25.774 23.3149 25.8644 23.6831C25.9548 24.0513 26 24.4289 26 24.8159C26 25.3918 25.9005 25.9393 25.7016 26.4585C25.5027 26.9777 25.2269 27.4355 24.8743 27.832C24.5216 28.2285 24.1057 28.54 23.6265 28.7666C23.1473 28.9932 22.6228 29.1112 22.0532 29.1206C21.4926 29.1206 20.9682 29.0073 20.4799 28.7808C19.9917 28.5542 19.5667 28.2521 19.205 27.8745C18.8433 27.4969 18.5585 27.0485 18.3505 26.5293C18.1426 26.0101 18.0341 25.4626 18.025 24.8867C18.025 24.141 18.2059 23.4424 18.5676 22.791L22.0532 16.4189L25.4575 22.6353ZM22.0532 27.3081C22.3787 27.3081 22.6771 27.242 22.9484 27.1099C23.2196 26.9777 23.4547 26.7936 23.6536 26.5576C23.8525 26.3216 24.0063 26.0526 24.1148 25.7505C24.2233 25.4484 24.2775 25.1322 24.2775 24.8018C24.2775 24.3392 24.169 23.9144 23.952 23.5273L22.0532 20.0723L20.073 23.6973C19.8651 24.0749 19.7611 24.4714 19.7611 24.8867C19.7611 25.2171 19.8199 25.5286 19.9374 25.8213C20.0549 26.1139 20.2222 26.3688 20.4392 26.5859C20.6562 26.8031 20.8958 26.9777 21.1581 27.1099C21.4203 27.242 21.7187 27.3081 22.0532 27.3081Z"
+                  fill="#1E1E1E"
+                  fill-opacity="0.8"
+                />
+              </svg>
+            </div>
+            <span>design</span>
+          </button>
 
           <button
             class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
@@ -803,6 +830,49 @@
             Table content
           </div>
 
+          <div
+            class="tab-pane fade"
+            [ngClass]="{ 'show active': activeTab === 'design-color' }"
+            id="v-pills-design-color"
+            role="tabpanel"
+            aria-labelledby="v-pills-design-color-tab"
+          >
+            <div class="card">
+              <div class="card-header bg-yellow">Templates</div>
+              <div class="card-body">
+                <div class="row w-100">
+                  <!-- Loop through image templates -->
+                  <div
+                    class="col-4 w-100 mb-3"
+                    *ngFor="let template of prebuiltTemplates"
+                    (click)="loadImageTemplate(template)"
+                    style="cursor: pointer"
+                  >
+                    <!-- Image template -->
+                    <div
+                      class="template-thumbnail"
+                      style="
+                        border: 1px solid #ddd;
+                        padding: 5px;
+                        border-radius: 5px;
+                      "
+                    >
+                      <img
+                        [src]="template.image"
+                        alt="Template"
+                        class="img-fluid w-100"
+                        style="
+                          border-radius: 5px;
+                          max-height: 100px;
+                          object-fit: cover;
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div
             class="tab-pane fade"
