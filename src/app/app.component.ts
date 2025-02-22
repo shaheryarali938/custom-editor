@@ -102,134 +102,134 @@ export class AppComponent implements OnInit {
 
   // Pre-built templates
   prebuiltTemplates = [
-    {
-      image: "../assets/img/283w-gp7mtx-pwXA.webp",
-      text: "Bird Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 200,
-          fontSize: 20,
-          fontFamily: "Arial",
-          text: "Add text for Tea Party Template!",
-          fill: "#000000",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/400w-elzoGX-60GY.webp",
-      text: "Branch Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 200,
-          fontSize: 20,
-          fontFamily: "Arial",
-          text: "This is a Birthday Template!",
-          fill: "#000000",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/1600w-yK5aaGtg5ag.webp",
-      text: "Merry Christmas Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 300,
-          fontSize: 30,
-          fontFamily: "Arial",
-          text: "Merry Christmas!",
-          fill: "#FF0000",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/1131w-XNBaqNbEN0g.webp",
-      text: "Hello Christmas Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 300,
-          fontSize: 30,
-          fontFamily: "Arial",
-          text: "Hello Christmas!",
-          fill: "#FF5733",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/400w-jwGZdB976qs.webp",
-      text: "Green & Purple Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 300,
-          fontSize: 30,
-          fontFamily: "Arial",
-          text: "Green & Purple!",
-          fill: "#28a745",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/283w-IMWozLAU4-Q.webp",
-      text: "Green & Purple Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 300,
-          fontSize: 30,
-          fontFamily: "Arial",
-          text: "Green & Purple!",
-          fill: "#28a745",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/283w-ZtJkm9u4ocI.webp",
-      text: "Green & Purple Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 300,
-          fontSize: 30,
-          fontFamily: "Arial",
-          text: "Green & Purple!",
-          fill: "#28a745",
-        },
-      ],
-    },
-    {
-      image: "../assets/img/283w-j7P7DHcqJxU.webp",
-      text: "Travel Visit Template",
-      objects: [
-        {
-          type: "textbox",
-          left: 150,
-          top: 20,
-          width: 300,
-          fontSize: 30,
-          fontFamily: "Arial",
-          text: "Travel & Visit!",
-          fill: "#007bff",
-        },
-      ],
-    },
+    // {
+    //   image: "../assets/img/283w-gp7mtx-pwXA.webp",
+    //   text: "Bird Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 200,
+    //       fontSize: 20,
+    //       fontFamily: "Arial",
+    //       text: "Add text for Tea Party Template!",
+    //       fill: "#000000",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/400w-elzoGX-60GY.webp",
+    //   text: "Branch Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 200,
+    //       fontSize: 20,
+    //       fontFamily: "Arial",
+    //       text: "This is a Birthday Template!",
+    //       fill: "#000000",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/1600w-yK5aaGtg5ag.webp",
+    //   text: "Merry Christmas Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 300,
+    //       fontSize: 30,
+    //       fontFamily: "Arial",
+    //       text: "Merry Christmas!",
+    //       fill: "#FF0000",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/1131w-XNBaqNbEN0g.webp",
+    //   text: "Hello Christmas Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 300,
+    //       fontSize: 30,
+    //       fontFamily: "Arial",
+    //       text: "Hello Christmas!",
+    //       fill: "#FF5733",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/400w-jwGZdB976qs.webp",
+    //   text: "Green & Purple Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 300,
+    //       fontSize: 30,
+    //       fontFamily: "Arial",
+    //       text: "Green & Purple!",
+    //       fill: "#28a745",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/283w-IMWozLAU4-Q.webp",
+    //   text: "Green & Purple Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 300,
+    //       fontSize: 30,
+    //       fontFamily: "Arial",
+    //       text: "Green & Purple!",
+    //       fill: "#28a745",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/283w-ZtJkm9u4ocI.webp",
+    //   text: "Green & Purple Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 300,
+    //       fontSize: 30,
+    //       fontFamily: "Arial",
+    //       text: "Green & Purple!",
+    //       fill: "#28a745",
+    //     },
+    //   ],
+    // },
+    // {
+    //   image: "../assets/img/283w-j7P7DHcqJxU.webp",
+    //   text: "Travel Visit Template",
+    //   objects: [
+    //     {
+    //       type: "textbox",
+    //       left: 150,
+    //       top: 20,
+    //       width: 300,
+    //       fontSize: 30,
+    //       fontFamily: "Arial",
+    //       text: "Travel & Visit!",
+    //       fill: "#007bff",
+    //     },
+    //   ],
+    // },
     {
       image: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg",
       text: "Real Estate Template", // Name of the template
