@@ -7,7 +7,6 @@ import { fabric } from "fabric";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
-
 export class AppComponent implements OnInit {
   fontSizes: number[] = [
     8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64,
@@ -86,7 +85,6 @@ export class AppComponent implements OnInit {
   title = "angular-editor-fabric-js";
 
   activeTab: string = "text";
-  
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
@@ -605,28 +603,31 @@ export class AppComponent implements OnInit {
   //   this.updateSelectedText();
   // }
 
-
   loadImageTemplate(template: any) {
     this.showProductData = false;
 
     const existingObjects = this.canvas.getCanvas().getObjects(); // Get existing objects
-  
+
     // Preserve the background image if it exists
     const backgroundImage = this.canvas.getCanvas().backgroundImage;
-    
+
     this.canvas.getCanvas().clear(); // Clear canvas but NOT the background
-  
+
     if (backgroundImage) {
-      this.canvas.getCanvas().setBackgroundImage(backgroundImage, 
-        this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas()));
+      this.canvas
+        .getCanvas()
+        .setBackgroundImage(
+          backgroundImage,
+          this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas())
+        );
     }
-  
+
     // Load the template design image
     if (template.image) {
       fabric.Image.fromURL(template.image, (img) => {
         const canvasWidth = this.canvas.getCanvas().getWidth();
         const canvasHeight = this.canvas.getCanvas().getHeight();
-  
+
         img.set({
           left: canvasWidth / 2 - img.width / 2, // Center horizontally
           top: canvasHeight / 2 - img.height / 2, // Center vertically
@@ -637,17 +638,17 @@ export class AppComponent implements OnInit {
           hasControls: true, // Enable resize handles
           hasBorders: true,
         });
-  
+
         this.canvas.getCanvas().add(img);
         this.canvas.getCanvas().setActiveObject(img); // Select the image
         this.canvas.getCanvas().renderAll();
       });
     }
-  
+
     // Load new template text objects
     template.objects.forEach((objData) => {
       let newObject;
-      
+
       if (objData.type === "textbox") {
         newObject = new fabric.Textbox(objData.text, {
           left: objData.left,
@@ -658,22 +659,20 @@ export class AppComponent implements OnInit {
           width: objData.width,
         });
       }
-      
+
       // Add the new object to the canvas
       if (newObject) {
         this.canvas.getCanvas().add(newObject);
       }
     });
-  
+
     // Re-add the existing objects to the canvas
     existingObjects.forEach((obj) => {
       this.canvas.getCanvas().add(obj);
     });
-  
+
     this.canvas.getCanvas().renderAll(); // Render everything
   }
-  
-  
 
   addDashedSafetyArea() {
     this.canvas.addDashedSafetyArea();
@@ -748,6 +747,7 @@ export class AppComponent implements OnInit {
   // Export methods (unchanged)
   public rasterize() {
     this.canvas.rasterize();
+    this.showTopBarModal = false;
     // var frontImage: HTMLImageElement;
     // var backImage: HTMLImageElement;
     // if (this.isFront) {
@@ -815,11 +815,13 @@ export class AppComponent implements OnInit {
   public rasterizeSVG() {
     this.canvas.rasterizeSVG();
     this.addDashedSafetyArea();
+    this.showTopBarModal = false;
   }
 
   public exportToHtml() {
     this.canvas.exportToHtml();
     this.addDashedSafetyArea();
+    this.showTopBarModal = false;
   }
 
   public saveCanvasToJSON() {
@@ -835,6 +837,7 @@ export class AppComponent implements OnInit {
   public confirmClear() {
     this.canvas.confirmClear();
     this.addDashedSafetyArea();
+    this.showTopBarModal = false;
   }
 
   preview() {
@@ -852,6 +855,11 @@ export class AppComponent implements OnInit {
   // }
 
   showProductData: boolean = false;
+  showTopBarModal: boolean = false;
+
+  toggleShowTopBarModal() {
+    this.showTopBarModal = !this.showTopBarModal;
+  }
 
   toggleProductData() {
     this.showProductData = false;
@@ -867,7 +875,8 @@ export class AppComponent implements OnInit {
     this.addDashedSafetyArea();
 
     console.log(`Canvas size changed to ${width}x${height}`);
-    this.showProductData = true;  }
+    this.showProductData = true;
+  }
 
   // public addText() {
   //   if (!this.canvas.textString) {

@@ -1,54 +1,48 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { fabric } from 'fabric';
+import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
+import { fabric } from "fabric";
 
 @Component({
-  selector: 'angular-editor-fabric-js',
-  templateUrl: './angular-editor-fabric-js.component.html',
-  styleUrls: ['./angular-editor-fabric-js.component.css'],
+  selector: "angular-editor-fabric-js",
+  templateUrl: "./angular-editor-fabric-js.component.html",
+  styleUrls: ["./angular-editor-fabric-js.component.css"],
 })
 export class FabricjsEditorComponent implements AfterViewInit {
-  @ViewChild('htmlCanvas') htmlCanvas: ElementRef;
-
+  @ViewChild("htmlCanvas") htmlCanvas: ElementRef;
 
   private canvasHistory: string[] = [];
-private historyIndex: number = -1;
+  private historyIndex: number = -1;
 
-
-saveState() {
-  if (this.historyIndex < this.canvasHistory.length - 1) {
-    this.canvasHistory.splice(this.historyIndex + 1); // Clear redo history
+  saveState() {
+    if (this.historyIndex < this.canvasHistory.length - 1) {
+      this.canvasHistory.splice(this.historyIndex + 1); // Clear redo history
+    }
+    this.canvasHistory.push(JSON.stringify(this.canvas)); // Save canvas state
+    this.historyIndex = this.canvasHistory.length - 1;
   }
-  this.canvasHistory.push(JSON.stringify(this.canvas)); // Save canvas state
-  this.historyIndex = this.canvasHistory.length - 1;
-}
 
-
-undo() {
-  if (this.historyIndex > 0) {
-    this.historyIndex--;
-    const state = this.canvasHistory[this.historyIndex];
-    this.canvas.loadFromJSON(state, () => this.canvas.renderAll()); // Load previous state
-  } else {
-    console.log('No more states to undo');
+  undo() {
+    if (this.historyIndex > 0) {
+      this.historyIndex--;
+      const state = this.canvasHistory[this.historyIndex];
+      this.canvas.loadFromJSON(state, () => this.canvas.renderAll()); // Load previous state
+    } else {
+      console.log("No more states to undo");
+    }
   }
-}
 
-ngOnInit() {
-  this.canvas = new fabric.Canvas('canvasId');
+  ngOnInit() {
+    this.canvas = new fabric.Canvas("canvasId");
 
-  // Attach event listeners to save state
-  this.canvas.on('object:modified', () => this.saveState());
-  this.canvas.on('object:added', () => this.saveState());
-  this.canvas.on('object:removed', () => this.saveState());
-
-}
-
-
+    // Attach event listeners to save state
+    this.canvas.on("object:modified", () => this.saveState());
+    this.canvas.on("object:added", () => this.saveState());
+    this.canvas.on("object:removed", () => this.saveState());
+  }
 
   private canvas: fabric.Canvas;
   public props = {
-    canvasFill: '#ffffff',
-    canvasImage: '',
+    canvasFill: "#ffffff",
+    canvasImage: "",
     id: null,
     opacity: null,
     fill: null,
@@ -59,15 +53,15 @@ ngOnInit() {
     fontStyle: null,
     textAlign: null,
     fontFamily: null,
-    TextDecoration: '',
+    TextDecoration: "",
   };
 
   public textString: string;
-  public url: string | ArrayBuffer = '';
-  public bgUrl: string | HTMLImageElement = '';
+  public url: string | ArrayBuffer = "";
+  public bgUrl: string | HTMLImageElement = "";
   public size: any = {
-    width: 750,
-    height: 650,
+    width: 500,
+    height: 500,
     bleed: 10,
   };
   public safetyArea: fabric.Rect;
@@ -79,45 +73,43 @@ ngOnInit() {
   public figureEditor = false;
   public selected: any;
 
-  constructor() { }
+  constructor() {}
 
   ngAfterViewInit(): void {
     // setup front side canvas
     this.canvas = new fabric.Canvas(this.htmlCanvas.nativeElement, {
-      hoverCursor: 'pointer',
+      hoverCursor: "pointer",
       selection: true,
-      selectionBorderColor: 'blue',
-      isDrawingMode: false
+      selectionBorderColor: "blue",
+      isDrawingMode: false,
     });
 
     this.canvas.on({
-      'object:moving': (e) => {
-        this.addSafeAreaAndBleed(e)
+      "object:moving": (e) => {
+        this.addSafeAreaAndBleed(e);
       },
-      'object:modified': (e) => { 
-      },
-      'object:selected': (e) => {
+      "object:modified": (e) => {},
+      "object:selected": (e) => {
         const selectedObject = e.target;
         this.selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'rgba(255, 87, 34, 0.7)';
+        selectedObject.cornerColor = "rgba(255, 87, 34, 0.7)";
 
         this.resetPanels();
 
-        if (selectedObject.type !== 'group' && selectedObject) {
-
+        if (selectedObject.type !== "group" && selectedObject) {
           this.getId();
           this.getOpacity();
 
           switch (selectedObject.type) {
-            case 'rect':
-            case 'circle':
-            case 'triangle':
+            case "rect":
+            case "circle":
+            case "triangle":
               this.figureEditor = true;
               this.getFill();
               break;
-            case 'i-text':
+            case "i-text":
               this.textEditor = true;
               this.getLineHeight();
               this.getCharSpacing();
@@ -127,15 +119,15 @@ ngOnInit() {
               this.getTextAlign();
               this.getFontFamily();
               break;
-            case 'image':
+            case "image":
               break;
           }
         }
       },
-      'selection:cleared': (e) => {
+      "selection:cleared": (e) => {
         this.selected = null;
         this.resetPanels();
-      }
+      },
     });
 
     this.canvas.setWidth(this.size.width);
@@ -143,19 +135,17 @@ ngOnInit() {
     this.addDashedSafetyArea();
 
     // get references to the html canvas element & its context
-    this.canvas.on('mouse:down', (e) => {
-      const canvasElement: any = document.getElementById('canvas');
+    this.canvas.on("mouse:down", (e) => {
+      const canvasElement: any = document.getElementById("canvas");
     });
-
   }
-
 
   /*------------------------Block elements------------------------*/
   // Preview Canvas
-  GetCanvasDataUrl(){
-    return this.canvas.toDataURL({ format: 'png' });
+  GetCanvasDataUrl() {
+    return this.canvas.toDataURL({ format: "png" });
   }
-  
+
   // Block "Size"
 
   addSafeAreaAndBleed(event: fabric.IEvent): void {
@@ -163,17 +153,19 @@ ngOnInit() {
     const movingObject = event.target;
     const canvasHeight = movingObject.canvas.getHeight();
     const canvasWidth = movingObject.canvas.getWidth();
-  
+
     // if movingObject is too big ignore
-    if (movingObject.getBoundingRect().height > canvasHeight - padding * 2 ||
-        movingObject.getBoundingRect().width > canvasWidth - padding * 2) {
+    if (
+      movingObject.getBoundingRect().height > canvasHeight - padding * 2 ||
+      movingObject.getBoundingRect().width > canvasWidth - padding * 2
+    ) {
       return;
     }
-  
+
     movingObject.setCoords();
-  
+
     const boundingRect = movingObject.getBoundingRect();
-  
+
     // top-left corner
     if (boundingRect.top < padding) {
       movingObject.top = padding - boundingRect.top + movingObject.top;
@@ -181,15 +173,23 @@ ngOnInit() {
     if (boundingRect.left < padding) {
       movingObject.left = padding - boundingRect.left + movingObject.left;
     }
-  
+
     // bottom-right corner
     if (boundingRect.top + boundingRect.height > canvasHeight - padding) {
-      movingObject.top = canvasHeight - boundingRect.height - padding - (boundingRect.top - movingObject.top);
+      movingObject.top =
+        canvasHeight -
+        boundingRect.height -
+        padding -
+        (boundingRect.top - movingObject.top);
     }
     if (boundingRect.left + boundingRect.width > canvasWidth - padding) {
-      movingObject.left = canvasWidth - boundingRect.width - padding - (boundingRect.left - movingObject.left);
+      movingObject.left =
+        canvasWidth -
+        boundingRect.width -
+        padding -
+        (boundingRect.left - movingObject.left);
     }
-  
+
     movingObject.setCoords();
   }
 
@@ -202,41 +202,40 @@ ngOnInit() {
   changeSizeWithMeasures(height: number, width: number) {
     this.canvas.setWidth(width);
     this.canvas.setHeight(height);
-  
+
     // Add safety area after resizing
     this.addDashedSafetyArea();
-  
+
     console.log(`Canvas resized to: Width=${width}, Height=${height}`);
   }
-  
 
   addDashedSafetyArea(): void {
     if (!this.size.bleed || this.size.bleed < 0) {
       console.warn("Invalid bleed value. Skipping safety area update.");
       return;
     }
-  
+
     if (this.safetyArea) {
       this.canvas.remove(this.safetyArea);
     }
-  
+
     const padding = this.size.bleed;
     const canvasWidth = this.canvas.getWidth();
     const canvasHeight = this.canvas.getHeight();
-  
+
     this.safetyArea = new fabric.Rect({
       left: padding,
       top: padding,
       width: canvasWidth - padding * 2,
       height: canvasHeight - padding * 2,
-      fill: 'transparent',
-      stroke: 'grey',
+      fill: "transparent",
+      stroke: "grey",
       strokeDashArray: [5, 5],
       selectable: false,
       evented: false,
-      excludeFromExport: true
+      excludeFromExport: true,
     });
-  
+
     this.canvas.add(this.safetyArea);
     this.canvas.sendToBack(this.safetyArea);
   }
@@ -248,32 +247,30 @@ ngOnInit() {
       const text = new fabric.IText(this.textString, {
         left: 10,
         top: 10,
-        fontFamily: 'helvetica',
+        fontFamily: "helvetica",
         angle: 0,
-        fill: '#000000',
+        fill: "#000000",
         scaleX: 0.5,
         scaleY: 0.5,
-        fontWeight: '',
-        hasRotatingPoint: true
+        fontWeight: "",
+        hasRotatingPoint: true,
       });
 
       this.extend(text, this.randomId());
       this.canvas.add(text);
       this.selectItemAfterAdded(text);
-      this.textString = '';
+      this.textString = "";
     }
   }
-
-  
 
   // Block "Add images"
 
   getImgPolaroid(event: any) {
     const el = event.target;
     const imageUrl = el.src;
-  
+
     // Check if the image is an SVG or PNG
-    if (imageUrl.endsWith('.svg')) {
+    if (imageUrl.endsWith(".svg")) {
       fabric.loadSVGFromURL(imageUrl, (objects, options) => {
         const image = fabric.util.groupSVGElements(objects, options);
         image.set({
@@ -288,7 +285,7 @@ ngOnInit() {
         this.canvas.add(image);
         this.selectItemAfterAdded(image);
       });
-    } else if (imageUrl.endsWith('.png')) {
+    } else if (imageUrl.endsWith(".png")) {
       fabric.Image.fromURL(imageUrl, (image) => {
         // Set the desired initial width and height
         const initialWidth = 150; // Adjust this value as needed
@@ -305,7 +302,7 @@ ngOnInit() {
           cornerSize: 10,
           hasRotatingPoint: true,
           scaleX: scaleX,
-          scaleY: scaleY
+          scaleY: scaleY,
         });
         this.extend(image, this.randomId());
         this.canvas.add(image);
@@ -313,7 +310,7 @@ ngOnInit() {
       });
     }
   }
-  
+
   loadImageTemplate(template: any) {
     if (!template) return;
 
@@ -340,7 +337,7 @@ ngOnInit() {
         });
         this.canvas.add(text);
       });
-  
+
       this.canvas.renderAll();
     });
   }
@@ -356,7 +353,7 @@ ngOnInit() {
           angle: 0,
           padding: 10,
           cornerSize: 10,
-          hasRotatingPoint: true
+          hasRotatingPoint: true,
         });
         image.scaleToWidth(200);
         image.scaleToHeight(200);
@@ -371,15 +368,18 @@ ngOnInit() {
     const self = this;
     const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-            this.bgUrl = e.target.result;
-            self.canvas.setBackgroundColor(new fabric.Pattern({ source: this.bgUrl, repeat: 'repeat' }), () => {
-                self.props.canvasFill = '';
-                self.canvas.renderAll();
-            });
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.bgUrl = e.target.result;
+        self.canvas.setBackgroundColor(
+          new fabric.Pattern({ source: this.bgUrl, repeat: "repeat" }),
+          () => {
+            self.props.canvasFill = "";
+            self.canvas.renderAll();
+          }
+        );
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -394,7 +394,7 @@ ngOnInit() {
   }
 
   removeWhite(url) {
-    this.url = '';
+    this.url = "";
   }
 
   // Block "Add figure"
@@ -402,26 +402,41 @@ ngOnInit() {
   addFigure(figure) {
     let add: any;
     switch (figure) {
-      case 'rectangle':
+      case "rectangle":
         add = new fabric.Rect({
-          width: 200, height: 100, left: 10, top: 10, angle: 0,
-          fill: '#3f51b5'
+          width: 200,
+          height: 100,
+          left: 10,
+          top: 10,
+          angle: 0,
+          fill: "#3f51b5",
         });
         break;
-      case 'square':
+      case "square":
         add = new fabric.Rect({
-          width: 100, height: 100, left: 10, top: 10, angle: 0,
-          fill: '#4caf50'
+          width: 100,
+          height: 100,
+          left: 10,
+          top: 10,
+          angle: 0,
+          fill: "#4caf50",
         });
         break;
-      case 'triangle':
+      case "triangle":
         add = new fabric.Triangle({
-          width: 100, height: 100, left: 10, top: 10, fill: '#2196f3'
+          width: 100,
+          height: 100,
+          left: 10,
+          top: 10,
+          fill: "#2196f3",
         });
         break;
-      case 'circle':
+      case "circle":
         add = new fabric.Circle({
-          radius: 50, left: 10, top: 10, fill: '#ff5722'
+          radius: 50,
+          left: 10,
+          top: 10,
+          fill: "#ff5722",
         });
         break;
     }
@@ -433,7 +448,7 @@ ngOnInit() {
   changeFigureColor(color) {
     this.canvas.getActiveObject().set("fill", color);
     this.canvas.renderAll();
-  };
+  }
 
   /*Canvas*/
 
@@ -462,7 +477,7 @@ ngOnInit() {
     obj.toObject = ((toObject) => {
       return function () {
         return fabric.util.object.extend(toObject.call(this), {
-          id
+          id,
         });
       };
     })(obj.toObject);
@@ -490,37 +505,41 @@ ngOnInit() {
 
   getActiveStyle(styleName, object) {
     object = object || this.canvas.getActiveObject();
-    if (!object) { return ''; }
+    if (!object) {
+      return "";
+    }
 
     if (object.getSelectionStyles && object.isEditing) {
-      return (object.getSelectionStyles()[styleName] || '');
+      return object.getSelectionStyles()[styleName] || "";
     } else {
-      return (object[styleName] || '');
+      return object[styleName] || "";
     }
   }
 
   setActiveStyle(styleName, value: string | number, object: fabric.IText) {
-    object = object || this.canvas.getActiveObject() as fabric.IText;
-    if (!object) { return; }
+    object = object || (this.canvas.getActiveObject() as fabric.IText);
+    if (!object) {
+      return;
+    }
 
     if (object.setSelectionStyles && object.isEditing) {
       const style = {};
       style[styleName] = value;
 
-      if (typeof value === 'string') {
-        if (value.includes('underline')) {
+      if (typeof value === "string") {
+        if (value.includes("underline")) {
           object.setSelectionStyles({ underline: true });
         } else {
           object.setSelectionStyles({ underline: false });
         }
 
-        if (value.includes('overline')) {
+        if (value.includes("overline")) {
           object.setSelectionStyles({ overline: true });
         } else {
           object.setSelectionStyles({ overline: false });
         }
 
-        if (value.includes('line-through')) {
+        if (value.includes("line-through")) {
           object.setSelectionStyles({ linethrough: true });
         } else {
           object.setSelectionStyles({ linethrough: false });
@@ -529,25 +548,24 @@ ngOnInit() {
 
       object.setSelectionStyles(style);
       object.setCoords();
-
     } else {
-      if (typeof value === 'string') {
-        if (value.includes('underline')) {
-          object.set('underline', true);
+      if (typeof value === "string") {
+        if (value.includes("underline")) {
+          object.set("underline", true);
         } else {
-          object.set('underline', false);
+          object.set("underline", false);
         }
 
-        if (value.includes('overline')) {
-          object.set('overline', true);
+        if (value.includes("overline")) {
+          object.set("overline", true);
         } else {
-          object.set('overline', false);
+          object.set("overline", false);
         }
 
-        if (value.includes('line-through')) {
-          object.set('linethrough', true);
+        if (value.includes("line-through")) {
+          object.set("linethrough", true);
         } else {
-          object.set('linethrough', false);
+          object.set("linethrough", false);
         }
       }
 
@@ -558,17 +576,20 @@ ngOnInit() {
     this.canvas.renderAll();
   }
 
-
   getActiveProp(name) {
     const object = this.canvas.getActiveObject();
-    if (!object) { return ''; }
+    if (!object) {
+      return "";
+    }
 
-    return object[name] || '';
+    return object[name] || "";
   }
 
   setActiveProp(name, value) {
     const object = this.canvas.getActiveObject();
-    if (!object) { return; }
+    if (!object) {
+      return;
+    }
     object.set(name, value).setCoords();
     this.canvas.renderAll();
   }
@@ -580,19 +601,19 @@ ngOnInit() {
     if (activeObject) {
       let clone;
       switch (activeObject.type) {
-        case 'rect':
+        case "rect":
           clone = new fabric.Rect(activeObject.toObject());
           break;
-        case 'circle':
+        case "circle":
           clone = new fabric.Circle(activeObject.toObject());
           break;
-        case 'triangle':
+        case "triangle":
           clone = new fabric.Triangle(activeObject.toObject());
           break;
-        case 'i-text':
-          clone = new fabric.IText('', activeObject.toObject());
+        case "i-text":
+          clone = new fabric.IText("", activeObject.toObject());
           break;
-        case 'image':
+        case "image":
           clone = fabric.util.object.clone(activeObject);
           break;
       }
@@ -619,76 +640,84 @@ ngOnInit() {
   }
 
   getOpacity() {
-    this.props.opacity = this.getActiveStyle('opacity', null) * 100;
+    this.props.opacity = this.getActiveStyle("opacity", null) * 100;
   }
 
   setOpacity() {
-    this.setActiveStyle('opacity', parseInt(this.props.opacity, 10) / 100, null);
+    this.setActiveStyle(
+      "opacity",
+      parseInt(this.props.opacity, 10) / 100,
+      null
+    );
   }
 
   getFill() {
-    this.props.fill = this.getActiveStyle('fill', null);
+    this.props.fill = this.getActiveStyle("fill", null);
   }
 
   setFill() {
-    this.setActiveStyle('fill', this.props.fill, null);
+    this.setActiveStyle("fill", this.props.fill, null);
   }
 
   getLineHeight() {
-    this.props.lineHeight = this.getActiveStyle('lineHeight', null);
+    this.props.lineHeight = this.getActiveStyle("lineHeight", null);
   }
 
   setLineHeight() {
-    this.setActiveStyle('lineHeight', parseFloat(this.props.lineHeight), null);
+    this.setActiveStyle("lineHeight", parseFloat(this.props.lineHeight), null);
   }
 
   getCharSpacing() {
-    this.props.charSpacing = this.getActiveStyle('charSpacing', null);
+    this.props.charSpacing = this.getActiveStyle("charSpacing", null);
   }
 
   setCharSpacing() {
-    this.setActiveStyle('charSpacing', this.props.charSpacing, null);
+    this.setActiveStyle("charSpacing", this.props.charSpacing, null);
   }
 
   getFontSize() {
-    this.props.fontSize = this.getActiveStyle('fontSize', null);
+    this.props.fontSize = this.getActiveStyle("fontSize", null);
   }
 
   setFontSize() {
-    this.setActiveStyle('fontSize', parseInt(this.props.fontSize, 10), null);
+    this.setActiveStyle("fontSize", parseInt(this.props.fontSize, 10), null);
   }
 
   getBold() {
-    this.props.fontWeight = this.getActiveStyle('fontWeight', null);
+    this.props.fontWeight = this.getActiveStyle("fontWeight", null);
   }
 
   setBold() {
     this.props.fontWeight = !this.props.fontWeight;
-    this.setActiveStyle('fontWeight', this.props.fontWeight ? 'bold' : '', null);
+    this.setActiveStyle(
+      "fontWeight",
+      this.props.fontWeight ? "bold" : "",
+      null
+    );
   }
 
   setFontStyle() {
     this.props.fontStyle = !this.props.fontStyle;
     if (this.props.fontStyle) {
-      this.setActiveStyle('fontStyle', 'italic', null);
+      this.setActiveStyle("fontStyle", "italic", null);
     } else {
-      this.setActiveStyle('fontStyle', 'normal', null);
+      this.setActiveStyle("fontStyle", "normal", null);
     }
   }
 
   getTextDecoration() {
-    this.props.TextDecoration = this.getActiveStyle('textDecoration', null);
+    this.props.TextDecoration = this.getActiveStyle("textDecoration", null);
   }
 
   setTextDecoration(value) {
     let iclass = this.props.TextDecoration;
     if (iclass.includes(value)) {
-      iclass = iclass.replace(RegExp(value, 'g'), '');
+      iclass = iclass.replace(RegExp(value, "g"), "");
     } else {
       iclass += ` ${value}`;
     }
     this.props.TextDecoration = iclass;
-    this.setActiveStyle('textDecoration', this.props.TextDecoration, null);
+    this.setActiveStyle("textDecoration", this.props.TextDecoration, null);
   }
 
   hasTextDecoration(value) {
@@ -696,20 +725,20 @@ ngOnInit() {
   }
 
   getTextAlign() {
-    this.props.textAlign = this.getActiveProp('textAlign');
+    this.props.textAlign = this.getActiveProp("textAlign");
   }
 
   setTextAlign(value) {
     this.props.textAlign = value;
-    this.setActiveProp('textAlign', this.props.textAlign);
+    this.setActiveProp("textAlign", this.props.textAlign);
   }
 
   getFontFamily() {
-    this.props.fontFamily = this.getActiveProp('fontFamily');
+    this.props.fontFamily = this.getActiveProp("fontFamily");
   }
 
   setFontFamily() {
-    this.setActiveProp('fontFamily', this.props.fontFamily);
+    this.setActiveProp("fontFamily", this.props.fontFamily);
   }
 
   /*System*/
@@ -722,13 +751,13 @@ ngOnInit() {
         this.canvas.remove(object);
       });
       this.canvas.renderAll();
-    } 
+    }
   }
 
   bringToFront() {
     const activeObjects = this.canvas.getActiveObjects();
-    console.log('Bringing objects to front:', activeObjects); // Debugging: Log the objects to be brought to front
-  
+    console.log("Bringing objects to front:", activeObjects); // Debugging: Log the objects to be brought to front
+
     if (activeObjects.length) {
       activeObjects.forEach((object) => {
         this.canvas.bringToFront(object);
@@ -736,16 +765,16 @@ ngOnInit() {
       });
       this.canvas.discardActiveObject();
       this.canvas.renderAll(); // Ensure the canvas is re-rendered after bringing objects to front
-      console.log('Objects brought to front successfully'); // Debugging: Confirm action
+      console.log("Objects brought to front successfully"); // Debugging: Confirm action
     } else {
-      console.log('No active objects to bring to front'); // Debugging: Log if no objects are selected
+      console.log("No active objects to bring to front"); // Debugging: Log if no objects are selected
     }
   }
-  
+
   sendToBack() {
     const activeObjects = this.canvas.getActiveObjects();
-    console.log('Sending objects to back:', activeObjects); // Debugging: Log the objects to be sent to back
-  
+    console.log("Sending objects to back:", activeObjects); // Debugging: Log the objects to be sent to back
+
     if (activeObjects.length) {
       activeObjects.forEach((object) => {
         this.canvas.sendToBack(object);
@@ -753,112 +782,109 @@ ngOnInit() {
       });
       this.canvas.discardActiveObject();
       this.canvas.renderAll(); // Ensure the canvas is re-rendered after sending objects to back
-      console.log('Objects sent to back successfully'); // Debugging: Confirm action
+      console.log("Objects sent to back successfully"); // Debugging: Confirm action
     } else {
-      console.log('No active objects to send to back'); // Debugging: Log if no objects are selected
+      console.log("No active objects to send to back"); // Debugging: Log if no objects are selected
     }
   }
 
   confirmClear() {
-    if (confirm('Are you sure?')) {
+    if (confirm("Are you sure?")) {
       this.canvas.clear();
       this.addDashedSafetyArea();
     }
   }
 
-
   exportToHtml() {
     // Get the content from the canvas (or editor).
-    const editorContent = this.getEditorContentAsHtml();  // Replace this with your actual method to extract HTML content from the editor.
-  
+    const editorContent = this.getEditorContentAsHtml(); // Replace this with your actual method to extract HTML content from the editor.
+
     // Create a Blob object with HTML content
-    const blob = new Blob([editorContent], { type: 'text/html' });
-  
+    const blob = new Blob([editorContent], { type: "text/html" });
+
     // Create a temporary download link
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = Date.now() + '.html';  // Name the HTML file
-  
+    link.download = Date.now() + ".html"; // Name the HTML file
+
     // Trigger the click to start the download and remove the link element
     link.click();
     link.remove();
   }
-  
+
   // Method to retrieve editor content in HTML (you will need to replace this with your actual method)
   getEditorContentAsHtml(): string {
     // This method should return the HTML of your editor's content
     // For example, if you're using Fabric.js, you may want to extract the canvas content as HTML, or if you're using an iframe for editing, you can get the content of that iframe.
-    const content = this.canvas.toSVG();  // You can adjust this based on the editor you're using
-    return content;  // Return as HTML string
+    const content = this.canvas.toSVG(); // You can adjust this based on the editor you're using
+    return content; // Return as HTML string
   }
-  
 
   rasterize() {
     // Temporarily remove the safety area
     if (this.safetyArea) {
       this.canvas.remove(this.safetyArea);
     }
-    
+
     const image = new Image();
-    image.src = this.canvas.toDataURL({ format: 'png' });
-    const w = window.open('');
+    image.src = this.canvas.toDataURL({ format: "png" });
+    const w = window.open("");
     w.document.write(image.outerHTML);
     this.downLoadImage();
   }
 
   downLoadImage() {
-    const c = this.canvas.toDataURL({ format: 'png' });
-    const downloadLink = document.createElement('a');
+    const c = this.canvas.toDataURL({ format: "png" });
+    const downloadLink = document.createElement("a");
     document.body.appendChild(downloadLink);
     downloadLink.href = c;
-    downloadLink.target = '_self';
-    downloadLink.download = Date.now() + '.png';
+    downloadLink.target = "_self";
+    downloadLink.download = Date.now() + ".png";
     downloadLink.click();
   }
 
   rasterizeSVG() {
-    const w = window.open('');
+    const w = window.open("");
     w.document.write(this.canvas.toSVG());
     this.downLoadSVG();
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(this.canvas.toSVG());
+    return "data:image/svg+xml;utf8," + encodeURIComponent(this.canvas.toSVG());
   }
 
   downLoadSVG() {
-    const c = 'data:image/svg+xml;utf8,' + encodeURIComponent(this.canvas.toSVG());
-    const downloadLink = document.createElement('a');
+    const c =
+      "data:image/svg+xml;utf8," + encodeURIComponent(this.canvas.toSVG());
+    const downloadLink = document.createElement("a");
     document.body.appendChild(downloadLink);
     downloadLink.href = c;
-    downloadLink.target = '_self';
-    downloadLink.download = Date.now() + '.svg';
+    downloadLink.target = "_self";
+    downloadLink.download = Date.now() + ".svg";
     downloadLink.click();
   }
 
   saveCanvasToJSON() {
     const json = JSON.stringify(this.canvas);
-    localStorage.setItem('Kanvas', json);
-    console.log('json');
+    localStorage.setItem("Kanvas", json);
+    console.log("json");
     console.log(json);
-
   }
 
   loadCanvasFromJSON() {
-    const CANVAS = localStorage.getItem('Kanvas');
-    console.log('CANVAS');
+    const CANVAS = localStorage.getItem("Kanvas");
+    console.log("CANVAS");
     console.log(CANVAS);
 
     // and load everything from the same json
     this.canvas.loadFromJSON(CANVAS, () => {
-      console.log('CANVAS untar');
+      console.log("CANVAS untar");
       console.log(CANVAS);
 
       // making sure to render canvas at the end
       this.canvas.renderAll();
 
       // and checking if object's "name" is preserved
-      console.log('this.canvas.item(0).name');
+      console.log("this.canvas.item(0).name");
       console.log(this.canvas);
     });
-
   }
 
   rasterizeJSON() {
@@ -874,5 +900,4 @@ ngOnInit() {
   // drawingMode() {
   //   this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
   // }
-
 }
