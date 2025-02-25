@@ -15,7 +15,7 @@
           <div class="row w-100">
             <!-- Loop through image templates -->
             <div
-              class="col-md-4 col-sm-6 mb-4"
+              class="col-4 mb-4"
               *ngFor="let template of prebuiltTemplates"
               (click)="loadImageTemplate(template)"
               style="cursor: pointer"
@@ -27,7 +27,6 @@
                   [src]="template.image"
                   alt="Template"
                   class="img-fluid w-100 rounded-lg"
-                  style="height: 180px; object-fit: cover"
                 />
               </div>
             </div>
@@ -208,7 +207,7 @@
         aria-orientation="vertical"
       >
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'text' }"
           id="v-pills-text-tab"
           (click)="setActiveTab('text')"
@@ -244,7 +243,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'images' }"
           id="v-pills-images-tab"
           (click)="setActiveTab('images')"
@@ -291,7 +290,7 @@
           <span>Images</span>
         </button>
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'product' }"
           id="v-pills-product-tab"
           (click)="setActiveTab('product')"
@@ -339,7 +338,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'graphics' }"
           id="v-pills-graphics-tab"
           (click)="setActiveTab('graphics')"
@@ -367,7 +366,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'design-color' }"
           id="v-pills-design-color-tab"
           (click)="setActiveTab('design-color')"
@@ -395,7 +394,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'background' }"
           id="v-pills-background-tab"
           (click)="setActiveTab('background')"
@@ -777,134 +776,136 @@
         >
           <div class="card">
             <div class="card-header bg-yellow">Products</div>
-            <div class="card-body row p-0">
-              <div class="col-md-6">
+            <div
+              class="card-body row p-2 align-items-center justify-content-center"
+            >
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="4' x 6' (92 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1 mt-2"
                   (click)="changeSizeWithMeasures(367, 550)"
                 >
                   Standard (4 x 6)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="5' x 7' (110 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1 mt-md-2"
                   (click)="changeSizeWithMeasures(385, 550)"
                 >
                   Large (5 x 7)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="4' x 9' (61 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(244, 550)"
                 >
                   Panoramic (4 x 9)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="5' x 5' (110 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(550, 550)"
                 >
                   Square (5 x 5)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="8.5' x 11' (65 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(711, 550)"
                 >
                   US Letter (8 x 11)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="8.27' x 11.69' (66 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(778, 550)"
                 >
                   A4 Letter (8 x 11)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="8.5' x 14' (65 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(906, 550)"
                 >
                   Legal Letter (8 x 14)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="5.5' x 8.5' (100 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(425, 550)"
                 >
                   Half Letter (5 x 8)
                 </button>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="4.33' x 8.66' (127 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
+                  class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(275, 550)"
                 >
                   DL Size (4 x 8)
                 </button>
               </div>
-              <!-- <div class="col-md-6">
+              <!-- <div class="col-md-6 col-12">">
                   <button
                     data-toggle="tooltip"
                     data-placement="bottom"
                     title="6' x 11' (80 DPI)"
                     type="button"
-                    class="btn btn-primary m-1"
+                    class="btn btn-yellow w-100 my-1"
                     (click)="changeSizeWithMeasures(480, 880)"
                   >
                     Jumbo (6 x 11)
                   </button>
                 </div> -->
-              <div class="col-md-6">
+              <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
                   title="4.13' x 5.83' (133 DPI)"
                   type="button"
-                  class="btn btn-primary m-1 w-100"
+                  class="btn btn-yellow w-100 my-1 w-100"
                   (click)="changeSizeWithMeasures(387, 550)"
                 >
                   A6 Postcard (4 x 5)
