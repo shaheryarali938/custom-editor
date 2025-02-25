@@ -48,7 +48,7 @@
 
   <!-- Top bar for medium and larger screens -->
   <div class="d-none d-md-block">
-    <div class="row w-100 m-0">
+    <div class="row w-100 m-0 p-0">
       <div class="col-xl-12">
         <div class="row w-100 p-0 m-0">
           <div class="custom-container">
@@ -197,8 +197,10 @@
   <!-- line  -->
   <hr class="mb-2 mt-0" />
 
-  <div class="row w-100 p-0">
-    <div class="col-xl-4 d-flex align-items-start">
+  <div class="row w-100 p-0 m-0">
+    <div
+      class="col-12 col-md-8 col-lg-4 d-flex align-items-start order-1 p-0 m-0"
+    >
       <div
         class="nav flex-column nav-pills"
         id="v-pills-tab"
@@ -776,7 +778,7 @@
           <div class="card">
             <div class="card-header bg-yellow">Products</div>
             <div class="card-body row p-0">
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -788,7 +790,7 @@
                   Standard (4 x 6)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -800,7 +802,7 @@
                   Large (5 x 7)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -812,7 +814,7 @@
                   Panoramic (4 x 9)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -824,7 +826,7 @@
                   Square (5 x 5)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -836,7 +838,7 @@
                   US Letter (8 x 11)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -848,7 +850,7 @@
                   A4 Letter (8 x 11)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -860,7 +862,7 @@
                   Legal Letter (8 x 14)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -872,7 +874,7 @@
                   Half Letter (5 x 8)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -884,7 +886,7 @@
                   DL Size (4 x 8)
                 </button>
               </div>
-              <!-- <div class="col-xl-6">
+              <!-- <div class="col-md-6">
                   <button
                     data-toggle="tooltip"
                     data-placement="bottom"
@@ -896,7 +898,7 @@
                     Jumbo (6 x 11)
                   </button>
                 </div> -->
-              <div class="col-xl-6">
+              <div class="col-md-6">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -1079,12 +1081,16 @@
     </div>
 
     <!-- canvas sectiion -->
-    <div class="col-xl-6 p-0">
+    <div
+      class="col-md-12 col-lg-6 p-0 d-flex justify-content-center order-3 order-lg-2 mt-4 mt-lg-0"
+    >
       <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
     </div>
 
     <!-- right bar  -->
-    <div class="col-xl-2 p-0">
+    <div
+      class="col-12 mt-4 mt-md-0 col-md-4 col-lg-2 p-0 order-2 order-lg-3 m-0"
+    >
       <div class="card">
         <div class="card-header bg-yellow">Options</div>
         <div class="card-body p-2 text-center bg-light-gray">
