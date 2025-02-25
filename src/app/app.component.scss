@@ -285,6 +285,9 @@
   .responsive-text {
     font-size: 0.8rem; /* Smaller text for small screens */
   }
+  .note {
+    padding: 13px;
+  }
 }
 @media (max-width: 768px) {
   .responsive-text {
@@ -293,5 +296,6 @@
   .note {
     border-bottom: 5px solid #fdc323;
     border-right: 5px solid #fdc323;
+    padding: 8px;
   }
 }
