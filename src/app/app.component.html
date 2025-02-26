@@ -84,6 +84,19 @@
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
+                  title="Export to SVG"
+                  type="button"
+                  class="btn btn-yellow custom-scale w-100"
+                  (click)="saveCanvasToJSON()"
+                >
+                  <i class="d-inline fa fa-download" aria-hidden="true"></i>
+                  Export to Canvas
+                </button>
+              </div>
+              <div class="col-3 p-0 px-md-3">
+                <button
+                  data-toggle="tooltip"
+                  data-placement="bottom"
                   title="Export to HTML"
                   type="button"
                   class="btn btn-yellow custom-scale w-100"
@@ -115,7 +128,7 @@
                   title="Import Canvas"
                   type="button"
                   class="btn btn-yellow custom-scale w-100"
-                  (click)="loadCanvas()"
+                  (click)="loadCanvasFromJSON()"
                 >
                   <i class="d-inline fa fa-upload" aria-hidden="true"></i>
                   Import Canvas

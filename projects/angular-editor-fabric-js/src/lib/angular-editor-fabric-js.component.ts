@@ -862,26 +862,56 @@ export class FabricjsEditorComponent implements AfterViewInit {
     const json = JSON.stringify(this.canvas);
     localStorage.setItem("Kanvas", json);
     console.log("json");
-    console.log(json);
+    const blob = new Blob([json], { type: 'application/json' });
+
+    // Generate a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary link element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'canvas.json'; // The file name for the downloaded file
+
+    // Append link to the DOM, trigger click, then remove the link
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Revoke the URL once done
+    URL.revokeObjectURL(url);
   }
 
   loadCanvasFromJSON() {
-    const CANVAS = localStorage.getItem("Kanvas");
-    console.log("CANVAS");
-    console.log(CANVAS);
-
-    // and load everything from the same json
-    this.canvas.loadFromJSON(CANVAS, () => {
-      console.log("CANVAS untar");
-      console.log(CANVAS);
-
-      // making sure to render canvas at the end
-      this.canvas.renderAll();
-
-      // and checking if object's "name" is preserved
-      console.log("this.canvas.item(0).name");
-      console.log(this.canvas);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json, .json';
+  
+    input.addEventListener('change', (event: Event) => {
+      const fileInput = event.target as HTMLInputElement;
+      if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+  
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          const jsonString = e.target?.result as string;
+          console.log("Loaded JSON:", jsonString);
+  
+          // Load the canvas from the JSON string
+          this.canvas.loadFromJSON(jsonString, () => {
+            console.log("Canvas loaded from JSON");
+            this.canvas.renderAll();
+  
+            // You can do any additional processing here, for example checking
+            // that the first object's name is preserved:
+            console.log("this.canvas.item(0):", this.canvas.item(0));
+          });
+        };
+  
+        reader.readAsText(file);
+      }
     });
+  
+    input.click(); // Opens the file dialog
   }
 
   rasterizeJSON() {
