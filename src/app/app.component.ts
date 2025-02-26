@@ -8,6 +8,85 @@ import { fabric } from "fabric";
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
+  @ViewChild('canvasEditor', { static: false }) canvasEditor!: FabricjsEditorComponent;
+
+  ngAfterViewInit() {
+    // Canvas is now initialized inside the editor component
+  }
+
+  /** Import (Load) Saved Canvas */
+/** Import SVG File and Preserve Bleed Area */
+loadCanvas() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/svg+xml';
+
+  input.addEventListener('change', (event: Event) => {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const svgString = e.target?.result as string;
+        const fabricCanvas = this.canvas.getCanvas(); // Get Fabric.js instance
+
+        fabricCanvas.clear(); // Clear previous objects before loading new one
+
+        fabric.loadSVGFromString(svgString, (objects, options) => {
+          const editableObjects: fabric.Object[] = [];
+
+          objects.forEach((obj) => {
+            if (obj instanceof fabric.Text || obj instanceof fabric.IText) {
+              const textObj = new fabric.Textbox((obj as fabric.Text).text || '', {
+                left: obj.left || 0,
+                top: obj.top || 0,
+                fontFamily: (obj as fabric.Text).fontFamily || 'Arial',
+                fontSize: (obj as fabric.Text).fontSize || 20,
+                fill: (obj as fabric.Text).fill || '#000',
+                width: obj.width || 200,
+                selectable: true,
+                evented: true,
+                editable: true,
+                hasControls: true,
+                hasBorders: true
+              });
+
+              editableObjects.push(textObj);
+            } else {
+              obj.set({
+                selectable: true,
+                evented: true,
+                hasControls: true,
+                hasBorders: true,
+                hoverCursor: 'move'
+              });
+
+              editableObjects.push(obj);
+            }
+          });
+
+          // Add elements to canvas
+          editableObjects.forEach((obj) => fabricCanvas.add(obj));
+
+          fabricCanvas.renderAll();
+
+          // ✅ Re-add the bleed lines after import
+          this.addDashedSafetyArea();
+
+          alert('SVG Template Imported Successfully! Editable text is now enabled.');
+        });
+      };
+
+      reader.readAsText(file);
+    }
+  });
+
+  input.click(); // Open file dialog
+}
+
+
+  
   fontSizes: number[] = [
     8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64,
   ];
@@ -2183,4 +2262,9 @@ export class AppComponent implements OnInit {
 
     this.canvas.getCanvas().renderAll();
   }
+  getBleedAreaLines(): fabric.Object[] {
+    return this.canvas.getCanvas().getObjects().filter((obj: any) => obj._id === "bleed-line");
+  }
+  
+  
 }

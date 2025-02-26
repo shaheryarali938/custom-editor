@@ -210,19 +210,14 @@ export class FabricjsEditorComponent implements AfterViewInit {
   }
 
   addDashedSafetyArea(): void {
-    if (!this.size.bleed || this.size.bleed < 0) {
-      console.warn("Invalid bleed value. Skipping safety area update.");
-      return;
-    }
-
     if (this.safetyArea) {
       this.canvas.remove(this.safetyArea);
     }
-
+  
     const padding = this.size.bleed;
     const canvasWidth = this.canvas.getWidth();
     const canvasHeight = this.canvas.getHeight();
-
+  
     this.safetyArea = new fabric.Rect({
       left: padding,
       top: padding,
@@ -235,10 +230,12 @@ export class FabricjsEditorComponent implements AfterViewInit {
       evented: false,
       excludeFromExport: true,
     });
-
+  
     this.canvas.add(this.safetyArea);
     this.canvas.sendToBack(this.safetyArea);
   }
+  
+  
 
   // Block "Add text"
 
