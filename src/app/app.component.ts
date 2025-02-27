@@ -31,12 +31,17 @@ loadCanvas() {
         const svgString = e.target?.result as string;
         const fabricCanvas = this.canvas.getCanvas(); // Get Fabric.js instance
 
+        // Step 1: Store Bleed Area Before Clearing Canvas
+        const bleedLines = this.getBleedAreaLines(); // Get existing bleed area
+
         fabricCanvas.clear(); // Clear previous objects before loading new one
 
+        // Load SVG and ensure text is editable
         fabric.loadSVGFromString(svgString, (objects, options) => {
           const editableObjects: fabric.Object[] = [];
 
           objects.forEach((obj) => {
+            // Check if the object is text-based
             if (obj instanceof fabric.Text || obj instanceof fabric.IText) {
               const textObj = new fabric.Textbox((obj as fabric.Text).text || '', {
                 left: obj.left || 0,
@@ -54,6 +59,7 @@ loadCanvas() {
 
               editableObjects.push(textObj);
             } else {
+              // Make non-text objects selectable and editable
               obj.set({
                 selectable: true,
                 evented: true,
@@ -66,14 +72,13 @@ loadCanvas() {
             }
           });
 
-          // Add elements to canvas
+          // Step 2: Add Elements to Canvas
           editableObjects.forEach((obj) => fabricCanvas.add(obj));
 
+          // Step 3: Restore Bleed Area Lines
+          bleedLines.forEach((line) => fabricCanvas.add(line));
+
           fabricCanvas.renderAll();
-
-          // ✅ Re-add the bleed lines after import
-          this.addDashedSafetyArea();
-
           alert('SVG Template Imported Successfully! Editable text is now enabled.');
         });
       };
@@ -84,7 +89,6 @@ loadCanvas() {
 
   input.click(); // Open file dialog
 }
-
 
   
   fontSizes: number[] = [
@@ -1536,6 +1540,7 @@ loadCanvas() {
           .catch((err) => console.warn(`Failed to load font "${font}":`, err));
       }
     });
+    
 
     // Add event listeners for object selection
     this.canvas
@@ -2262,9 +2267,9 @@ loadCanvas() {
 
     this.canvas.getCanvas().renderAll();
   }
-  getBleedAreaLines(): fabric.Object[] {
-    return this.canvas.getCanvas().getObjects().filter((obj: any) => obj._id === "bleed-line");
-  }
-  
+getBleedAreaLines(): fabric.Object[] {
+  return this.canvas.getCanvas().getObjects().filter((obj: any) => obj._id === "bleed-line");
+}
+
   
 }
