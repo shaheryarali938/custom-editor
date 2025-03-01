@@ -184,10 +184,17 @@ loadCanvas() {
   // Pre-built templates
   prebuiltTemplates = [
     {
-      "name": "Blessed Postcard 4.25",
-      "image": "../assets/img/blessed_postcard_4.25x5.5.png",
-      "filePathFront": "../assets/prebuilt-templates/blessed_postcard_4.25x5.5_front.json",
-      "filePathBack": "../assets/prebuilt-templates/blessed_postcard_4.25x5.5_back.json",
+      "name": "Blessed Postcard 4.25 (Front)",
+      "image": "../assets/img/blessed.png",
+      "filePathFront": "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
+      "filePathBack": "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json",
+      
+    },
+    {
+      "name": "Blessed Postcard 4.25 (Back)",
+      "image": "../assets/img/blessed-back.png",
+      "filePathFront": "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+      
     }
   ];
 

@@ -61,8 +61,8 @@ export class FabricjsEditorComponent implements AfterViewInit {
   public url: string | ArrayBuffer = "";
   public bgUrl: string | HTMLImageElement = "";
   public size: any = {
-    width: 350,
-    height: 350,
+    width: 528,
+    height: 408,
     bleed: 10,
   };
   public safetyArea: fabric.Rect;

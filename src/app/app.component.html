@@ -18,17 +18,22 @@
               class="col-4 mb-4"
               *ngFor="let template of prebuiltTemplates"
               (click)="loadImageTemplate(template)"
-              style="cursor: pointer"
+              style="cursor: pointer;font-size: 13px;"
             >
+            
               <div
                 class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
               >
+              
                 <img
                   [src]="template.image"
                   alt="Template"
                   class="img-fluid w-100 rounded-lg"
                 />
+                
+                
               </div>
+              {{ template.name }} 
             </div>
           </div>
         </div>
@@ -860,13 +865,14 @@
           <div class="card">
             <div class="card-header bg-yellow">Templates</div>
             <div class="card-body">
+              
               <div class="row w-100">
                 <!-- Loop through image templates -->
                 <div
-                  class="col-4 w-100 mb-3"
+                  class="col-4 w-100 mb-3 template-name"
                   *ngFor="let template of prebuiltTemplates"
                   (click)="loadImageTemplate(template)"
-                  style="cursor: pointer"
+                  style="cursor: pointer; font-size:12px"
                 >
                   <!-- Image template -->
                   <div
@@ -888,6 +894,7 @@
                       "
                     />
                   </div>
+                  {{ template.name }} 
                 </div>
               </div>
             </div>
