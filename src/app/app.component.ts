@@ -184,20 +184,89 @@ loadCanvas() {
   // Pre-built templates
   prebuiltTemplates = [
     {
-      "name": "Blessed Postcard 4.25 (Front)",
-      "image": "../assets/img/blessed.png",
-      "filePathFront": "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
-      "filePathBack": "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json",
+      name: "Blessed Postcard 4.25 (Front)",
+      size: "4.25x5.5",
+      image: "../assets/img/blessed.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
+      // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+    },
+    {
+      name: "Blessed Postcard 4.25 (Back)",
+      size: "4.25x5.5",
+      image: "../assets/img/blessed-back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+    },
+    {
+      name: "Doodle Street View (Front)",
+      size: "4.25x5.5",
+      image: "../assets/img/doodle_street_view.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_front.json",
       
     },
     {
-      "name": "Blessed Postcard 4.25 (Back)",
-      "image": "../assets/img/blessed-back.png",
-      "filePathFront": "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+      name: "Doodle Street View (Back)",
+      size: "4.25x5.5",
+      image: "../assets/img/doodle_street_view_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_back.json"
+    },
+    {
+      name: "Flower Postcard (Front)",
+      size: "4.25x5.5",
+      image: "../assets/img/flower_postcard_front.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_front.json",
       
+    },
+    {
+      name: "Flower Postcard (Back)",
+      size: "4.25x5.5",
+      image: "../assets/img/flower_postcard_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_back.json"
+    },
+
+
+
+
+    {
+      name: "Casita Postcard (Front)",
+      size: "8.5x5.5",
+      image: "../assets/img/casita_postcard_front.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_front.json",
+      // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+    },
+    {
+      name: "Casita Postcard (Back)",
+      size: "8.5x5.5",
+      image: "../assets/img/casita_postcard_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_back.json"
+    },
+    {
+      name: "Doodle Street View (Front)",
+      size: "8.5x5.5",
+      image: "../assets/img/doodle_street_view.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_front_8.5.json",
+      
+    },
+    {
+      name: "Doodle Street View (Back)",
+      size: "8.5x5.5",
+      image: "../assets/img/doodle_street_view_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_back_8.5.json"
+    },
+    {
+      name: "Flower Postcard (Front)",
+      size: "8.5x5.5",
+      image: "../assets/img/flower_postcard_front.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_front_8.5.json",
+      
+    },
+    {
+      name: "Flower Postcard (Back)",
+      size: "8.5x5.5",
+      image: "../assets/img/flower_postcard_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_back_8.5.json"
     }
   ];
-
+  
   // for images in the inside the image tab
   images: string[] = [
     "../assets/img/bird.png",
@@ -646,18 +715,25 @@ loadCanvas() {
     this.showProductData = false;
   }
 
-  public changeSizeWithMeasures(height: number, width: number) {
-    // Clear the canvas before applying new size
-    this.canvas.getCanvas().clear();
-    this.frontCanvasData = null;
-    this.backCanvasData = null;
-    // Call the existing changeSizeWithMeasures function in fabric.ts
-    this.canvas.changeSizeWithMeasures(height, width);
-    this.addDashedSafetyArea();
+// In your component class:
+public selectedSize: string | null = null;
 
-    console.log(`Canvas size changed to ${width}x${height}`);
-    this.showProductData = true;
-  }
+public changeSizeWithMeasures(height: number, width: number, sizeLabel: string) {
+  // 1) Clear canvas
+  this.canvas.getCanvas().clear();
+  this.frontCanvasData = null;
+  this.backCanvasData = null;
+
+  // 2) Change size of the Fabric.js canvas
+  this.canvas.changeSizeWithMeasures(height, width);
+  this.addDashedSafetyArea();
+
+  // 3) Record which size has been selected
+  this.selectedSize = sizeLabel;
+
+  console.log(`Canvas size changed to ${width}x${height}, selectedSize = ${sizeLabel}`);
+  this.showProductData = true;
+}
 
   // public addText() {
   //   if (!this.canvas.textString) {
