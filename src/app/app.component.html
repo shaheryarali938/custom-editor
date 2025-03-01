@@ -15,10 +15,13 @@
           <div class="row w-100">
             <!-- We loop over all prebuiltTemplates in an <ng-container> -->
             <ng-container *ngFor="let template of prebuiltTemplates">
-              <!-- Then only display the template if it matches the selected size -->
+              <!-- Display only if size matches and side matches -->
               <div
                 class="col-4 mb-4"
-                *ngIf="template.size === selectedSize"
+                *ngIf="
+                  template.size === selectedSize &&
+                  (isFront ? template.side === 'front' : template.side === 'back')
+                "
                 (click)="loadImageTemplate(template)"
                 style="cursor: pointer; font-size: 13px;"
               >
@@ -36,6 +39,7 @@
             </ng-container>
           </div>
         </div>
+        
         
       </div>
       <!-- Close Button for Product Data overlay -->

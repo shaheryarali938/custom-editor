@@ -186,6 +186,7 @@ loadCanvas() {
     {
       name: "Blessed Postcard 4.25 (Front)",
       size: "4.25x5.5",
+      side: "front",
       image: "../assets/img/blessed.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
       // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
@@ -193,12 +194,14 @@ loadCanvas() {
     {
       name: "Blessed Postcard 4.25 (Back)",
       size: "4.25x5.5",
+      side: "back",
       image: "../assets/img/blessed-back.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
     },
     {
       name: "Doodle Street View (Front)",
       size: "4.25x5.5",
+      side: "front",
       image: "../assets/img/doodle_street_view.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_front.json",
       
@@ -206,12 +209,14 @@ loadCanvas() {
     {
       name: "Doodle Street View (Back)",
       size: "4.25x5.5",
+      side: "back",
       image: "../assets/img/doodle_street_view_back.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_back.json"
     },
     {
       name: "Flower Postcard (Front)",
       size: "4.25x5.5",
+      side: "front",
       image: "../assets/img/flower_postcard_front.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_front.json",
       
@@ -219,6 +224,7 @@ loadCanvas() {
     {
       name: "Flower Postcard (Back)",
       size: "4.25x5.5",
+      side: "back",
       image: "../assets/img/flower_postcard_back.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_back.json"
     },
@@ -229,6 +235,7 @@ loadCanvas() {
     {
       name: "Casita Postcard (Front)",
       size: "8.5x5.5",
+      side: "front",
       image: "../assets/img/casita_postcard_front.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_front.json",
       // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
@@ -236,12 +243,14 @@ loadCanvas() {
     {
       name: "Casita Postcard (Back)",
       size: "8.5x5.5",
+      side: "back",
       image: "../assets/img/casita_postcard_back.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_back.json"
     },
     {
       name: "Doodle Street View (Front)",
       size: "8.5x5.5",
+      side: "front",
       image: "../assets/img/doodle_street_view.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_front_8.5.json",
       
@@ -249,12 +258,14 @@ loadCanvas() {
     {
       name: "Doodle Street View (Back)",
       size: "8.5x5.5",
+      side: "back",
       image: "../assets/img/doodle_street_view_back.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_back_8.5.json"
     },
     {
       name: "Flower Postcard (Front)",
       size: "8.5x5.5",
+      side: "front",
       image: "../assets/img/flower_postcard_front.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_front_8.5.json",
       
@@ -262,6 +273,7 @@ loadCanvas() {
     {
       name: "Flower Postcard (Back)",
       size: "8.5x5.5",
+      side: "back",
       image: "../assets/img/flower_postcard_back.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_back_8.5.json"
     }
