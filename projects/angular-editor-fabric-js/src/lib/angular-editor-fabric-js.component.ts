@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { fabric } from "fabric";
+import { HttpClient, HttpHandler, HttpXhrBackend } from '@angular/common/http';
 
 @Component({
   selector: "angular-editor-fabric-js",
@@ -308,35 +309,24 @@ export class FabricjsEditorComponent implements AfterViewInit {
     }
   }
 
-  loadImageTemplate(template: any) {
-    if (!template) return;
+  loadImageTemplate(template: any): void {
+    const handler: HttpHandler = new HttpXhrBackend({ build: () => new XMLHttpRequest() });
+    const httpClient = new HttpClient(handler);
+    httpClient.get(template.filePathFront, { responseType: 'text' })
+      .subscribe(
+        (jsonString: string) => {
+          console.log("Loaded JSON template:", jsonString);
 
-    this.canvas.clear();
-    this.addDashedSafetyArea();
-    fabric.Image.fromURL(template.image, (img) => {
-      img.set({
-        left: 50,
-        top: 50,
-      });
-      this.extend(img, this.randomId());
-      this.canvas.add(img);
-      this.selectItemAfterAdded(img);
-
-      // Add text objects from the template
-      template.objects.forEach((obj: any) => {
-        const text = new fabric.Textbox(obj.text, {
-          left: obj.left,
-          top: obj.top,
-          fontSize: obj.fontSize,
-          fontFamily: obj.fontFamily,
-          fill: obj.fill,
-          width: obj.width,
-        });
-        this.canvas.add(text);
-      });
-
-      this.canvas.renderAll();
-    });
+          // Load the canvas from the JSON string
+          this.canvas.loadFromJSON(jsonString, () => {
+            console.log("Canvas loaded from JSON template");
+            this.canvas.renderAll();
+          });
+        },
+        error => {
+          console.error("Error loading template JSON file:", error);
+        }
+      );
   }
 
   // Block "Upload Image"
