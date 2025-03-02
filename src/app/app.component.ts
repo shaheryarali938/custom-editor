@@ -196,7 +196,7 @@ loadCanvas() {
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/blessed-back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/Back.json"
     },
     {
       name: "Doodle Street View (Front)",
@@ -732,9 +732,9 @@ public selectedSize: string | null = null;
 
 public changeSizeWithMeasures(height: number, width: number, sizeLabel: string) {
   // 1) Clear canvas
-  this.canvas.getCanvas().clear();
-  this.frontCanvasData = null;
-  this.backCanvasData = null;
+  // this.canvas.getCanvas().clear();
+  // this.frontCanvasData = null;
+  // this.backCanvasData = null;
 
   // 2) Change size of the Fabric.js canvas
   this.canvas.changeSizeWithMeasures(height, width);
