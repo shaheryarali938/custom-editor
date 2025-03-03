@@ -20,10 +20,12 @@
                 class="col-4 mb-4"
                 *ngIf="
                   template.size === selectedSize &&
-                  (isFront ? template.side === 'front' : template.side === 'back')
+                  (isFront
+                    ? template.side === 'front'
+                    : template.side === 'back')
                 "
                 (click)="loadImageTemplate(template)"
-                style="cursor: pointer; font-size: 13px;"
+                style="cursor: pointer; font-size: 13px"
               >
                 <div
                   class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
@@ -39,8 +41,6 @@
             </ng-container>
           </div>
         </div>
-        
-        
       </div>
       <!-- Close Button for Product Data overlay -->
       <div class="text-center mt-3">
@@ -129,7 +129,6 @@
                 </button>
               </div>
 
-
               <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
@@ -143,11 +142,6 @@
                   Import Canvas
                 </button>
               </div>
-
-              
-              
-
-              
             </div>
           </div>
         </div>
@@ -823,21 +817,21 @@
             >
               <div class="col-md-12 col-12">
                 <button
-                type="button"
-                class="btn btn-yellow w-100 my-1 mt-2"
-                (click)="changeSizeWithMeasures(408, 528, '4.25x5.5')"
-              >
-                First Class Postcard (4.25 x 5.5)
-              </button>
+                  type="button"
+                  class="btn btn-yellow w-100 my-1 mt-2"
+                  (click)="changeSizeWithMeasures(408, 528, '4.25x5.5')"
+                >
+                  First Class Postcard (4.25 x 5.5)
+                </button>
               </div>
               <div class="col-md-12 col-12">
                 <button
-                type="button"
-                class="btn btn-yellow w-100 my-1"
-                (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5')"
-              >
-                Half Page Postcard (8.5 x 5.5)
-              </button>
+                  type="button"
+                  class="btn btn-yellow w-100 my-1"
+                  (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5')"
+                >
+                  Half Page Postcard (8.5 x 5.5)
+                </button>
               </div>
             </div>
           </div>
@@ -862,15 +856,14 @@
         >
           <div class="card">
             <div class="card-header bg-yellow">Templates</div>
-            <div class="card-body">
-              
+            <div class="card-body max-height">
               <div class="row w-100">
                 <!-- Loop through image templates -->
                 <div
                   class="col-4 w-100 mb-3 template-name"
                   *ngFor="let template of prebuiltTemplates"
                   (click)="loadImageTemplate(template)"
-                  style="cursor: pointer; font-size:12px"
+                  style="cursor: pointer; font-size: 12px"
                 >
                   <!-- Image template -->
                   <div
@@ -892,7 +885,7 @@
                       "
                     />
                   </div>
-                  {{ template.name }} 
+                  {{ template.name }}
                 </div>
               </div>
             </div>
