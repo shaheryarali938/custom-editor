@@ -856,11 +856,11 @@
         >
           <div class="card">
             <div class="card-header bg-yellow">Templates</div>
-            <div class="card-body max-height">
-              <div class="row w-100">
+            <div class="card-body px-0 template-max-height">
+              <div class="row p-0 m-0 w-100">
                 <!-- Loop through image templates -->
                 <div
-                  class="col-4 w-100 mb-3 template-name"
+                  class="col-4 text-center w-100 mb-3 template-name"
                   *ngFor="let template of prebuiltTemplates"
                   (click)="loadImageTemplate(template)"
                   style="cursor: pointer; font-size: 12px"

@@ -57,10 +57,38 @@
     padding: 10px 0;
   }
 }
+.template-max-height {
+  overflow-y: auto;
+  max-height: 70vh !important;
+
+  /* Scrollbar styling for Firefox */
+  scrollbar-width: thin;
+  /* Makes it thin */
+  scrollbar-color: #c1c1c1 transparent;
+  /* Sets scrollbar color */
+}
+
+/* Scrollbar styling for WebKit browsers (Chrome, Safari, Edge) */
+.template-max-height::-webkit-scrollbar {
+  width: 4px;
+  /* Width of the scrollbar */
+}
+
+.template-max-height::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  /* Color of the scrollbar handle */
+  border-radius: 2px;
+  /* Rounded corners for the scrollbar handle */
+}
+
+.template-max-height::-webkit-scrollbar-track {
+  background: transparent;
+  /* Background of the scrollbar track */
+}
 
 .max-height {
   overflow-y: auto;
-  max-height: 60vh !important;
+  max-height: 58vh !important;
 
   /* Scrollbar styling for Firefox */
   scrollbar-width: thin;
