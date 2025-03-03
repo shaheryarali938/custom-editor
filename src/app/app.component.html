@@ -54,7 +54,7 @@
             <div
               class="row align-items-center justify-content-center text-black text-center py-3"
             >
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -67,7 +67,7 @@
                   Export to Image
                 </button>
               </div>
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -80,7 +80,20 @@
                   Export to SVG
                 </button>
               </div>
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
+                <button
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Export to SVG"
+                  type="button"
+                  class="btn btn-yellow custom-scale w-100"
+                  (click)="saveCanvasToJSON()"
+                >
+                  <i class="d-inline fa fa-download" aria-hidden="true"></i>
+                  Export to Canvas
+                </button>
+              </div>
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -93,7 +106,7 @@
                   Export to HTML
                 </button>
               </div>
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -106,6 +119,26 @@
                   Clean
                 </button>
               </div>
+
+
+              <div class="col-2 p-0 px-md-3">
+                <button
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Import Canvas"
+                  type="button"
+                  class="btn btn-yellow custom-scale w-100"
+                  (click)="loadCanvasFromJSON()"
+                >
+                  <i class="d-inline fa fa-upload" aria-hidden="true"></i>
+                  Import Canvas
+                </button>
+              </div>
+
+              
+              
+
+              
             </div>
           </div>
         </div>
@@ -779,19 +812,21 @@
             <div
               class="card-body row p-2 align-items-center justify-content-center"
             >
-              <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4' x 6' (92 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1 mt-2"
-                  (click)="changeSizeWithMeasures(367, 550)"
-                >
-                  Standard (4 x 6)
-                </button>
-              </div>
-              <div class="col-md-6 col-12">
+            <div class="col-md-12 col-12">
+              <button
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="4.25' x 5.5' (96 DPI)"
+                type="button"
+                class="btn btn-yellow w-100 my-1 mt-2"
+                (click)="changeSizeWithMeasures(408, 528)"  
+              >
+                First Class Postcard (4.25 x 5.5)
+              </button>
+            </div>
+            
+          
+              <!-- <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -802,8 +837,8 @@
                 >
                   Large (5 x 7)
                 </button>
-              </div>
-              <div class="col-md-6 col-12">
+              </div> -->
+              <!-- <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -850,8 +885,8 @@
                 >
                   A4 Letter (8 x 11)
                 </button>
-              </div>
-              <div class="col-md-6 col-12">
+              </div> -->
+              <!-- <div class="col-md-6 col-12">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -886,7 +921,7 @@
                 >
                   DL Size (4 x 8)
                 </button>
-              </div>
+              </div> -->
               <!-- <div class="col-md-6 col-12">">
                   <button
                     data-toggle="tooltip"
@@ -899,18 +934,19 @@
                     Jumbo (6 x 11)
                   </button>
                 </div> -->
-              <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4.13' x 5.83' (133 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1 w-100"
-                  (click)="changeSizeWithMeasures(387, 550)"
-                >
-                  A6 Postcard (4 x 5)
-                </button>
-              </div>
+                <div class="col-md-12 col-12">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="8.5' x 5.5' (133 DPI)"
+                    type="button"
+                    class="btn btn-yellow w-100 my-1"
+                    (click)="changeSizeWithMeasures(528, 1056)"
+                  >
+                    First Class Half Page Postcard (8.5 x 5.5)
+                  </button>
+                </div>
+                
             </div>
           </div>
         </div>
