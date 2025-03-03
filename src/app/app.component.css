@@ -43,3 +43,6 @@
   overflow-y: auto;
   max-height: 400px;
 }
+.template-name{
+  font-size: 12px !important;
+}

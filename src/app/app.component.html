@@ -13,25 +13,34 @@
         <!-- Card Body -->
         <div class="card-body">
           <div class="row w-100">
-            <!-- Loop through image templates -->
-            <div
-              class="col-4 mb-4"
-              *ngFor="let template of prebuiltTemplates"
-              (click)="loadImageTemplate(template)"
-              style="cursor: pointer"
-            >
+            <!-- We loop over all prebuiltTemplates in an <ng-container> -->
+            <ng-container *ngFor="let template of prebuiltTemplates">
+              <!-- Display only if size matches and side matches -->
               <div
-                class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
+                class="col-4 mb-4"
+                *ngIf="
+                  template.size === selectedSize &&
+                  (isFront ? template.side === 'front' : template.side === 'back')
+                "
+                (click)="loadImageTemplate(template)"
+                style="cursor: pointer; font-size: 13px;"
               >
-                <img
-                  [src]="template.image"
-                  alt="Template"
-                  class="img-fluid w-100 rounded-lg"
-                />
+                <div
+                  class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
+                >
+                  <img
+                    [src]="template.image"
+                    alt="Template"
+                    class="img-fluid w-100 rounded-lg"
+                  />
+                </div>
+                {{ template.name }}
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
+        
+        
       </div>
       <!-- Close Button for Product Data overlay -->
       <div class="text-center mt-3">
@@ -812,141 +821,24 @@
             <div
               class="card-body row p-2 align-items-center justify-content-center"
             >
-            <div class="col-md-12 col-12">
-              <button
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="4.25' x 5.5' (96 DPI)"
+              <div class="col-md-12 col-12">
+                <button
                 type="button"
                 class="btn btn-yellow w-100 my-1 mt-2"
-                (click)="changeSizeWithMeasures(408, 528)"  
+                (click)="changeSizeWithMeasures(408, 528, '4.25x5.5')"
               >
                 First Class Postcard (4.25 x 5.5)
               </button>
-            </div>
-            
-          
-              <!-- <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="5' x 7' (110 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1 mt-md-2"
-                  (click)="changeSizeWithMeasures(385, 550)"
-                >
-                  Large (5 x 7)
-                </button>
-              </div> -->
-              <!-- <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4' x 9' (61 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(244, 550)"
-                >
-                  Panoramic (4 x 9)
-                </button>
               </div>
-              <div class="col-md-6 col-12">
+              <div class="col-md-12 col-12">
                 <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="5' x 5' (110 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(550, 550)"
-                >
-                  Square (5 x 5)
-                </button>
+                type="button"
+                class="btn btn-yellow w-100 my-1"
+                (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5')"
+              >
+                Half Page Postcard (8.5 x 5.5)
+              </button>
               </div>
-              <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="8.5' x 11' (65 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(711, 550)"
-                >
-                  US Letter (8 x 11)
-                </button>
-              </div>
-              <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="8.27' x 11.69' (66 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(778, 550)"
-                >
-                  A4 Letter (8 x 11)
-                </button>
-              </div> -->
-              <!-- <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="8.5' x 14' (65 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(906, 550)"
-                >
-                  Legal Letter (8 x 14)
-                </button>
-              </div>
-              <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="5.5' x 8.5' (100 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(425, 550)"
-                >
-                  Half Letter (5 x 8)
-                </button>
-              </div>
-              <div class="col-md-6 col-12">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4.33' x 8.66' (127 DPI)"
-                  type="button"
-                  class="btn btn-yellow w-100 my-1"
-                  (click)="changeSizeWithMeasures(275, 550)"
-                >
-                  DL Size (4 x 8)
-                </button>
-              </div> -->
-              <!-- <div class="col-md-6 col-12">">
-                  <button
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="6' x 11' (80 DPI)"
-                    type="button"
-                    class="btn btn-yellow w-100 my-1"
-                    (click)="changeSizeWithMeasures(480, 880)"
-                  >
-                    Jumbo (6 x 11)
-                  </button>
-                </div> -->
-                <div class="col-md-12 col-12">
-                  <button
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="8.5' x 5.5' (133 DPI)"
-                    type="button"
-                    class="btn btn-yellow w-100 my-1"
-                    (click)="changeSizeWithMeasures(528, 1056)"
-                  >
-                    First Class Half Page Postcard (8.5 x 5.5)
-                  </button>
-                </div>
-                
             </div>
           </div>
         </div>
@@ -971,13 +863,14 @@
           <div class="card">
             <div class="card-header bg-yellow">Templates</div>
             <div class="card-body">
+              
               <div class="row w-100">
                 <!-- Loop through image templates -->
                 <div
-                  class="col-4 w-100 mb-3"
+                  class="col-4 w-100 mb-3 template-name"
                   *ngFor="let template of prebuiltTemplates"
                   (click)="loadImageTemplate(template)"
-                  style="cursor: pointer"
+                  style="cursor: pointer; font-size:12px"
                 >
                   <!-- Image template -->
                   <div
@@ -999,6 +892,7 @@
                       "
                     />
                   </div>
+                  {{ template.name }} 
                 </div>
               </div>
             </div>

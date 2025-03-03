@@ -183,1293 +183,241 @@ loadCanvas() {
 
   // Pre-built templates
   prebuiltTemplates = [
-    // {
-    //   image: "../assets/img/283w-gp7mtx-pwXA.webp",
-    //   text: "Bird Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 200,
-    //       fontSize: 20,
-    //       fontFamily: "Arial",
-    //       text: "Add text for Tea Party Template!",
-    //       fill: "#000000",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/400w-elzoGX-60GY.webp",
-    //   text: "Branch Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 200,
-    //       fontSize: 20,
-    //       fontFamily: "Arial",
-    //       text: "This is a Birthday Template!",
-    //       fill: "#000000",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/1600w-yK5aaGtg5ag.webp",
-    //   text: "Merry Christmas Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 300,
-    //       fontSize: 30,
-    //       fontFamily: "Arial",
-    //       text: "Merry Christmas!",
-    //       fill: "#FF0000",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/1131w-XNBaqNbEN0g.webp",
-    //   text: "Hello Christmas Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 300,
-    //       fontSize: 30,
-    //       fontFamily: "Arial",
-    //       text: "Hello Christmas!",
-    //       fill: "#FF5733",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/400w-jwGZdB976qs.webp",
-    //   text: "Green & Purple Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 300,
-    //       fontSize: 30,
-    //       fontFamily: "Arial",
-    //       text: "Green & Purple!",
-    //       fill: "#28a745",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/283w-IMWozLAU4-Q.webp",
-    //   text: "Green & Purple Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 300,
-    //       fontSize: 30,
-    //       fontFamily: "Arial",
-    //       text: "Green & Purple!",
-    //       fill: "#28a745",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/283w-ZtJkm9u4ocI.webp",
-    //   text: "Green & Purple Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 300,
-    //       fontSize: 30,
-    //       fontFamily: "Arial",
-    //       text: "Green & Purple!",
-    //       fill: "#28a745",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/283w-j7P7DHcqJxU.webp",
-    //   text: "Travel Visit Template",
-    //   objects: [
-    //     {
-    //       type: "textbox",
-    //       left: 150,
-    //       top: 20,
-    //       width: 300,
-    //       fontSize: 30,
-    //       fontFamily: "Arial",
-    //       text: "Travel & Visit!",
-    //       fill: "#007bff",
-    //     },
-    //   ],
-    // },
-
-
-
-
-    
-    // {
-    //   image: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg",
-    //   text: "Real Estate Template", // Name of the template
-    //   objects: [
-    //     // Permit Indicia Text
-    //     {
-    //       type: "textbox",
-    //       left: 310,
-    //       top: 0,
-    //       width: 70,
-    //       height: 52,
-    //       fontSize: 7,
-    //       fontFamily: "Myriad Pro",
-    //       text: "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       fill: "#000000",
-    //       textAlign: "center",
-    //       lineHeight: 1.2,
-    //     },
-    //     // Red Text Box
-    //     {
-    //       type: "textbox",
-    //       left: -4,
-    //       top: -1,
-    //       width: 252,
-    //       height: 46,
-    //       fontSize: 10,
-    //       fontFamily: "Your Font",
-    //       text: "I can pay you cash for your house, so please, contact me ASAP if you'd like to sell.",
-    //       fill: "#D9002E",
-    //       padding: 4,
-    //     },
-    //     // Image 1
-    //     {
-    //       type: "image",
-    //       left: 245,
-    //       top: 52,
-    //       width: 166,
-    //       height: 79,
-    //       src: "../assets/img/candy-stick.png", // Replace with the actual image path
-    //     },
-    //     // Image 2
-    //     {
-    //       type: "image",
-    //       left: 375,
-    //       top: 458,
-    //       width: 110,
-    //       height: 52,
-    //       src: "../assets/img/candy-stick.png", // Replace with the actual image path
-    //     },
-    //     // Flip Over Text
-    //     {
-    //       type: "textbox",
-    //       left: 118,
-    //       top: 122,
-    //       width: 362,
-    //       height: 35,
-    //       fontSize: 10,
-    //       fontFamily: "Your Font",
-    //       text: "Flip over for something very important!",
-    //       fill: "#D9002E",
-    //     },
-    //     // Image 3
-    //     {
-    //       type: "image",
-    //       left: 278,
-    //       top: 127,
-    //       width: 202,
-    //       height: 38,
-    //       src: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg", // Replace with the actual image path
-    //     },
-    //     // Main Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 0,
-    //       top: 467,
-    //       width: 472,
-    //       height: 351,
-    //       fontSize: 10,
-    //       fontFamily: "Your Font",
-    //       text: "Hi [Name],\nMy name is [Your Name] and\nI want to buy your house at\n[Address]\nI can pay you CASH no matter\nwhat the condition is of the home.\nCall me now to receive a Fair Cash Offer!\n\n[Phone Number]\n\nP.S. No Realtor Fees, No Appraisals,\nNo Repairs, No Hassles!\nCall Me Right Away!",
-    //       fill: "#D9002E",
-    //       textAlign: "center",
-    //       padding: 4,
-    //     },
-    //     // Address Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 134,
-    //       top: 186,
-    //       width: 337,
-    //       height: 30,
-    //       fontSize: 13,
-    //       fontFamily: "Ctorres",
-    //       text: "[Address Line 1]\n[Address Line 2]",
-    //       fill: "#000000",
-    //       padding: 4,
-    //     },
-    //     // Image 4
-    //     {
-    //       type: "image",
-    //       left: 0,
-    //       top: 76,
-    //       width: 100,
-    //       height: 97,
-    //       src: "../assets/img/NewDoodles - Arrow (Blue)_page-0001.jpg", // Replace with the actual image path
-    //     },
-    //     // Contact Info Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 134,
-    //       top: 223,
-    //       width: 307,
-    //       height: 67,
-    //       fontSize: 10,
-    //       fontFamily: "Your Font",
-    //       text: "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
-    //       fill: "#D9002E",
-    //       padding: 4,
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/DOODLES_0001_Layer-3 (1).png",
-    //   text: "Real Estate Template", // Name of the template
-    //   objects: [
-    //     // Permit Indicia Text
-    //     {
-    //       type: "textbox",
-    //       left: 410,
-    //       top: 0,
-    //       width: 70,
-    //       height: 52,
-    //       fontSize: 7,
-    //       fontFamily: "Myriad Pro",
-    //       text: "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       fill: "#000000",
-    //       textAlign: "center",
-    //       lineHeight: 1.2,
-    //     },
-    //     // Headline Text
-    //     {
-    //       type: "textbox",
-    //       left: 0,
-    //       top: 63,
-    //       width: 480,
-    //       height: 174,
-    //       fontSize: 24,
-    //       fontFamily: "Arial Rounded MT Bold",
-    //       text: "Don't throw away this postcard, I have solutions for situations like yours!",
-    //       fill: "#000000",
-    //       textAlign: "center",
-    //     },
-    //     // Contact Info
-    //     {
-    //       type: "textbox",
-    //       left: 561,
-    //       top: 413,
-    //       width: 480,
-    //       height: 256,
-    //       fontSize: 18,
-    //       fontFamily: "Arial Rounded MT Bold",
-    //       text: "[FirstName],\n\nAre you worried about foreclosure?\nUnsure who to trust with a short sale?\nDon't worry—we're here to help with solutions tailored just for you!",
-    //       fill: "#FF732E",
-    //       textAlign: "center",
-    //     },
-    //     // Call to Action
-    //     {
-    //       type: "textbox",
-    //       left: 0,
-    //       top: 438,
-    //       width: 480,
-    //       height: 257,
-    //       fontSize: 16,
-    //       fontFamily: "Arial Rounded MT Bold",
-    //       text: "Email/Call/Text [AgentName] today!\n(support@yellowletterhq.com)\n[AgentNumber]",
-    //       fill: "#FF732E",
-    //       textAlign: "center",
-    //     },
-    //     // Image 1
-    //     {
-    //       type: "image",
-    //       left: 203,
-    //       top: 695,
-    //       width: 72,
-    //       height: 101,
-    //       src: "../assets/img/DOODLES_0001_Layer-3.png", // Replace with the actual image path
-    //     },
-    //     // Image 2
-    //     {
-    //       type: "image",
-    //       left: 285,
-    //       top: 696,
-    //       width: 103,
-    //       height: 102,
-    //       src: "../assets/img/DOODLES_0001_Layer-3.png", // Replace with the actual image path
-    //     },
-    //     // Image 3
-    //     {
-    //       type: "image",
-    //       left: 126,
-    //       top: 696,
-    //       width: 66,
-    //       height: 102,
-    //       src: "../assets/img/DOODLES_0004_Layer-3.png", // Replace with the actual image path
-    //     },
-    //     // Image 4
-    //     {
-    //       type: "image",
-    //       left: 22,
-    //       top: 696,
-    //       width: 92,
-    //       height: 101,
-    //       src: "../assets/img/DOODLES_0002_Layer-3.png", // Replace with the actual image path
-    //     },
-    //     // Image 5
-    //     {
-    //       type: "image",
-    //       left: 399,
-    //       top: 695,
-    //       width: 60,
-    //       height: 102,
-    //       src: "../assets/img/DOODLES_0003_Layer-3.png", // Replace with the actual image path
-    //     }
-    //   ], 
-    // },
-    // {
-    //   image: "../assets/img/NewDoodles.jpg", // Replace with actual image path
-    //   text: "Realistic Handwritten Template", // Name of the template
-    //   objects: [
-    //     // Permit Indicia Text
-    //     {
-    //       type: "textbox",
-    //       left: 410,
-    //       top: -15,
-    //       width: 70,
-    //       height: 52,
-    //       fontSize: 7,
-    //       fontFamily: "Myriad Pro",
-    //       text: "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       fill: "#000000",
-    //       textAlign: "center",
-    //       lineHeight: 1.2,
-    //     },
-    //     // Red Text Box
-    //     {
-    //       type: "textbox",
-    //       left: -9,
-    //       top: -17,
-    //       width: 382,
-    //       height: 55,
-    //       fontSize: 14,
-    //       fontFamily: "Ctorres",
-    //       text: "",
-    //       fill: "#D9002E",
-    //       padding: 8,
-    //     },
-    //     // Image 1 (Top Image, resized)
-    //     {
-    //       type: "image",
-    //       left: 126,
-    //       top: 144,
-    //       width: 180, // Adjusted size (reduced)
-    //       height: 100, // Adjusted size (reduced)
-    //       src: "../assets/img/realistic_template.png", // Replace with actual image path
-    //     },
-    //     // Main Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 0,
-    //       top: 424,
-    //       width: 480,
-    //       height: 363,
-    //       fontSize: 14,
-    //       fontFamily: "Ctorres",
-    //       text: "Hey [Name],\nApologies for my random note, but I wanted to write you personally about your house located at [Address]. I am looking to buy a home in your neighborhood and your home seems perfect for what I am looking for.\n\nCould we possibly discuss making you a cash offer? Either way, please let me know.\n\nBlessings,\n[Your Name]",
-    //       fill: "#D9002E",
-    //       padding: 8,
-    //       textAlign: "left",
-    //     },
-    //     // Address Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 126,
-    //       top: 181,
-    //       width: 342,
-    //       height: 153,
-    //       fontSize: 14,
-    //       fontFamily: "Ctorres",
-    //       text: "[Address Line 1]\n[Address Line 2]",
-    //       fill: "#D9002E",
-    //       padding: 6,
-    //     },
-    //     // Contact Info Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 91,
-    //       top: 310,
-    //       width: 413,
-    //       height: 60,
-    //       fontSize: 12,
-    //       fontFamily: "Ctorres",
-    //       text: "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
-    //       fill: "#D9002E",
-    //       textAlign: "center",
-    //     },
-    //   ],
-    // },
-    // {
-    //   image: "../assets/img/flower.jpg", // Replace with actual image path
-    //   text: "Flower Theme Template", // Name of the template
-    //   objects: [
-    //     // Permit Indicia Text
-    //     {
-    //       type: "textbox",
-    //       left: 400,
-    //       top: -1,
-    //       width: 80,
-    //       height: 52,
-    //       fontSize: 7,
-    //       fontFamily: "Myriad Pro",
-    //       text: "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       fill: "#000000",
-    //       textAlign: "center",
-    //       lineHeight: 1.2,
-    //     },
-    //     // Red Text Box (Top Message)
-    //     {
-    //       type: "textbox",
-    //       left: -7,
-    //       top: -11,
-    //       width: 343,
-    //       height: 87,
-    //       fontSize: 18,
-    //       fontFamily: "astPea",
-    //       text: "",
-    //       fill: "#D9002E",
-    //       padding: 4,
-    //     },
-    //     // Image 1 (Top Image, resized)
-    //     {
-    //       type: "image",
-    //       left: 102,
-    //       top: 163,
-    //       width: 180, // Adjusted size (reduced)
-    //       height: 120, // Adjusted size (reduced)
-    //       src: "../assets/img/flower_template.png", // Replace with actual image path
-    //     },
-    //     // Address Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 102,
-    //       top: 163,
-    //       width: 381,
-    //       height: 200,
-    //       fontSize: 14,
-    //       fontFamily: "Lindy Med Blur",
-    //       text: "[Address Line 1]\n[Address Line 2]",
-    //       fill: "#D9002E",
-    //       padding: 10,
-    //     },
-    //     // Contact Info Text Box
-    //     {
-    //       type: "textbox",
-    //       left: 0,
-    //       top: 73,
-    //       width: 135,
-    //       height: 21,
-    //       fontSize: 6,
-    //       fontFamily: "Your Font",
-    //       text: "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
-    //       fill: "#D9002E",
-    //       textAlign: "left",
-    //     },
-    //     // Rotated PDF Image
-    //     {
-    //       type: "image",
-    //       left: 51,
-    //       top: 356,
-    //       width: 250, // Resized to fit better
-    //       height: 335, // Resized to fit better
-    //       angle: -90, // Rotated
-    //       src: "../assets/img/flower_pdf_preview.png", // Replace with actual image path
-    //     },
-    //     // Main Text Box (Bottom Message)
-    //     {
-    //       type: "textbox",
-    //       left: 113,
-    //       top: 433,
-    //       width: 335,
-    //       height: 361,
-    //       fontSize: 10,
-    //       fontFamily: "astPea",
-    //       text: "Dear [Name],\nWould you consider an offer on [Address]?\nCall me at [Phone Number] when you have a chance.\nSincerely,\n[Your Name]",
-    //       fill: "#D9002E",
-    //       padding: 4,
-    //       textAlign: "left",
-    //     },
-    //   ],
-    // },
-    // {
-    //   "image": "../assets/img/NewDoodles1.jpg", // Replace with the actual image path
-    //   "text": "Standard Theme Template", // Name of the template
-    //   "objects": [
-    //     // Permit Indicia Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 414,
-    //       "top": 0,
-    //       "width": 66,
-    //       "height": 60,
-    //       "fontSize": 7,
-    //       "fontFamily": "Myriad Pro",
-    //       "text": "Presorted\nFirst Class Mail\nUS Postage\nPAID\nSD CA\nPermit #2722",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "lineHeight": 1.2
-    //     },
-    //     // Top Red Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": -3,
-    //       "top": -3,
-    //       "width": 345,
-    //       "height": 66,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "",
-    //       "fill": "#D9002E",
-    //       "padding": 4
-    //     },
-    //     // Address Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 136,
-    //       "top": 162,
-    //       "width": 344,
-    //       "height": 197,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "[Address Line 1]\n[Address Line 2]",
-    //       "fill": "#000000",
-    //       "padding": 4
-    //     },
-    //     // Contact Info Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 57,
-    //       "width": 168,
-    //       "height": 23,
-    //       "fontSize": 7,
-    //       "fontFamily": "Your Font",
-    //       "text": "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
-    //       "fill": "#808080",
-    //       "textAlign": "left"
-    //     },
-    //     // Main Body Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 437,
-    //       "width": 481,
-    //       "height": 373,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "Dear [Name],\n\nI hope this finds you well and in good health.\nMy name is [Your Name], and I'm looking to buy your property at [Address].\n\nI'm willing to pay you CASH and avoid the costs of selling through a real estate agent.\n\n   *EASY to work with!\n   *CASH BUYER\n   *BUY AS-IS so no REPAIRS\n   *CLOSE on the date of YOUR choice\n\nPlease call [Your Phone Number] today!",
-    //       "fill": "#000000",
-    //       "padding": 4,
-    //       "textAlign": "left"
-    //     }
-    //   ]
-    // },
-    // {
-    //   "image": "../assets/img/blue circle.png", // Replace with the actual image path
-    //   "text": "Standard Theme Template", // Name of the template
-    //   "objects": [
-    //     // Permit Indicia Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 414,
-    //       "top": 0,
-    //       "width": 66,
-    //       "height": 60,
-    //       "fontSize": 7,
-    //       "fontFamily": "Myriad Pro",
-    //       "text": "Presorted\nFirst Class Mail\nUS Postage\nPAID\nSD CA\nPermit #2722",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "lineHeight": 1.2
-    //     },
-    //     // Top Red Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": -3,
-    //       "top": -3,
-    //       "width": 345,
-    //       "height": 66,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "",
-    //       "fill": "#D9002E",
-    //       "padding": 4
-    //     },
-    //     // Address Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 136,
-    //       "top": 162,
-    //       "width": 344,
-    //       "height": 197,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "[Address Line 1]\n[Address Line 2]",
-    //       "fill": "#000000",
-    //       "padding": 4
-    //     },
-    //     // Contact Info Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 57,
-    //       "width": 168,
-    //       "height": 23,
-    //       "fontSize": 7,
-    //       "fontFamily": "Your Font",
-    //       "text": "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
-    //       "fill": "#808080",
-    //       "textAlign": "left"
-    //     },
-    //     // Main Body Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 437,
-    //       "width": 481,
-    //       "height": 373,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "Dear [Name],\n\nI hope this finds you well and in good health.\nMy name is [Your Name], and I'm looking to buy your property at [Address].\n\nI'm willing to pay you CASH and avoid the costs of selling through a real estate agent.\n\n   *EASY to work with!\n   *CASH BUYER\n   *BUY AS-IS so no REPAIRS\n   *CLOSE on the date of YOUR choice\n\nPlease call [Your Phone Number] today!",
-    //       "fill": "#000000",
-    //       "padding": 4,
-    //       "textAlign": "left"
-    //     }
-    //   ]
-    // },
-    // {
-    //   "image": "../assets/img/Generic.JPG", // Replace with actual image path
-    //   "text": "Street View Theme Template", // Name of the template
-    //   "objects": [
-    //     // Permit Indicia Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 408,
-    //       "top": 0,
-    //       "width": 72,
-    //       "height": 60,
-    //       "fontSize": 7,
-    //       "fontFamily": "Myriad Pro",
-    //       "text": "Presorted\nFirst Class Mail\nUS Postage\nPAID\nSD CA\nPermit #2722",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "lineHeight": 1.2
-    //     },
-    //     // Top Red Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": -6,
-    //       "top": -3,
-    //       "width": 354,
-    //       "height": 72,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "",
-    //       "fill": "#D9002E",
-    //       "padding": 4
-    //     },
-    //     // Address Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 114,
-    //       "top": 177,
-    //       "width": 368,
-    //       "height": 160,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "[Address Line 1]\n[Address Line 2]",
-    //       "fill": "#000000",
-    //       "padding": 4
-    //     },
-    //     // Contact Info Text Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 1,
-    //       "top": 53,
-    //       "width": 139,
-    //       "height": 19,
-    //       "fontSize": 7,
-    //       "fontFamily": "Your Font",
-    //       "text": "[Your Name]\n[Your Phone Number]\n[Your Email Address]",
-    //       "fill": "#808080",
-    //       "textAlign": "left"
-    //     },
-    //     // Street View Image (Resized)
-    //     {
-    //       "type": "image",
-    //       "left": 60,
-    //       "top": 577,
-    //       "width": 250, // Resized for better fit
-    //       "height": 150, // Resized for better fit
-    //       "src": "../assets/img/street_view_image.jpg" // Replace with actual image path
-    //     },
-    //     // Main Body Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 437,
-    //       "width": 472,
-    //       "height": 145,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "Dear [Name],\n\nMy name is [Your Name] and I want to buy your property at [Address].\n\nCall me at [Your Phone Number] AS-IS ALL CASH!",
-    //       "fill": "#D9002E",
-    //       "padding": 4,
-    //       "textAlign": "left"
-    //     }
-    //   ]
-    // },
-    // {
-    //   "image": "../assets/img/Notepad-NoLine Updated 2.png", // Replace with actual image path
-    //   "text": "YLHQ Theme Template", // Name of the template
-    //   "objects": [
-    //     // Permit Indicia Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 410,
-    //       "top": -1,
-    //       "width": 70,
-    //       "height": 52,
-    //       "fontSize": 7,
-    //       "fontFamily": "Myriad Pro",
-    //       "text": "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "lineHeight": 1.2
-    //     },
-    //     // Return Address Box
-    //     {
-    //       "type": "textbox",
-    //       "left": -4,
-    //       "top": -4,
-    //       "width": 349,
-    //       "height": 91,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "[Return Address]",
-    //       "fill": "#000000",
-    //       "padding": 4
-    //     },
-    //     // Mailing Block
-    //     {
-    //       "type": "textbox",
-    //       "left": 118,
-    //       "top": 161,
-    //       "width": 354,
-    //       "height": 191,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "[Recipient Name]\n[Address Line 1]\n[Address Line 2]",
-    //       "fill": "#000000",
-    //       "padding": 4
-    //     },
-    //     // Houses Wanted Rotated Text
-    //     {
-    //       "type": "textbox",
-    //       "left": -159,
-    //       "top": 597,
-    //       "width": 361,
-    //       "height": 42,
-    //       "fontSize": 23,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "HOUSES WANTED",
-    //       "fill": "#D9002E",
-    //       "textAlign": "center",
-    //       "angle": -90
-    //     },
-    //     // Left Side Bar
-    //     {
-    //       "type": "rectangle",
-    //       "left": 34,
-    //       "top": 400,
-    //       "width": 3,
-    //       "height": 439,
-    //       "fill": "#D9002E"
-    //     },
-    //     // Background Notepad Image
-    //     {
-    //       "type": "image",
-    //       "left": -39,
-    //       "top": 438,
-    //       "width": 561,
-    //       "height": 377,
-    //       "src": "../assets/img/notepad_background.png" // Replace with actual image path
-    //     },
-    //     // Main Body Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 37,
-    //       "top": 438,
-    //       "width": 443,
-    //       "height": 360,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "Dear [Name],\n\nMy name is [Your Name], and I own a property buying company. We are looking to\n$BUY$\nyour property at [Address].\n\nPlease call me at [Your Phone Number].",
-    //       "fill": "#000000",
-    //       "padding": 4,
-    //       "textAlign": "left"
-    //     },
-    //     // Selling Points
-    //     {
-    //       "type": "textbox",
-    //       "left": 37,
-    //       "top": 650,
-    //       "width": 443,
-    //       "height": 150,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "* No Cost or Fees\n* Sell \"As-Is\"\n* Close in 30 days\n* No Realtors and No Hassles",
-    //       "fill": "#000000",
-    //       "textAlign": "left"
-    //     },
-    //     // P.S. I Pay Cash Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 39,
-    //       "top": 590,
-    //       "width": 168,
-    //       "height": 31,
-    //       "fontSize": 14,
-    //       "fontFamily": "Lindy Med Blur",
-    //       "text": "P.S. I pay cash!",
-    //       "fill": "#000000",
-    //       "textAlign": "left"
-    //     }
-    //   ]
-    // },
-    
-    // {
-    //   "image": "../assets/img/usps-template.jpg", // Replace with actual image path
-    //   "text": "Sorry We Missed You Template", // Name of the template
-    //   "objects": [
-    //     // Permit Indicia Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 698,
-    //       "top": 0,
-    //       "width": 70,
-    //       "height": 52,
-    //       "fontSize": 7,
-    //       "fontFamily": "Myriad Pro",
-    //       "text": "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "lineHeight": 1.2
-    //     },
-    //     // Important Notice
-    //     {
-    //       "type": "textbox",
-    //       "left": -210,
-    //       "top": 196,
-    //       "width": 481,
-    //       "height": 87,
-    //       "fontSize": 36,
-    //       "fontFamily": "Arial Black",
-    //       "text": "Important Notice",
-    //       "fill": "#000DA6",
-    //       "textAlign": "center",
-    //       "angle": -90
-    //     },
-    //     // Sorry We Missed You Title
-    //     {
-    //       "type": "textbox",
-    //       "left": 487,
-    //       "top": 755,
-    //       "width": 479,
-    //       "height": 83,
-    //       "fontSize": 34,
-    //       "fontFamily": "Arial",
-    //       "text": "Sorry We Missed You",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "angle": 90
-    //     },
-    //     // Background Orange Block
-    //     {
-    //       "type": "rectangle",
-    //       "left": -45,
-    //       "top": 516,
-    //       "width": 856,
-    //       "height": 565,
-    //       "fill": "#FF732E",
-    //       "borderRadius": 10
-    //     },
-    //     // Call Us Message
-    //     {
-    //       "type": "textbox",
-    //       "left": -44,
-    //       "top": 128,
-    //       "width": 481,
-    //       "height": 222,
-    //       "fontSize": 14,
-    //       "fontFamily": "Arial",
-    //       "text": "Please Call Us Today: [Agent Number]\n\nWe are professional investors working in your neighborhood, buying houses for cash at competitive prices. We'll give you cash in exchange for your property. We can close quickly, don't charge commissions, and purchase as-is!",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "angle": -90
-    //     },
-    //     // Main Offer Section
-    //     {
-    //       "type": "textbox",
-    //       "left": 141,
-    //       "top": 567,
-    //       "width": 479,
-    //       "height": 461,
-    //       "fontSize": 24,
-    //       "fontFamily": "PremiumUltra26",
-    //       "text": "We have been trying to contact you about your property at:\n\nWe can offer you [Offer Amount]\n\nFor your property.\n\nPLEASE CALL US!",
-    //       "fill": "#000DA6",
-    //       "textAlign": "center",
-    //       "angle": 90
-    //     },
-    //     // Date Box
-    //     {
-    //       "type": "textbox",
-    //       "left": 424,
-    //       "top": 764,
-    //       "width": 481,
-    //       "height": 66,
-    //       "fontSize": 24,
-    //       "fontFamily": "PremiumUltra26",
-    //       "text": "Date: [Mailing Date]",
-    //       "fill": "#000DA6",
-    //       "textAlign": "center",
-    //       "angle": 90
-    //     },
-    //     // Reply By Box
-    //     {
-    //       "type": "textbox",
-    //       "left": -206,
-    //       "top": 764,
-    //       "width": 488,
-    //       "height": 66,
-    //       "fontSize": 24,
-    //       "fontFamily": "PremiumUltra26",
-    //       "text": "Please reply by: [Reply Date]",
-    //       "fill": "#000DA6",
-    //       "textAlign": "center",
-    //       "angle": 90
-    //     },
-    //     // Blue Underline Image
-    //     {
-    //       "type": "image",
-    //       "left": 16,
-    //       "top": 787,
-    //       "width": 335,
-    //       "height": 27,
-    //       "angle": 90,
-    //       "src": "../assets/img/blue_underline.png" // Replace with actual image path
-    //     },
-    //     // Barcode Image
-    //     {
-    //       "type": "image",
-    //       "left": -14,
-    //       "top": 757,
-    //       "width": 292,
-    //       "height": 91,
-    //       "angle": -90,
-    //       "src": "../assets/img/barcode.png" // Replace with actual image path
-    //     },
-    //     // Property Address
-    //     {
-    //       "type": "textbox",
-    //       "left": 222,
-    //       "top": 771,
-    //       "width": 467,
-    //       "height": 58,
-    //       "fontSize": 30,
-    //       "fontFamily": "PremiumUltra26",
-    //       "text": "[Property Address]",
-    //       "fill": "#000DA6",
-    //       "textAlign": "center",
-    //       "angle": 90
-    //     },
-    //     // Orange Side Panel
-    //     {
-    //       "type": "rectangle",
-    //       "left": -39,
-    //       "top": -40,
-    //       "width": 329,
-    //       "height": 564,
-    //       "fill": "#FF732E"
-    //     }
-    //   ]
-    // },
-    // {
-    //   "image": "../assets/img/SPRING - BACK (1).png", // Replace with actual image path
-    //   "text": "Violet Property Inquiry Template", // Name of the template
-    //   "objects": [
-    //     // Permit Indicia Text
-    //     {
-    //       "type": "textbox",
-    //       "left": 410,
-    //       "top": 0,
-    //       "width": 70,
-    //       "height": 52,
-    //       "fontSize": 7,
-    //       "fontFamily": "Myriad Pro",
-    //       "text": "FIRST CLASS\nPRESORT\nUS POSTAGE PAID\nYLHQ",
-    //       "fill": "#000000",
-    //       "textAlign": "center",
-    //       "lineHeight": 1.2
-    //     },
-    //     // Header Question
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 68,
-    //       "width": 480,
-    //       "height": 45,
-    //       "fontSize": 20,
-    //       "fontFamily": "ctorres",
-    //       "text": "Is this property for sale?",
-    //       "fill": "#6E0FFF",
-    //       "textAlign": "center"
-    //     },
-    //     // Return Address Block
-    //     {
-    //       "type": "textbox",
-    //       "left": -3,
-    //       "top": -3,
-    //       "width": 293,
-    //       "height": 38,
-    //       "fontSize": 10,
-    //       "fontFamily": "ctorres",
-    //       "text": "",
-    //       "fill": "#000000",
-    //       "textAlign": "left"
-    //     },
-    //     // Address Block
-    //     {
-    //       "type": "textbox",
-    //       "left": 143,
-    //       "top": 225,
-    //       "width": 331,
-    //       "height": 86,
-    //       "fontSize": 14,
-    //       "fontFamily": "ctorres",
-    //       "text": "[Recipient Name]\n[Street Address]\n[City, State ZIP]",
-    //       "fill": "#000000",
-    //       "textAlign": "left"
-    //     },
-    //     // Sell Property Offer
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 439,
-    //       "width": 480,
-    //       "height": 360,
-    //       "fontSize": 16,
-    //       "fontFamily": "ctorres",
-    //       "text": "Hi [Name],\n\nSell your property at [Property Address] now for CASH and skip the agent fees!\n\nCall or Text!",
-    //       "fill": "#000000",
-    //       "textAlign": "center"
-    //     },
-    //     // Contact Info
-    //     {
-    //       "type": "textbox",
-    //       "left": 0,
-    //       "top": 550,
-    //       "width": 480,
-    //       "height": 50,
-    //       "fontSize": 18,
-    //       "fontFamily": "ctorres",
-    //       "text": "[Agent Name]\n[Agent Phone Number]",
-    //       "fill": "#6E0FFF",
-    //       "textAlign": "center"
-    //     },
-    //     // Front Background Image
-    //     {
-    //       "type": "image",
-    //       "left": -38,
-    //       "top": -40,
-    //       "width": 419,
-    //       "height": 329,
-    //       "src": "../assets/img/spring_front.png" // Replace with actual image path
-    //     },
-    //     // Back Background Image
-    //     {
-    //       "type": "image",
-    //       "left": -38,
-    //       "top": 398,
-    //       "width": 419,
-    //       "height": 329,
-    //       "src": "../assets/img/spring_back.png" // Replace with actual image path
-    //     }
-    //   ]
-    // },
     {
-      "image": "../assets/img/download.png", // Replace with actual image path
-      "text": "Converted SVG Template", // Name of the template
-      "objects": [
-        {
-          "type": "rectangle",
-          "left": 0,
-          "top": 0,
-          "width": 550,
-          "height": 367,
-          "fill": "#008000" // Green background
-        },
-        {
-          "type": "textbox",
-          "left": 170,
-          "top": 5.41,
-          "width": 200,
-          "height": 20,
-          "fontSize": 14,
-          "fontFamily": "Lindy Med Blur",
-          "text": "",
-          "fill": "#D9002E"
-        },
-        {
-          "type": "textbox",
-          "left": 241,
-          "top": 564.69,
-          "width": 480,
-          "height": 220,
-          "fontSize": 14,
-          "fontFamily": "Lindy Med Blur",
-          "text": "Dear [Name],\n\nI hope this finds you well and in good health.\nMy name is [Your Name], and I’m looking to buy your property at [Address].\nI’m willing to pay you CASH and avoid the costs of selling through a real estate agent.\n\n   *EASY to work with!\n   *CASH BUYER\n   *BUY AS-IS so no REPAIRS\n   *CLOSE on the date of YOUR choice\n\nPlease call [Your Phone Number] today!",
-          "fill": "#000000",
-          "textAlign": "left"
-        },
-        {
-          "type": "textbox",
-          "left": 135.25,
-          "top": 53.14,
-          "width": 200,
-          "height": 50,
-          "fontSize": 16,
-          "fontFamily": "Georgia",
-          "text": "45 Broadway \nChula Vista, CA 91910",
-          "fill": "#FF5005",
-          "textAlign": "center"
-        },
-        {
-          "type": "textbox",
-          "left": 76.03,
-          "top": 83.32,
-          "width": 100,
-          "height": 20,
-          "fontSize": 12,
-          "fontFamily": "Arial",
-          "text": "$(ID_numb)",
-          "fill": "#030303"
-        },
-        {
-          "type": "textbox",
-          "left": 450.49,
-          "top": 48.24,
-          "width": 100,
-          "height": 20,
-          "fontSize": 10,
-          "fontFamily": "Arial",
-          "text": "FIRST CLASS",
-          "fill": "#171717"
-        },
-        {
-          "type": "textbox",
-          "left": 433.77,
-          "top": 75.2,
-          "width": 120,
-          "height": 20,
-          "fontSize": 10,
-          "fontFamily": "Arial",
-          "text": "US POSTAGE PAID",
-          "fill": "#171717"
-        },
-        {
-          "type": "textbox",
-          "left": 459.14,
-          "top": 62.22,
-          "width": 80,
-          "height": 20,
-          "fontSize": 10,
-          "fontFamily": "Arial",
-          "text": "PRESORT",
-          "fill": "#171717"
-        },
-        {
-          "type": "textbox",
-          "left": 456.58,
-          "top": 88.18,
-          "width": 50,
-          "height": 20,
-          "fontSize": 10,
-          "fontFamily": "Arial",
-          "text": "YLHQ",
-          "fill": "#171717"
-        },
-        {
-          "type": "textbox",
-          "left": 102.54,
-          "top": 145.7,
-          "width": 100,
-          "height": 40,
-          "fontSize": 24,
-          "fontFamily": "Georgia",
-          "text": "Call me\ntoday",
-          "fill": "#3116BB",
-          "textAlign": "center"
-        },
-        {
-          "type": "image",
-          "left": 96.87,
-          "top": 145.41,
-          "width": 450,
-          "height": 300,
-          "src": "../assets/img/sample1.png" // Replace with actual image path
-        },
-        {
-          "type": "textbox",
-          "left": 275.04,
-          "top": 271.8,
-          "width": 250,
-          "height": 60,
-          "fontSize": 20,
-          "fontFamily": "Georgia",
-          "text": "Krask Scott R\n405 Hunt River Way\nSuwanee, GA 30024-2745",
-          "fill": "#DB6300",
-          "textAlign": "center"
-        },
-        {
-          "type": "image",
-          "left": 331.4,
-          "top": 210.02,
-          "width": 943,
-          "height": 357,
-          "src": "../assets/img/sample2.png" // Replace with actual image path
-        }
-      ]
-    }
-    
-    
-  ];
+      name: "Blessed Postcard 4.25 (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/blessed.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
+    },
+    {
+      name: "Blessed Postcard 4.25 (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/blessed-back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back (2).json"
+    },
+    {
+      name: "Doodle Street View (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/doodle_street_view.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_front.json",
+      
+    },
+    {
+      name: "Doodle Street View (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/doodle_street_view_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_back.json"
+    },
+    {
+      name: "Flower Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/flower_postcard_front.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_front.json",
+      
+    },
+    {
+      name: "Flower Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/flower_postcard_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_back.json"
+    },
+    {
+      name: "Realistic Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/rp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_back_4.25.json"
+    },
+    {
+      name: "Realistic Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/rp.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_front_4.25.json"
+    },
+    {
+      name: "Street View Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/svp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_back_4.25.json"
+    },
+    {
+      name: "Street View Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/svp.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_front_4.25.json"
+    },
+    {
+      name: "Violet Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/vp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_back_4.25.json"
+    },
+    {
+      name: "Violet Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/vp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_front_4.25.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/ylp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_back_4.25.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/ylp.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_front_4.25.json"
+    },
 
+
+
+
+    {
+      name: "Casita Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/casita_postcard_front.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_front.json",
+      // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
+    },
+    {
+      name: "Casita Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/casita_postcard_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_back.json"
+    },
+    {
+      name: "Doodle Street View (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/doodle_street_view.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_front_8.5.json",
+      
+    },
+    {
+      name: "Doodle Street View (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/doodle_street_view_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_back_8.5.json"
+    },
+    {
+      name: "Flower Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/flower_postcard_front.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_front_8.5.json",
+      
+    },
+    {
+      name: "Flower Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/flower_postcard_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_back_8.5.json"
+    },
+    {
+      name: "Realistic Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/rp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_back_8.5.json"
+    },
+    {
+      name: "Realistic Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/rp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_front_8.5.json"
+    },
+    {
+      name: "Standard Handwritten Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/shp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_back_8.5.json"
+    },
+    {
+      name: "Standard Handwritten Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/shp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_front_8.5.json"
+    },
+    {
+      name: "Street View Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/svp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_back_8.5.json"
+    },
+    {
+      name: "Street View Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/svp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_front_8.5.json"
+    },
+    {
+      name: "Sorry We Missed You Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/swmy_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_back_8.5.json"
+    },
+    {
+      name: "Sorry We Missed You Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/swmy.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_front_8.5.json"
+    },
+    {
+      name: "Violet Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/vp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_back_8.5.json"
+    },
+    {
+      name: "Violet Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/vp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_front_8.5.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/ylp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_back_8.5.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/ylp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_front_8.5.json"
+    }
+  ];
+  
   // for images in the inside the image tab
   images: string[] = [
     "../assets/img/bird.png",
@@ -1724,74 +672,7 @@ loadCanvas() {
   // }
 
   loadImageTemplate(template: any) {
-    this.showProductData = false;
-
-    const existingObjects = this.canvas.getCanvas().getObjects(); // Get existing objects
-
-    // Preserve the background image if it exists
-    const backgroundImage = this.canvas.getCanvas().backgroundImage;
-
-    this.canvas.getCanvas().clear(); // Clear canvas but NOT the background
-
-    if (backgroundImage) {
-      this.canvas
-        .getCanvas()
-        .setBackgroundImage(
-          backgroundImage,
-          this.canvas.getCanvas().renderAll.bind(this.canvas.getCanvas())
-        );
-    }
-
-    // Load the template design image
-    if (template.image) {
-      fabric.Image.fromURL(template.image, (img) => {
-        const canvasWidth = this.canvas.getCanvas().getWidth();
-        const canvasHeight = this.canvas.getCanvas().getHeight();
-
-        img.set({
-          left: canvasWidth / 2 - img.width / 2, // Center horizontally
-          top: canvasHeight / 2 - img.height / 2, // Center vertically
-          scaleX: 1, // Keep original scale
-          scaleY: 1,
-          selectable: true, // Make it resizable
-          evented: true,
-          hasControls: true, // Enable resize handles
-          hasBorders: true,
-        });
-
-        this.canvas.getCanvas().add(img);
-        this.canvas.getCanvas().setActiveObject(img); // Select the image
-        this.canvas.getCanvas().renderAll();
-      });
-    }
-
-    // Load new template text objects
-    template.objects.forEach((objData) => {
-      let newObject;
-
-      if (objData.type === "textbox") {
-        newObject = new fabric.Textbox(objData.text, {
-          left: objData.left,
-          top: objData.top,
-          fontFamily: objData.fontFamily,
-          fontSize: objData.fontSize,
-          fill: objData.fill,
-          width: objData.width,
-        });
-      }
-
-      // Add the new object to the canvas
-      if (newObject) {
-        this.canvas.getCanvas().add(newObject);
-      }
-    });
-
-    // Re-add the existing objects to the canvas
-    existingObjects.forEach((obj) => {
-      this.canvas.getCanvas().add(obj);
-    });
-
-    this.canvas.getCanvas().renderAll(); // Render everything
+    this.canvas.loadImageTemplate(template);
   }
 
   addDashedSafetyArea() {
@@ -1985,18 +866,25 @@ loadCanvas() {
     this.showProductData = false;
   }
 
-  public changeSizeWithMeasures(height: number, width: number) {
-    // Clear the canvas before applying new size
-    this.canvas.getCanvas().clear();
-    this.frontCanvasData = null;
-    this.backCanvasData = null;
-    // Call the existing changeSizeWithMeasures function in fabric.ts
-    this.canvas.changeSizeWithMeasures(height, width);
-    this.addDashedSafetyArea();
+// In your component class:
+public selectedSize: string | null = null;
 
-    console.log(`Canvas size changed to ${width}x${height}`);
-    this.showProductData = true;
-  }
+public changeSizeWithMeasures(height: number, width: number, sizeLabel: string) {
+  // 1) Clear canvas
+  // this.canvas.getCanvas().clear();
+  // this.frontCanvasData = null;
+  // this.backCanvasData = null;
+
+  // 2) Change size of the Fabric.js canvas
+  this.canvas.changeSizeWithMeasures(height, width);
+  this.addDashedSafetyArea();
+
+  // 3) Record which size has been selected
+  this.selectedSize = sizeLabel;
+
+  console.log(`Canvas size changed to ${width}x${height}, selectedSize = ${sizeLabel}`);
+  this.showProductData = true;
+}
 
   // public addText() {
   //   if (!this.canvas.textString) {
