@@ -189,14 +189,13 @@ loadCanvas() {
       side: "front",
       image: "../assets/img/blessed.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
-      // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
     },
     {
       name: "Blessed Postcard 4.25 (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/blessed-back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/Back.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back (2).json"
     },
     {
       name: "Doodle Street View (Front)",
@@ -227,6 +226,62 @@ loadCanvas() {
       side: "back",
       image: "../assets/img/flower_postcard_back.png",
       filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_back.json"
+    },
+    {
+      name: "Realistic Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/rp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_back_4.25.json"
+    },
+    {
+      name: "Realistic Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/rp.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_front_4.25.json"
+    },
+    {
+      name: "Street View Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/svp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_back_4.25.json"
+    },
+    {
+      name: "Street View Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/svp.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_front_4.25.json"
+    },
+    {
+      name: "Violet Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/vp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_back_4.25.json"
+    },
+    {
+      name: "Violet Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/vp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_front_4.25.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Back)",
+      size: "4.25x5.5",
+      side: "back",
+      image: "../assets/img/ylp_back.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_back_4.25.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Front)",
+      size: "4.25x5.5",
+      side: "front",
+      image: "../assets/img/ylp.png",
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_front_4.25.json"
     },
 
 
@@ -276,6 +331,90 @@ loadCanvas() {
       side: "back",
       image: "../assets/img/flower_postcard_back.png",
       filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_back_8.5.json"
+    },
+    {
+      name: "Realistic Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/rp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_back_8.5.json"
+    },
+    {
+      name: "Realistic Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/rp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_front_8.5.json"
+    },
+    {
+      name: "Standard Handwritten Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/shp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_back_8.5.json"
+    },
+    {
+      name: "Standard Handwritten Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/shp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_front_8.5.json"
+    },
+    {
+      name: "Street View Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/svp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_back_8.5.json"
+    },
+    {
+      name: "Street View Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/svp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_front_8.5.json"
+    },
+    {
+      name: "Sorry We Missed You Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/swmy_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_back_8.5.json"
+    },
+    {
+      name: "Sorry We Missed You Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/swmy.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_front_8.5.json"
+    },
+    {
+      name: "Violet Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/vp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_back_8.5.json"
+    },
+    {
+      name: "Violet Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/vp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_front_8.5.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Back)",
+      size: "8.5x5.5",
+      side: "back",
+      image: "../assets/img/ylp_back.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_back_8.5.json"
+    },
+    {
+      name: "Yellow Letter Postcard (Front)",
+      size: "8.5x5.5",
+      side: "front",
+      image: "../assets/img/ylp.png",
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_front_8.5.json"
     }
   ];
   
