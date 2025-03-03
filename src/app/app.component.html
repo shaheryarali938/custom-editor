@@ -55,7 +55,7 @@
   </div>
 
   <!-- Top bar for medium and larger screens -->
-  <div class="d-none d-md-block">
+  <div class="d-none d-lg-block">
     <div class="row w-100 m-0 p-0">
       <div class="col-xl-12">
         <div class="row w-100 p-0 m-0">
@@ -150,7 +150,7 @@
   </div>
 
   <!-- Download button for small screens -->
-  <div class="d-md-none text-center my-2">
+  <div class="d-lg-none text-center my-2">
     <button class="btn btn-primary" (click)="toggleShowTopBarModal()">
       <i class="fa fa-download"></i> Download
     </button>
@@ -200,6 +200,19 @@
             >
               <i class="d-inline fa fa-download" aria-hidden="true"></i>
               Export to HTML
+            </button>
+          </div>
+          <div class="col-8 p-0 px-md-3 mb-2">
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Import Canvas"
+              type="button"
+              class="btn btn-yellow custom-scale w-100"
+              (click)="loadCanvasFromJSON()"
+            >
+              <i class="d-inline fa fa-upload" aria-hidden="true"></i>
+              Import Canvas
             </button>
           </div>
           <div class="col-8 p-0 px-md-3 mb-2">
