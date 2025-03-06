@@ -2,11 +2,16 @@ import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { FabricjsEditorComponent } from "projects/angular-editor-fabric-js/src/public-api";
 import { fabric } from "fabric";
 
+declare var FontFace: any;
+
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
+
+
 export class AppComponent implements OnInit {
   @ViewChild('canvasEditor', { static: false }) canvasEditor!: FabricjsEditorComponent;
 
@@ -448,27 +453,53 @@ loadCanvas() {
   selectedTemplate: any = null;
 
   ngOnInit() {
+
+  // Load custom font "Lindy-Bold"
+  const customFont1 = new FontFace(
+    "Lindy-Bold",
+    "url('assets/fonts/Lindy-Bold.woff') format('woff')"
+  );
+  
+  customFont1.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'Lindy-Bold' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'Lindy-Bold':", err));
+
+  // Load custom font "PremiumUltra"
+  const customFont2 = new FontFace(
+    "PremiumUltra",
+    "url('assets/fonts/PremiumUltra26.woff') format('woff')"
+  );
+
+  customFont2.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'PremiumUltra' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'PremiumUltra':", err));
+
+  // Load custom font "Ctorres"
+  const customFont3 = new FontFace(
+    "Ctorres",
+    "url('assets/fonts/Ctorres.woff') format('woff')"
+  );
+
+  customFont3.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'Ctorres' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'Ctorres':", err));
+
+  // Load custom font "ArialRoundedMTBold"
+  const customFont4 = new FontFace(
+    "ArialRoundedMTBold",
+    "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')"
+  );
+
+  customFont4.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'ArialRoundedMTBold' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'ArialRoundedMTBold':", err));
+
+
     const fontsToPreload = [
-      // Google Fonts
-      'Open Sans',
-      'Caveat',
-      'Nunito',
-      'Bebas Neue',
-      'Playfair Display',
-      'Poppins',
-      'Montserrat',
-      'Orbitron',
-      'Inter',
-      
-      // System Fonts
-      'Arial Rounded MT Bold',
-      'Calibri',
-      'Times New Roman',
-      'Arial Black',
-      
-      // Generic
-      'serif',
-      'sans-serif',
       "Roboto",
       "Open Sans",
       "Poppins",
