@@ -449,6 +449,26 @@ loadCanvas() {
 
   ngOnInit() {
     const fontsToPreload = [
+      // Google Fonts
+      'Open Sans',
+      'Caveat',
+      'Nunito',
+      'Bebas Neue',
+      'Playfair Display',
+      'Poppins',
+      'Montserrat',
+      'Orbitron',
+      'Inter',
+      
+      // System Fonts
+      'Arial Rounded MT Bold',
+      'Calibri',
+      'Times New Roman',
+      'Arial Black',
+      
+      // Generic
+      'serif',
+      'sans-serif',
       "Roboto",
       "Open Sans",
       "Poppins",
