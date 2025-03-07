@@ -492,25 +492,18 @@
               </div>
 
               <!-- Dropdown for font selection (on a new line) -->
-              <div class="input-group mt-2">
+              <div class="input-group mt-2"
+              *ngIf="fontsLoaded">
                 <select
                   class="form-control"
                   [(ngModel)]="selectedFont"
                   (change)="onFontFamilyChange()"
                 >
 
-                <option value="ArialRoundedMTBold" style="font-family: 'ArialRoundedMTBold'">
-                  Arial Rounded MT Bold
-                </option>
-                <option value="PremiumUltra" style="font-family: 'PremiumUltra'">
-                  PremiumUltra
-                </option>
-                <option value="Ctorres" style="font-family: 'Ctorres'">
-                  Ctorres
-                </option>
-                <option value="Lindy-Bold" style="font-family: 'Lindy-Bold'">
-                  Lindy-Bold
-                </option>
+                <option value="ArialRoundedMTBold" style="font-family: 'ArialRoundedMTBold'">Arial Rounded MT Bold</option>
+                <option value="PremiumUltra" style="font-family: 'PremiumUltra'">PremiumUltra</option>
+                <option value="Ctorres" style="font-family: 'Ctorres'">Ctorres</option>
+                <option value="Lindy-Bold" style="font-family: 'Lindy-Bold'">Lindy-Bold</option>
 
 
                 <!-- Google Fonts -->

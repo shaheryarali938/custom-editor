@@ -451,10 +451,14 @@ loadCanvas() {
 
   // Selected template from dropdown
   selectedTemplate: any = null;
+  fontsLoaded = false;
 
-  ngOnInit() {
 
-  // Load custom font "Lindy-Bold"
+  async ngOnInit() {
+
+    await this.loadCustomFonts();
+    this.fontsLoaded = true;
+
   const customFont1 = new FontFace(
     "Lindy-Bold",
     "url('assets/fonts/Lindy-Bold.woff') format('woff')"
@@ -465,7 +469,6 @@ loadCanvas() {
     console.log("Custom font 'Lindy-Bold' loaded successfully.");
   }).catch(err => console.error("Failed to load custom font 'Lindy-Bold':", err));
 
-  // Load custom font "PremiumUltra"
   const customFont2 = new FontFace(
     "PremiumUltra",
     "url('assets/fonts/PremiumUltra26.woff') format('woff')"
@@ -476,7 +479,6 @@ loadCanvas() {
     console.log("Custom font 'PremiumUltra' loaded successfully.");
   }).catch(err => console.error("Failed to load custom font 'PremiumUltra':", err));
 
-  // Load custom font "Ctorres"
   const customFont3 = new FontFace(
     "Ctorres",
     "url('assets/fonts/Ctorres.woff') format('woff')"
@@ -487,7 +489,6 @@ loadCanvas() {
     console.log("Custom font 'Ctorres' loaded successfully.");
   }).catch(err => console.error("Failed to load custom font 'Ctorres':", err));
 
-  // Load custom font "ArialRoundedMTBold"
   const customFont4 = new FontFace(
     "ArialRoundedMTBold",
     "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')"
@@ -557,6 +558,28 @@ loadCanvas() {
     this.backCanvas.dispose(); // Initially dispose of the back canvas
   }
 
+  
+
+
+
+  async loadCustomFonts(): Promise<void> {
+    const customFonts = [
+      new FontFace("Lindy-Bold", "url('assets/fonts/Lindy-Bold.woff') format('woff')"),
+      new FontFace("PremiumUltra", "url('assets/fonts/PremiumUltra26.woff') format('woff')"),
+      new FontFace("Ctorres", "url('assets/fonts/Ctorres.woff') format('woff')"),
+      new FontFace("ArialRoundedMTBold", "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')")
+    ];
+  
+    try {
+      const loadedFonts = await Promise.all(customFonts.map(font => font.load()));
+      loadedFonts.forEach(loadedFont => (document as any).fonts.add(loadedFont));
+      console.log("All custom fonts loaded successfully.");
+    } catch (err) {
+      console.error("Failed to load custom fonts:", err);
+    }
+  }
+
+  
   // onFontFamilyChange() {
   //   const activeObject = this.canvas.getCanvas().getActiveObject();
 
