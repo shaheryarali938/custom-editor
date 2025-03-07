@@ -179,7 +179,7 @@ loadCanvas() {
   }
 
   // Default font properties
-  selectedFont: string = "Arial";
+  selectedFont: string = "ArialRoundedMTBold";
   selectedFontWeight: string = "400";
   isBold: boolean = false;
   isItalic: boolean = false;
