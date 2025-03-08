@@ -492,13 +492,41 @@
               </div>
 
               <!-- Dropdown for font selection (on a new line) -->
-              <div class="input-group mt-2">
+              <div class="input-group mt-2"
+              *ngIf="fontsLoaded">
                 <select
                   class="form-control"
                   [(ngModel)]="selectedFont"
                   (change)="onFontFamilyChange()"
                 >
-                  <!-- Sans-serif Fonts -->
+
+                <option value="ArialRoundedMTBold" selected style="font-family: ArialRoundedMTBold">Arial Rounded MT Bold</option>
+                <option value="PremiumUltra" style="font-family: PremiumUltra">PremiumUltra</option>
+                <option value="Ctorres" style="font-family: Ctorres">Ctorres</option>
+                <option value="Lindy-Bold" style="font-family: Lindy-Bold">Lindy-Bold</option>
+                <!-- <option value="Arial" style="font-family: Arial">
+                  Arial
+                </option> -->
+
+
+                <!-- Google Fonts
+                <option value="Open Sans">Open Sans (Myriad Pro)</option>
+                <option value="Caveat">Caveat (Hello-Notie)</option>
+                <option value="Nunito">Nunito (Arial Rounded)</option>
+                <option value="Bebas Neue">Bebas Neue (PremiumUltra26)</option>
+                <option value="Playfair Display">Playfair Display (Ctorres)</option>
+                <option value="Poppins">Poppins (astPea)</option>
+                <option value="Montserrat">Montserrat (Lindy Med Blur)</option>
+                <option value="Orbitron">Orbitron (USPS4CB)</option>
+                <option value="Inter">Inter (Your Font)</option>
+
+                <option value="Arial Rounded MT Bold">Arial Rounded MT Bold</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Arial Black">Arial Black</option>
+                
+                <option value="serif">Serif</option>
+                <option value="sans-serif">Sans-serif</option>
                   <option value="Arial" style="font-family: Arial">
                     Arial
                   </option>
@@ -531,7 +559,6 @@
                     Inter
                   </option>
 
-                  <!-- Serif Fonts -->
                   <option
                     value="Times New Roman"
                     style="font-family: 'Times New Roman'"
@@ -579,7 +606,6 @@
                     Cardo
                   </option>
 
-                  <!-- Display Fonts -->
                   <option value="Oswald" style="font-family: Oswald">
                     Oswald
                   </option>
@@ -620,7 +646,6 @@
                     Satisfy
                   </option>
 
-                  <!-- Monospace Fonts -->
                   <option
                     value="Courier New"
                     style="font-family: 'Courier New'"
@@ -644,7 +669,9 @@
                   </option>
                   <option value="Inconsolata" style="font-family: Inconsolata">
                     Inconsolata
-                  </option>
+                  </option> -->
+
+              
                 </select>
               </div>
 

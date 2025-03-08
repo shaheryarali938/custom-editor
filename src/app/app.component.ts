@@ -2,11 +2,16 @@ import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { FabricjsEditorComponent } from "projects/angular-editor-fabric-js/src/public-api";
 import { fabric } from "fabric";
 
+declare var FontFace: any;
+
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
+
+
 export class AppComponent implements OnInit {
   @ViewChild("canvasEditor", { static: false })
   canvasEditor!: FabricjsEditorComponent;
@@ -179,7 +184,7 @@ export class AppComponent implements OnInit {
   }
 
   // Default font properties
-  selectedFont: string = "Arial";
+  selectedFont: string = "ArialRoundedMTBold";
   selectedFontWeight: string = "400";
   isBold: boolean = false;
   isItalic: boolean = false;
@@ -458,8 +463,55 @@ export class AppComponent implements OnInit {
 
   // Selected template from dropdown
   selectedTemplate: any = null;
+  fontsLoaded = false;
 
-  ngOnInit() {
+
+  async ngOnInit() {
+
+    await this.loadCustomFonts();
+    this.fontsLoaded = true;
+
+  const customFont1 = new FontFace(
+    "Lindy-Bold",
+    "url('assets/fonts/Lindy-Bold.woff') format('woff')"
+  );
+  
+  customFont1.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'Lindy-Bold' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'Lindy-Bold':", err));
+
+  const customFont2 = new FontFace(
+    "PremiumUltra",
+    "url('assets/fonts/PremiumUltra26.woff') format('woff')"
+  );
+
+  customFont2.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'PremiumUltra' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'PremiumUltra':", err));
+
+  const customFont3 = new FontFace(
+    "Ctorres",
+    "url('assets/fonts/Ctorres.woff') format('woff')"
+  );
+
+  customFont3.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'Ctorres' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'Ctorres':", err));
+
+  const customFont4 = new FontFace(
+    "ArialRoundedMTBold",
+    "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')"
+  );
+
+  customFont4.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'ArialRoundedMTBold' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'ArialRoundedMTBold':", err));
+
+
     const fontsToPreload = [
       "Roboto",
       "Open Sans",
@@ -517,6 +569,28 @@ export class AppComponent implements OnInit {
     this.backCanvas.dispose(); // Initially dispose of the back canvas
   }
 
+  
+
+
+
+  async loadCustomFonts(): Promise<void> {
+    const customFonts = [
+      new FontFace("Lindy-Bold", "url('assets/fonts/Lindy-Bold.woff') format('woff')"),
+      new FontFace("PremiumUltra", "url('assets/fonts/PremiumUltra26.woff') format('woff')"),
+      new FontFace("Ctorres", "url('assets/fonts/Ctorres.woff') format('woff')"),
+      new FontFace("ArialRoundedMTBold", "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')")
+    ];
+  
+    try {
+      const loadedFonts = await Promise.all(customFonts.map(font => font.load()));
+      loadedFonts.forEach(loadedFont => (document as any).fonts.add(loadedFont));
+      console.log("All custom fonts loaded successfully.");
+    } catch (err) {
+      console.error("Failed to load custom fonts:", err);
+    }
+  }
+
+  
   // onFontFamilyChange() {
   //   const activeObject = this.canvas.getCanvas().getActiveObject();
 

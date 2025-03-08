@@ -46,3 +46,33 @@
 .template-name{
   font-size: 12px !important;
 }
+
+@font-face {
+  font-family: 'Lindy-Bold';
+  src: url('assets/fonts/Lindy-Bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PremiumUltra';
+  src: url('assets/fonts/PremiumUltra26.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ctorres';
+  src: url('assets/fonts/Ctorres.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ArialRoundedMTBold';
+  src: url('assets/fonts/ArialRoundedMTBold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
