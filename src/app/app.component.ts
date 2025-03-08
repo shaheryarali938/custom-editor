@@ -8,89 +8,94 @@ import { fabric } from "fabric";
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  @ViewChild('canvasEditor', { static: false }) canvasEditor!: FabricjsEditorComponent;
+  @ViewChild("canvasEditor", { static: false })
+  canvasEditor!: FabricjsEditorComponent;
 
   ngAfterViewInit() {
     // Canvas is now initialized inside the editor component
   }
 
   /** Import (Load) Saved Canvas */
-/** Import SVG File and Preserve Bleed Area */
-loadCanvas() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/svg+xml';
+  /** Import SVG File and Preserve Bleed Area */
+  loadCanvas() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/svg+xml";
 
-  input.addEventListener('change', (event: Event) => {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const reader = new FileReader();
+    input.addEventListener("change", (event: Event) => {
+      const fileInput = event.target as HTMLInputElement;
+      if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
 
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const svgString = e.target?.result as string;
-        const fabricCanvas = this.canvas.getCanvas(); // Get Fabric.js instance
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          const svgString = e.target?.result as string;
+          const fabricCanvas = this.canvas.getCanvas(); // Get Fabric.js instance
 
-        // Step 1: Store Bleed Area Before Clearing Canvas
-        const bleedLines = this.getBleedAreaLines(); // Get existing bleed area
+          // Step 1: Store Bleed Area Before Clearing Canvas
+          const bleedLines = this.getBleedAreaLines(); // Get existing bleed area
 
-        fabricCanvas.clear(); // Clear previous objects before loading new one
+          fabricCanvas.clear(); // Clear previous objects before loading new one
 
-        // Load SVG and ensure text is editable
-        fabric.loadSVGFromString(svgString, (objects, options) => {
-          const editableObjects: fabric.Object[] = [];
+          // Load SVG and ensure text is editable
+          fabric.loadSVGFromString(svgString, (objects, options) => {
+            const editableObjects: fabric.Object[] = [];
 
-          objects.forEach((obj) => {
-            // Check if the object is text-based
-            if (obj instanceof fabric.Text || obj instanceof fabric.IText) {
-              const textObj = new fabric.Textbox((obj as fabric.Text).text || '', {
-                left: obj.left || 0,
-                top: obj.top || 0,
-                fontFamily: (obj as fabric.Text).fontFamily || 'Arial',
-                fontSize: (obj as fabric.Text).fontSize || 20,
-                fill: (obj as fabric.Text).fill || '#000',
-                width: obj.width || 200,
-                selectable: true,
-                evented: true,
-                editable: true,
-                hasControls: true,
-                hasBorders: true
-              });
+            objects.forEach((obj) => {
+              // Check if the object is text-based
+              if (obj instanceof fabric.Text || obj instanceof fabric.IText) {
+                const textObj = new fabric.Textbox(
+                  (obj as fabric.Text).text || "",
+                  {
+                    left: obj.left || 0,
+                    top: obj.top || 0,
+                    fontFamily: (obj as fabric.Text).fontFamily || "Arial",
+                    fontSize: (obj as fabric.Text).fontSize || 20,
+                    fill: (obj as fabric.Text).fill || "#000",
+                    width: obj.width || 200,
+                    selectable: true,
+                    evented: true,
+                    editable: true,
+                    hasControls: true,
+                    hasBorders: true,
+                  }
+                );
 
-              editableObjects.push(textObj);
-            } else {
-              // Make non-text objects selectable and editable
-              obj.set({
-                selectable: true,
-                evented: true,
-                hasControls: true,
-                hasBorders: true,
-                hoverCursor: 'move'
-              });
+                editableObjects.push(textObj);
+              } else {
+                // Make non-text objects selectable and editable
+                obj.set({
+                  selectable: true,
+                  evented: true,
+                  hasControls: true,
+                  hasBorders: true,
+                  hoverCursor: "move",
+                });
 
-              editableObjects.push(obj);
-            }
+                editableObjects.push(obj);
+              }
+            });
+
+            // Step 2: Add Elements to Canvas
+            editableObjects.forEach((obj) => fabricCanvas.add(obj));
+
+            // Step 3: Restore Bleed Area Lines
+            bleedLines.forEach((line) => fabricCanvas.add(line));
+
+            fabricCanvas.renderAll();
+            alert(
+              "SVG Template Imported Successfully! Editable text is now enabled."
+            );
           });
+        };
 
-          // Step 2: Add Elements to Canvas
-          editableObjects.forEach((obj) => fabricCanvas.add(obj));
+        reader.readAsText(file);
+      }
+    });
 
-          // Step 3: Restore Bleed Area Lines
-          bleedLines.forEach((line) => fabricCanvas.add(line));
+    input.click(); // Open file dialog
+  }
 
-          fabricCanvas.renderAll();
-          alert('SVG Template Imported Successfully! Editable text is now enabled.');
-        });
-      };
-
-      reader.readAsText(file);
-    }
-  });
-
-  input.click(); // Open file dialog
-}
-
-  
   fontSizes: number[] = [
     8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64,
   ];
@@ -188,111 +193,115 @@ loadCanvas() {
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/blessed.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_front.json",
     },
     {
       name: "Blessed Postcard 4.25 (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/blessed-back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back (2).json"
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back (2).json",
     },
     {
       name: "Doodle Street View (Front)",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/doodle_street_view.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_front.json",
-      
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/doole_street_view_front.json",
     },
     {
       name: "Doodle Street View (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/doodle_street_view_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/doole_street_view_back.json"
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/doole_street_view_back.json",
     },
     {
       name: "Flower Postcard (Front)",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/flower_postcard_front.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_front.json",
-      
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/flower_postcard_front.json",
     },
     {
       name: "Flower Postcard (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/flower_postcard_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/flower_postcard_back.json"
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/flower_postcard_back.json",
     },
     {
       name: "Realistic Postcard (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/rp_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_back_4.25.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_back_4.25.json",
     },
     {
       name: "Realistic Postcard (Front)",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/rp.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_front_4.25.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/rp_front_4.25.json",
     },
     {
       name: "Street View Postcard (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/svp_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_back_4.25.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_back_4.25.json",
     },
     {
       name: "Street View Postcard (Front)",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/svp.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/svp_front_4.25.json"
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/svp_front_4.25.json",
     },
     {
       name: "Violet Postcard (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/vp_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_back_4.25.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_back_4.25.json",
     },
     {
       name: "Violet Postcard (Front)",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/vp_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_front_4.25.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/vp_front_4.25.json",
     },
     {
       name: "Yellow Letter Postcard (Back)",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/ylp_back.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_back_4.25.json"
+      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_back_4.25.json",
     },
     {
       name: "Yellow Letter Postcard (Front)",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/ylp.png",
-      filePathFront: "../assets/prebuilt-templates/4.25×5.5/ylp_front_4.25.json"
+      filePathFront:
+        "../assets/prebuilt-templates/4.25×5.5/ylp_front_4.25.json",
     },
-
-
-
 
     {
       name: "Casita Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/casita_postcard_front.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_front.json",
+      filePathFront:
+        "../assets/prebuilt-templates/8.5×5.5/casita_postcard_front.json",
       // filePathBack: "../assets/prebuilt-templates/4.25×5.5/blessed_postcard_4.25x5.5_back.json"
     },
     {
@@ -300,124 +309,127 @@ loadCanvas() {
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/casita_postcard_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/casita_postcard_back.json"
+      filePathFront:
+        "../assets/prebuilt-templates/8.5×5.5/casita_postcard_back.json",
     },
     {
       name: "Doodle Street View (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/doodle_street_view.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_front_8.5.json",
-      
+      filePathFront:
+        "../assets/prebuilt-templates/8.5×5.5/doole_street_view_front_8.5.json",
     },
     {
       name: "Doodle Street View (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/doodle_street_view_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/doole_street_view_back_8.5.json"
+      filePathFront:
+        "../assets/prebuilt-templates/8.5×5.5/doole_street_view_back_8.5.json",
     },
     {
       name: "Flower Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/flower_postcard_front.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_front_8.5.json",
-      
+      filePathFront:
+        "../assets/prebuilt-templates/8.5×5.5/flower_postcard_front_8.5.json",
     },
     {
       name: "Flower Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/flower_postcard_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/flower_postcard_back_8.5.json"
+      filePathFront:
+        "../assets/prebuilt-templates/8.5×5.5/flower_postcard_back_8.5.json",
     },
     {
       name: "Realistic Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/rp_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_back_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_back_8.5.json",
     },
     {
       name: "Realistic Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/rp.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_front_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_front_8.5.json",
     },
     {
       name: "Standard Handwritten Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/shp_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_back_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_back_8.5.json",
     },
     {
       name: "Standard Handwritten Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/shp.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_front_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/shp_front_8.5.json",
     },
     {
       name: "Street View Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/svp_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_back_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_back_8.5.json",
     },
     {
       name: "Street View Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/svp.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_front_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/svp_front_8.5.json",
     },
     {
       name: "Sorry We Missed You Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/swmy_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_back_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_back_8.5.json",
     },
     {
       name: "Sorry We Missed You Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/swmy.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_front_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/swmy_front_8.5.json",
     },
     {
       name: "Violet Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/vp_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_back_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_back_8.5.json",
     },
     {
       name: "Violet Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/vp.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_front_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/vp_front_8.5.json",
     },
     {
       name: "Yellow Letter Postcard (Back)",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/ylp_back.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_back_8.5.json"
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_back_8.5.json",
     },
     {
       name: "Yellow Letter Postcard (Front)",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/ylp.png",
-      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_front_8.5.json"
-    }
+      filePathFront: "../assets/prebuilt-templates/8.5×5.5/ylp_front_8.5.json",
+    },
   ];
-  
+
   // for images in the inside the image tab
   images: string[] = [
     "../assets/img/bird.png",
@@ -488,7 +500,6 @@ loadCanvas() {
           .catch((err) => console.warn(`Failed to load font "${font}":`, err));
       }
     });
-    
 
     // Add event listeners for object selection
     this.canvas
@@ -673,6 +684,7 @@ loadCanvas() {
 
   loadImageTemplate(template: any) {
     this.canvas.loadImageTemplate(template);
+    this.showProductData = false;
   }
 
   addDashedSafetyArea() {
@@ -857,34 +869,44 @@ loadCanvas() {
 
   showProductData: boolean = false;
   showTopBarModal: boolean = false;
+  showOptionsModal: boolean = false;
 
   toggleShowTopBarModal() {
     this.showTopBarModal = !this.showTopBarModal;
+  }
+  toggleShowOptionsModal() {
+    this.showOptionsModal = !this.showOptionsModal;
   }
 
   toggleProductData() {
     this.showProductData = false;
   }
 
-// In your component class:
-public selectedSize: string | null = null;
+  // In your component class:
+  public selectedSize: string | null = null;
 
-public changeSizeWithMeasures(height: number, width: number, sizeLabel: string) {
-  // 1) Clear canvas
-  // this.canvas.getCanvas().clear();
-  // this.frontCanvasData = null;
-  // this.backCanvasData = null;
+  public changeSizeWithMeasures(
+    height: number,
+    width: number,
+    sizeLabel: string
+  ) {
+    // 1) Clear canvas
+    // this.canvas.getCanvas().clear();
+    // this.frontCanvasData = null;
+    // this.backCanvasData = null;
 
-  // 2) Change size of the Fabric.js canvas
-  this.canvas.changeSizeWithMeasures(height, width);
-  this.addDashedSafetyArea();
+    // 2) Change size of the Fabric.js canvas
+    this.canvas.changeSizeWithMeasures(height, width);
+    this.addDashedSafetyArea();
 
-  // 3) Record which size has been selected
-  this.selectedSize = sizeLabel;
+    // 3) Record which size has been selected
+    this.selectedSize = sizeLabel;
 
-  console.log(`Canvas size changed to ${width}x${height}, selectedSize = ${sizeLabel}`);
-  this.showProductData = true;
-}
+    console.log(
+      `Canvas size changed to ${width}x${height}, selectedSize = ${sizeLabel}`
+    );
+    this.showProductData = true;
+  }
 
   // public addText() {
   //   if (!this.canvas.textString) {
@@ -1155,9 +1177,10 @@ public changeSizeWithMeasures(height: number, width: number, sizeLabel: string) 
 
     this.canvas.getCanvas().renderAll();
   }
-getBleedAreaLines(): fabric.Object[] {
-  return this.canvas.getCanvas().getObjects().filter((obj: any) => obj._id === "bleed-line");
-}
-
-  
+  getBleedAreaLines(): fabric.Object[] {
+    return this.canvas
+      .getCanvas()
+      .getObjects()
+      .filter((obj: any) => obj._id === "bleed-line");
+  }
 }

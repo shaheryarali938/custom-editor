@@ -13,24 +13,32 @@
         <!-- Card Body -->
         <div class="card-body">
           <div class="row w-100">
-            <!-- Loop through image templates -->
-            <div
-              class="col-md-4 col-sm-6 mb-4"
-              *ngFor="let template of prebuiltTemplates"
-              (click)="loadImageTemplate(template)"
-              style="cursor: pointer"
-            >
+            <!-- We loop over all prebuiltTemplates in an <ng-container> -->
+            <ng-container *ngFor="let template of prebuiltTemplates">
+              <!-- Display only if size matches and side matches -->
               <div
-                class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
+                class="col-4 mb-4"
+                *ngIf="
+                  template.size === selectedSize &&
+                  (isFront
+                    ? template.side === 'front'
+                    : template.side === 'back')
+                "
+                (click)="loadImageTemplate(template)"
+                style="cursor: pointer; font-size: 13px"
               >
-                <img
-                  [src]="template.image"
-                  alt="Template"
-                  class="img-fluid w-100 rounded-lg"
-                  style="height: 180px; object-fit: cover"
-                />
+                <div
+                  class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
+                >
+                  <img
+                    [src]="template.image"
+                    alt="Template"
+                    class="img-fluid w-100 rounded-lg"
+                  />
+                </div>
+                {{ template.name }}
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -47,15 +55,15 @@
   </div>
 
   <!-- Top bar for medium and larger screens -->
-  <div class="d-none d-md-block">
-    <div class="row w-100 p-0 m-0">
-      <div class="col-xl-12 p-0">
+  <div class="d-none d-lg-block">
+    <div class="row w-100 m-0 p-0">
+      <div class="col-xl-12">
         <div class="row w-100 p-0 m-0">
           <div class="custom-container">
             <div
-              class="row align-items-center justify-content-center text-black text-center py-2"
+              class="row align-items-center justify-content-center text-black text-center py-3"
             >
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -68,7 +76,7 @@
                   Export to Image
                 </button>
               </div>
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -81,7 +89,20 @@
                   Export to SVG
                 </button>
               </div>
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
+                <button
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Export to SVG"
+                  type="button"
+                  class="btn btn-yellow custom-scale w-100"
+                  (click)="saveCanvasToJSON()"
+                >
+                  <i class="d-inline fa fa-download" aria-hidden="true"></i>
+                  Export to Canvas
+                </button>
+              </div>
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -94,7 +115,7 @@
                   Export to HTML
                 </button>
               </div>
-              <div class="col-3 p-0 px-md-3">
+              <div class="col-2 p-0 px-md-3">
                 <button
                   data-toggle="tooltip"
                   data-placement="bottom"
@@ -107,6 +128,20 @@
                   Clean
                 </button>
               </div>
+
+              <div class="col-2 p-0 px-md-3">
+                <button
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Import Canvas"
+                  type="button"
+                  class="btn btn-yellow custom-scale w-100"
+                  (click)="loadCanvasFromJSON()"
+                >
+                  <i class="d-inline fa fa-upload" aria-hidden="true"></i>
+                  Import Canvas
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -115,7 +150,7 @@
   </div>
 
   <!-- Download button for small screens -->
-  <div class="d-md-none text-center my-2">
+  <div class="d-lg-none text-center my-2">
     <button class="btn btn-primary" (click)="toggleShowTopBarModal()">
       <i class="fa fa-download"></i> Download
     </button>
@@ -126,7 +161,7 @@
     <div class="content-box-sm pb-4 shadow-lg rounded-lg">
       <div class="custom-container">
         <div
-          class="row align-items-center justify-content-center text-black text-center py-2"
+          class="row align-items-center justify-content-center text-black text-center pb-2 pt-4"
         >
           <div class="col-8 p-0 px-md-3 mb-2">
             <button
@@ -171,6 +206,19 @@
             <button
               data-toggle="tooltip"
               data-placement="bottom"
+              title="Import Canvas"
+              type="button"
+              class="btn btn-yellow custom-scale w-100"
+              (click)="loadCanvasFromJSON()"
+            >
+              <i class="d-inline fa fa-upload" aria-hidden="true"></i>
+              Import Canvas
+            </button>
+          </div>
+          <div class="col-8 p-0 px-md-3 mb-2">
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
               title="Clean Canvas"
               type="button"
               class="btn btn-danger custom-scale w-100"
@@ -197,8 +245,10 @@
   <!-- line  -->
   <hr class="mb-2 mt-0" />
 
-  <div class="row w-100 p-0">
-    <div class="col-xl-4 d-flex align-items-start">
+  <div class="row w-100 p-0 m-0">
+    <div
+      class="col-12 col-md-8 col-lg-3 d-flex align-items-start order-1 p-0 m-0"
+    >
       <div
         class="nav flex-column nav-pills"
         id="v-pills-tab"
@@ -206,7 +256,7 @@
         aria-orientation="vertical"
       >
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'text' }"
           id="v-pills-text-tab"
           (click)="setActiveTab('text')"
@@ -242,7 +292,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'images' }"
           id="v-pills-images-tab"
           (click)="setActiveTab('images')"
@@ -289,7 +339,7 @@
           <span>Images</span>
         </button>
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'product' }"
           id="v-pills-product-tab"
           (click)="setActiveTab('product')"
@@ -337,7 +387,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'graphics' }"
           id="v-pills-graphics-tab"
           (click)="setActiveTab('graphics')"
@@ -365,7 +415,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'design-color' }"
           id="v-pills-design-color-tab"
           (click)="setActiveTab('design-color')"
@@ -393,7 +443,7 @@
         </button>
 
         <button
-          class="nav-link d-flex flex-column justify-content-center align-items-center p-2 border-0 mb-2 bg-light-gray"
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
           [ngClass]="{ active: activeTab === 'background' }"
           id="v-pills-background-tab"
           (click)="setActiveTab('background')"
@@ -418,6 +468,33 @@
             </svg>
           </div>
           <span>background</span>
+        </button>
+        <button
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
+          [ngClass]="{ active: activeTab === 'options' }"
+          id="v-pills-options-tab"
+          (click)="setActiveTab('options')"
+          type="button"
+          role="tab"
+          aria-controls="v-pills-options"
+          [attr.aria-selected]="activeTab === 'options'"
+        >
+          <div>
+            <svg
+              width="26"
+              height="24"
+              viewBox="0 0 26 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M25.6367 0.615301C25.8879 0.90328 26.0146 1.2792 25.9889 1.66052C25.9632 2.04184 25.7873 2.39737 25.4997 2.64904L2.42177 22.8422C2.28022 22.9731 2.11387 23.0743 1.93254 23.1398C1.75121 23.2054 1.55859 23.2339 1.36605 23.2237C1.17352 23.2135 0.984984 23.1648 0.811594 23.0805C0.638204 22.9961 0.483478 22.8779 0.356563 22.7328C0.229648 22.5876 0.133121 22.4185 0.0726868 22.2354C0.0122531 22.0523 -0.0108604 21.859 0.00471303 21.6668C0.0202865 21.4746 0.0742307 21.2875 0.163357 21.1166C0.252482 20.9456 0.374981 20.7942 0.52361 20.6714L23.6015 0.478277C23.8895 0.227019 24.2654 0.100324 24.6467 0.126016C25.028 0.151707 25.385 0.327684 25.6367 0.615301ZM25.6367 9.8104C25.8879 10.0984 26.0146 10.4743 25.9889 10.8556C25.9632 11.2369 25.7873 11.5925 25.4997 11.8441L12.9309 22.8436C12.7882 22.9684 12.6224 23.0638 12.4429 23.1244C12.2634 23.1851 12.0737 23.2098 11.8847 23.1971C11.6956 23.1845 11.5109 23.1347 11.3411 23.0507C11.1713 22.9666 11.0197 22.85 10.895 22.7073C10.7702 22.5647 10.6748 22.3989 10.6142 22.2194C10.5535 22.0399 10.5288 21.8502 10.5415 21.6611C10.5541 21.4721 10.6039 21.2874 10.6879 21.1176C10.772 20.9478 10.8886 20.7962 11.0313 20.6714L23.6001 9.67337C23.7427 9.54852 23.9086 9.45302 24.0882 9.39233C24.2678 9.33163 24.4576 9.30695 24.6468 9.31967C24.8359 9.3324 25.0207 9.38229 25.1906 9.46649C25.3604 9.5507 25.512 9.66756 25.6367 9.8104ZM23.6001 18.1473C23.8757 17.9026 24.2346 17.7727 24.603 17.7843C24.9714 17.7959 25.3214 17.9481 25.5811 18.2096C25.8409 18.4712 25.9906 18.8223 25.9996 19.1908C26.0086 19.5593 25.8761 19.9172 25.6295 20.1911L25.4997 20.3195L22.6149 22.8436C22.3388 23.0856 21.9809 23.2132 21.614 23.2004C21.2471 23.1877 20.8989 23.0355 20.6403 22.7749C20.3818 22.5143 20.2323 22.1649 20.2224 21.7979C20.2124 21.4309 20.3428 21.074 20.587 20.7998L20.7168 20.6714L23.6001 18.1473ZM15.129 0.615301C15.3805 0.903097 15.5074 1.27891 15.482 1.66022C15.4566 2.04153 15.2809 2.39717 14.9934 2.64904L2.42465 13.6485C2.28202 13.7733 2.11622 13.8687 1.93672 13.9293C1.75721 13.99 1.56752 14.0147 1.37847 14.002C1.18942 13.9894 1.00471 13.9396 0.834896 13.8556C0.665079 13.7715 0.513478 13.6549 0.388749 13.5122C0.264019 13.3696 0.168604 13.2038 0.107951 13.0243C0.0472976 12.8448 0.0225943 12.6551 0.0352513 12.4661C0.0479082 12.277 0.0976778 12.0923 0.181718 11.9225C0.265758 11.7527 0.382423 11.6011 0.525052 11.4763L13.0938 0.478277C13.3818 0.227019 13.7578 0.100324 14.1391 0.126016C14.5204 0.151707 14.8759 0.327684 15.1276 0.615301H15.129ZM4.02568 0.478277C4.30176 0.236302 4.65971 0.108702 5.0266 0.12148C5.39349 0.134258 5.7417 0.286452 6.00027 0.547048C6.25884 0.807644 6.40832 1.15703 6.41823 1.524C6.42815 1.89098 6.29777 2.24793 6.05365 2.52211L5.92528 2.65048L2.42465 5.71551C2.14991 5.96667 1.78872 6.10188 1.41659 6.09288C1.04447 6.08388 0.690227 5.93137 0.427951 5.66723C0.165675 5.40309 0.0156699 5.04778 0.00930461 4.6756C0.00293934 4.30342 0.140706 3.94319 0.393797 3.67024L0.52361 3.54187L4.02568 0.478277Z"
+                fill="#1E1E1E"
+                fill-opacity="0.8"
+              />
+            </svg>
+          </div>
+          <span>Options</span>
         </button>
       </div>
       <div class="tab-content w-100 px-2" id="v-pills-tabContent">
@@ -775,137 +852,25 @@
         >
           <div class="card">
             <div class="card-header bg-yellow">Products</div>
-            <div class="card-body row p-0">
-              <div class="col-xl-6">
+            <div
+              class="card-body row p-2 align-items-center justify-content-center"
+            >
+              <div class="col-md-12 col-12">
                 <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4' x 6' (92 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(367, 550)"
+                  class="btn btn-yellow w-100 my-1 mt-2"
+                  (click)="changeSizeWithMeasures(408, 528, '4.25x5.5')"
                 >
-                  Standard (4 x 6)
+                  First Class Postcard (4.25 x 5.5)
                 </button>
               </div>
-              <div class="col-xl-6">
+              <div class="col-md-12 col-12">
                 <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="5' x 7' (110 DPI)"
                   type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(385, 550)"
+                  class="btn btn-yellow w-100 my-1"
+                  (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5')"
                 >
-                  Large (5 x 7)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4' x 9' (61 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(244, 550)"
-                >
-                  Panoramic (4 x 9)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="5' x 5' (110 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(550, 550)"
-                >
-                  Square (5 x 5)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="8.5' x 11' (65 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(711, 550)"
-                >
-                  US Letter (8 x 11)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="8.27' x 11.69' (66 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(778, 550)"
-                >
-                  A4 Letter (8 x 11)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="8.5' x 14' (65 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(906, 550)"
-                >
-                  Legal Letter (8 x 14)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="5.5' x 8.5' (100 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(425, 550)"
-                >
-                  Half Letter (5 x 8)
-                </button>
-              </div>
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4.33' x 8.66' (127 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1"
-                  (click)="changeSizeWithMeasures(275, 550)"
-                >
-                  DL Size (4 x 8)
-                </button>
-              </div>
-              <!-- <div class="col-xl-6">
-                  <button
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="6' x 11' (80 DPI)"
-                    type="button"
-                    class="btn btn-primary m-1"
-                    (click)="changeSizeWithMeasures(480, 880)"
-                  >
-                    Jumbo (6 x 11)
-                  </button>
-                </div> -->
-              <div class="col-xl-6">
-                <button
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="4.13' x 5.83' (133 DPI)"
-                  type="button"
-                  class="btn btn-primary m-1 w-100"
-                  (click)="changeSizeWithMeasures(387, 550)"
-                >
-                  A6 Postcard (4 x 5)
+                  Half Page Postcard (8.5 x 5.5)
                 </button>
               </div>
             </div>
@@ -931,14 +896,14 @@
         >
           <div class="card">
             <div class="card-header bg-yellow">Templates</div>
-            <div class="card-body">
-              <div class="row w-100">
+            <div class="card-body px-0 template-max-height">
+              <div class="row p-0 m-0 w-100">
                 <!-- Loop through image templates -->
                 <div
-                  class="col-4 w-100 mb-3"
+                  class="col-6 text-center w-100 mb-3 template-name"
                   *ngFor="let template of prebuiltTemplates"
                   (click)="loadImageTemplate(template)"
-                  style="cursor: pointer"
+                  style="cursor: pointer; font-size: 12px"
                 >
                   <!-- Image template -->
                   <div
@@ -960,6 +925,7 @@
                       "
                     />
                   </div>
+                  {{ template.name }}
                 </div>
               </div>
             </div>
@@ -1075,87 +1041,99 @@
             </div>
           </div>
         </div>
+        <div
+          class="tab-pane fade"
+          [ngClass]="{ 'show active': activeTab === 'options' }"
+          id="v-pills-options"
+          role="tabpanel"
+          aria-labelledby="v-pills-options-tab"
+        >
+          <!-- right bar  -->
+          <div class="">
+            <div class="card">
+              <div class="card-header bg-yellow">Options</div>
+              <div class="card-body p-2 text-center bg-light-gray">
+                <div class="btn-group" role="group" aria-label="...">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Delete element"
+                    type="button"
+                    class="btn btn-outline-danger"
+                    (click)="removeSelected()"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Send to back"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="sendToBack()"
+                  >
+                    <i class="fa fa-level-down" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Send to front"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="bringToFront()"
+                  >
+                    <i class="fa fa-level-up" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Clone"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="clone()"
+                  >
+                    <i class="fa fa-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <br />
+                <br />
+
+                <button (click)="toggleSide()" class="btn btn-primary">
+                  Switch to {{ isFront ? "Back" : "Front" }}
+                </button>
+                <br />
+                <br />
+                <button (click)="preview()" class="btn btn-primary">
+                  Preview
+                </button>
+                <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
+              </div>
+            </div>
+
+            <div class="note">
+              <h5><b>Note</b></h5>
+
+              <p>
+                The "<strong>-----</strong>" represents the
+                <strong>safe area</strong>, ensuring that critical content stays
+                within the protected zone. The "<strong>____</strong>" denotes
+                the <strong>bleed area</strong>, which is the extra space beyond
+                the trim to avoid any unintended cut-off during printing or
+                production.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- canvas sectiion -->
-    <div class="col-xl-6 p-0">
+    <div
+      class="col-md-12 col-lg-9 p-0 d-flex justify-content-center order-3 order-lg-2 mt-4 mt-lg-0"
+    >
       <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
-    </div>
-
-    <!-- right bar  -->
-    <div class="col-xl-2 p-0">
-      <div class="card">
-        <div class="card-header bg-yellow">Options</div>
-        <div class="card-body p-2 text-center bg-light-gray">
-          <div class="btn-group" role="group" aria-label="...">
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Delete element"
-              type="button"
-              class="btn btn-outline-danger"
-              (click)="removeSelected()"
-            >
-              <i class="fa fa-trash" aria-hidden="true"></i>
-            </button>
-
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Send to back"
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="sendToBack()"
-            >
-              <i class="fa fa-level-down" aria-hidden="true"></i>
-            </button>
-
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Send to front"
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="bringToFront()"
-            >
-              <i class="fa fa-level-up" aria-hidden="true"></i>
-            </button>
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Clone"
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="clone()"
-            >
-              <i class="fa fa-clone" aria-hidden="true"></i>
-            </button>
-          </div>
-          <br />
-          <br />
-
-          <button (click)="toggleSide()" class="btn btn-primary">
-            Switch to {{ isFront ? "Back" : "Front" }}
-          </button>
-          <br />
-          <br />
-          <button (click)="preview()" class="btn btn-primary">Preview</button>
-          <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
-        </div>
-      </div>
-
-      <div class="note">
-        <h5><b>Note</b></h5>
-
-        <p>
-          The "<strong>-----</strong>" represents the
-          <strong>safe area</strong>, ensuring that critical content stays
-          within the protected zone. The "<strong>____</strong>" denotes the
-          <strong>bleed area</strong>, which is the extra space beyond the trim
-          to avoid any unintended cut-off during printing or production.
-        </p>
-      </div>
     </div>
   </div>
 

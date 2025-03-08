@@ -344,3 +344,32 @@
     font-size: 12px !important;
   }
 }
+
+.right-10 {
+  right: 0px !important;
+}
+.show-options {
+  background-color: #fdc323;
+  color: black;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  border: none;
+  font-weight: 600;
+  padding: 6px;
+  outline: none;
+}
+
+.show-options:hover {
+  background-color: #fab802;
+}
+
+.z-index-high {
+  z-index: 9999;
+}
+
+.cross-btn {
+  outline: none;
+  color: #000000;
+  background-color: transparent;
+  border-radius: 10px;
+}
