@@ -6,7 +6,7 @@
       <div class="wrapper bg-white rounded-lg shadow-md">
         <!-- Card Header -->
         <div
-          class="card-header bg-yellow text-dark font-weight-bold text-center py-3"
+          class="card-header bg-yellow custom-scale text-dark font-weight-bold text-center py-3"
         >
           Templates
         </div>
@@ -469,6 +469,33 @@
           </div>
           <span>background</span>
         </button>
+        <button
+          class="nav-link d-flex flex-column justify-content-center align-items-center px-1 p-md-2 border-0 mb-2 bg-light-gray text-capitalize"
+          [ngClass]="{ active: activeTab === 'options' }"
+          id="v-pills-options-tab"
+          (click)="setActiveTab('options')"
+          type="button"
+          role="tab"
+          aria-controls="v-pills-options"
+          [attr.aria-selected]="activeTab === 'options'"
+        >
+          <div>
+            <svg
+              width="26"
+              height="24"
+              viewBox="0 0 26 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M25.6367 0.615301C25.8879 0.90328 26.0146 1.2792 25.9889 1.66052C25.9632 2.04184 25.7873 2.39737 25.4997 2.64904L2.42177 22.8422C2.28022 22.9731 2.11387 23.0743 1.93254 23.1398C1.75121 23.2054 1.55859 23.2339 1.36605 23.2237C1.17352 23.2135 0.984984 23.1648 0.811594 23.0805C0.638204 22.9961 0.483478 22.8779 0.356563 22.7328C0.229648 22.5876 0.133121 22.4185 0.0726868 22.2354C0.0122531 22.0523 -0.0108604 21.859 0.00471303 21.6668C0.0202865 21.4746 0.0742307 21.2875 0.163357 21.1166C0.252482 20.9456 0.374981 20.7942 0.52361 20.6714L23.6015 0.478277C23.8895 0.227019 24.2654 0.100324 24.6467 0.126016C25.028 0.151707 25.385 0.327684 25.6367 0.615301ZM25.6367 9.8104C25.8879 10.0984 26.0146 10.4743 25.9889 10.8556C25.9632 11.2369 25.7873 11.5925 25.4997 11.8441L12.9309 22.8436C12.7882 22.9684 12.6224 23.0638 12.4429 23.1244C12.2634 23.1851 12.0737 23.2098 11.8847 23.1971C11.6956 23.1845 11.5109 23.1347 11.3411 23.0507C11.1713 22.9666 11.0197 22.85 10.895 22.7073C10.7702 22.5647 10.6748 22.3989 10.6142 22.2194C10.5535 22.0399 10.5288 21.8502 10.5415 21.6611C10.5541 21.4721 10.6039 21.2874 10.6879 21.1176C10.772 20.9478 10.8886 20.7962 11.0313 20.6714L23.6001 9.67337C23.7427 9.54852 23.9086 9.45302 24.0882 9.39233C24.2678 9.33163 24.4576 9.30695 24.6468 9.31967C24.8359 9.3324 25.0207 9.38229 25.1906 9.46649C25.3604 9.5507 25.512 9.66756 25.6367 9.8104ZM23.6001 18.1473C23.8757 17.9026 24.2346 17.7727 24.603 17.7843C24.9714 17.7959 25.3214 17.9481 25.5811 18.2096C25.8409 18.4712 25.9906 18.8223 25.9996 19.1908C26.0086 19.5593 25.8761 19.9172 25.6295 20.1911L25.4997 20.3195L22.6149 22.8436C22.3388 23.0856 21.9809 23.2132 21.614 23.2004C21.2471 23.1877 20.8989 23.0355 20.6403 22.7749C20.3818 22.5143 20.2323 22.1649 20.2224 21.7979C20.2124 21.4309 20.3428 21.074 20.587 20.7998L20.7168 20.6714L23.6001 18.1473ZM15.129 0.615301C15.3805 0.903097 15.5074 1.27891 15.482 1.66022C15.4566 2.04153 15.2809 2.39717 14.9934 2.64904L2.42465 13.6485C2.28202 13.7733 2.11622 13.8687 1.93672 13.9293C1.75721 13.99 1.56752 14.0147 1.37847 14.002C1.18942 13.9894 1.00471 13.9396 0.834896 13.8556C0.665079 13.7715 0.513478 13.6549 0.388749 13.5122C0.264019 13.3696 0.168604 13.2038 0.107951 13.0243C0.0472976 12.8448 0.0225943 12.6551 0.0352513 12.4661C0.0479082 12.277 0.0976778 12.0923 0.181718 11.9225C0.265758 11.7527 0.382423 11.6011 0.525052 11.4763L13.0938 0.478277C13.3818 0.227019 13.7578 0.100324 14.1391 0.126016C14.5204 0.151707 14.8759 0.327684 15.1276 0.615301H15.129ZM4.02568 0.478277C4.30176 0.236302 4.65971 0.108702 5.0266 0.12148C5.39349 0.134258 5.7417 0.286452 6.00027 0.547048C6.25884 0.807644 6.40832 1.15703 6.41823 1.524C6.42815 1.89098 6.29777 2.24793 6.05365 2.52211L5.92528 2.65048L2.42465 5.71551C2.14991 5.96667 1.78872 6.10188 1.41659 6.09288C1.04447 6.08388 0.690227 5.93137 0.427951 5.66723C0.165675 5.40309 0.0156699 5.04778 0.00930461 4.6756C0.00293934 4.30342 0.140706 3.94319 0.393797 3.67024L0.52361 3.54187L4.02568 0.478277Z"
+                fill="#1E1E1E"
+                fill-opacity="0.8"
+              />
+            </svg>
+          </div>
+          <span>Options</span>
+        </button>
       </div>
       <div class="tab-content w-100 px-2" id="v-pills-tabContent">
         <div
@@ -492,41 +519,13 @@
               </div>
 
               <!-- Dropdown for font selection (on a new line) -->
-              <div class="input-group mt-2"
-              *ngIf="fontsLoaded">
+              <div class="input-group mt-2">
                 <select
                   class="form-control"
                   [(ngModel)]="selectedFont"
                   (change)="onFontFamilyChange()"
                 >
-
-                <option value="ArialRoundedMTBold" selected style="font-family: ArialRoundedMTBold">Arial Rounded MT Bold</option>
-                <option value="PremiumUltra" style="font-family: PremiumUltra">PremiumUltra</option>
-                <option value="Ctorres" style="font-family: Ctorres">Ctorres</option>
-                <option value="Lindy-Bold" style="font-family: Lindy-Bold">Lindy-Bold</option>
-                <!-- <option value="Arial" style="font-family: Arial">
-                  Arial
-                </option> -->
-
-
-                <!-- Google Fonts
-                <option value="Open Sans">Open Sans (Myriad Pro)</option>
-                <option value="Caveat">Caveat (Hello-Notie)</option>
-                <option value="Nunito">Nunito (Arial Rounded)</option>
-                <option value="Bebas Neue">Bebas Neue (PremiumUltra26)</option>
-                <option value="Playfair Display">Playfair Display (Ctorres)</option>
-                <option value="Poppins">Poppins (astPea)</option>
-                <option value="Montserrat">Montserrat (Lindy Med Blur)</option>
-                <option value="Orbitron">Orbitron (USPS4CB)</option>
-                <option value="Inter">Inter (Your Font)</option>
-
-                <option value="Arial Rounded MT Bold">Arial Rounded MT Bold</option>
-                <option value="Calibri">Calibri</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Arial Black">Arial Black</option>
-                
-                <option value="serif">Serif</option>
-                <option value="sans-serif">Sans-serif</option>
+                  <!-- Sans-serif Fonts -->
                   <option value="Arial" style="font-family: Arial">
                     Arial
                   </option>
@@ -559,6 +558,7 @@
                     Inter
                   </option>
 
+                  <!-- Serif Fonts -->
                   <option
                     value="Times New Roman"
                     style="font-family: 'Times New Roman'"
@@ -606,6 +606,7 @@
                     Cardo
                   </option>
 
+                  <!-- Display Fonts -->
                   <option value="Oswald" style="font-family: Oswald">
                     Oswald
                   </option>
@@ -646,6 +647,7 @@
                     Satisfy
                   </option>
 
+                  <!-- Monospace Fonts -->
                   <option
                     value="Courier New"
                     style="font-family: 'Courier New'"
@@ -669,9 +671,7 @@
                   </option>
                   <option value="Inconsolata" style="font-family: Inconsolata">
                     Inconsolata
-                  </option> -->
-
-              
+                  </option>
                 </select>
               </div>
 
@@ -1041,104 +1041,99 @@
             </div>
           </div>
         </div>
+        <div
+          class="tab-pane fade"
+          [ngClass]="{ 'show active': activeTab === 'options' }"
+          id="v-pills-options"
+          role="tabpanel"
+          aria-labelledby="v-pills-options-tab"
+        >
+          <!-- right bar  -->
+          <div class="">
+            <div class="card">
+              <div class="card-header bg-yellow">Options</div>
+              <div class="card-body p-2 text-center bg-light-gray">
+                <div class="btn-group" role="group" aria-label="...">
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Delete element"
+                    type="button"
+                    class="btn btn-outline-danger"
+                    (click)="removeSelected()"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Send to back"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="sendToBack()"
+                  >
+                    <i class="fa fa-level-down" aria-hidden="true"></i>
+                  </button>
+
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Send to front"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="bringToFront()"
+                  >
+                    <i class="fa fa-level-up" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Clone"
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="clone()"
+                  >
+                    <i class="fa fa-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <br />
+                <br />
+
+                <button (click)="toggleSide()" class="btn btn-primary">
+                  Switch to {{ isFront ? "Back" : "Front" }}
+                </button>
+                <br />
+                <br />
+                <button (click)="preview()" class="btn btn-primary">
+                  Preview
+                </button>
+                <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
+              </div>
+            </div>
+
+            <div class="note">
+              <h5><b>Note</b></h5>
+
+              <p>
+                The "<strong>-----</strong>" represents the
+                <strong>safe area</strong>, ensuring that critical content stays
+                within the protected zone. The "<strong>____</strong>" denotes
+                the <strong>bleed area</strong>, which is the extra space beyond
+                the trim to avoid any unintended cut-off during printing or
+                production.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- canvas sectiion -->
     <div
-      class="col-md-12 col-lg-9 position-relative p-0 d-flex justify-content-center order-3 order-lg-2 mt-4 mt-lg-0"
+      class="col-md-12 col-lg-9 p-0 d-flex justify-content-center order-3 order-lg-2 mt-4 mt-lg-0"
     >
       <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
-      <div class="position-absolute top-0 right-10">
-        <button (click)="toggleShowOptionsModal()" class="show-options">
-          Options
-        </button>
-      </div>
-    </div>
-
-    <!-- right bar  -->
-    <div
-      *ngIf="showOptionsModal"
-      class="position-absolute top-0 z-index-high right-10 col-12 mt-4 mt-md-0 col-md-4 col-lg-2 p-0 order-2 order-lg-3 m-0"
-    >
-      <div class="card">
-        <div
-          class="d-flex align-items-center justify-content-between bg-yellow"
-        >
-          <div class="p-3">Options</div>
-          <button (click)="toggleShowOptionsModal()" class="cross-btn">
-            X
-          </button>
-        </div>
-        <div class="card-body p-2 text-center bg-light-gray">
-          <div class="btn-group" role="group" aria-label="...">
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Delete element"
-              type="button"
-              class="btn btn-outline-danger"
-              (click)="removeSelected()"
-            >
-              <i class="fa fa-trash" aria-hidden="true"></i>
-            </button>
-
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Send to back"
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="sendToBack()"
-            >
-              <i class="fa fa-level-down" aria-hidden="true"></i>
-            </button>
-
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Send to front"
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="bringToFront()"
-            >
-              <i class="fa fa-level-up" aria-hidden="true"></i>
-            </button>
-            <button
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Clone"
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="clone()"
-            >
-              <i class="fa fa-clone" aria-hidden="true"></i>
-            </button>
-          </div>
-          <br />
-          <br />
-
-          <button (click)="toggleSide()" class="btn btn-primary">
-            Switch to {{ isFront ? "Back" : "Front" }}
-          </button>
-          <br />
-          <br />
-          <button (click)="preview()" class="btn btn-primary">Preview</button>
-          <!-- <button (click)="saveDesigns()" class="btn btn-success">Save Design</button> -->
-        </div>
-      </div>
-
-      <div class="note">
-        <h5><b>Note</b></h5>
-
-        <p>
-          The "<strong>-----</strong>" represents the
-          <strong>safe area</strong>, ensuring that critical content stays
-          within the protected zone. The "<strong>____</strong>" denotes the
-          <strong>bleed area</strong>, which is the extra space beyond the trim
-          to avoid any unintended cut-off during printing or production.
-        </p>
-      </div>
     </div>
   </div>
 
