@@ -911,14 +911,58 @@ export class AppComponent implements OnInit {
     this.showTopBarModal = false;
   }
 
+  // Update the saveCanvasToJSON method
   public saveCanvasToJSON() {
-    this.canvas.saveCanvasToJSON();
-    this.addDashedSafetyArea();
+  const canvas = this.canvas.getCanvas();
+  const json = JSON.stringify(canvas.toJSON());
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `canvas-export-${this.isFront ? 'front' : 'back'}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  this.addDashedSafetyArea();
   }
 
+
+  // Update the loadCanvasFromJSON method
   public loadCanvasFromJSON() {
-    this.canvas.loadCanvasFromJSON();
-    this.addDashedSafetyArea();
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+
+  input.addEventListener('change', (event: Event) => {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      try {
+        const json = JSON.parse(e.target?.result as string);
+        const canvas = this.canvas.getCanvas();
+        
+        // Clear existing canvas while preserving bleed area
+        const bleedLines = this.getBleedAreaLines();
+        canvas.clear();
+        
+        canvas.loadFromJSON(json, () => {
+          // Re-add bleed area if needed
+          bleedLines.forEach(line => canvas.add(line));
+          canvas.renderAll();
+          this.addDashedSafetyArea();
+        });
+      } catch (error) {
+        console.error('Error loading JSON:', error);
+        alert('Invalid JSON file. Please upload a valid canvas export.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  input.click();
   }
 
   public confirmClear() {
