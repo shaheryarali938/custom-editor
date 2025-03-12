@@ -15,6 +15,11 @@ declare var FontFace: any;
 export class AppComponent implements OnInit {
   @ViewChild("canvasEditor", { static: false })
   canvasEditor!: FabricjsEditorComponent;
+  showAddText = false;
+
+  toggleShowAddText() {
+    this.showAddText = !this.showAddText;
+  }
 
   ngAfterViewInit() {
     // Canvas is now initialized inside the editor component

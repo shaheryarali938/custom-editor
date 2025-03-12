@@ -61,106 +61,131 @@
         <div class="row w-100 p-0 m-0">
           <!-- Single container holding both "Add Text" (left) and "Import/Export" (right) -->
         <div class="custom-container">
-          <div 
-            class="row align-items-center justify-content-between py-3" 
-            style="background-color: #f9f9f9; border-bottom: 1px solid #ddd;"
-          >
-        <!-- LEFT COLUMN: "Add Text" controls -->
-        <div class="col-auto d-flex align-items-center flex-wrap">
-          
-          <div class="input-group w-auto" style="max-width: 350px;">
-            <div class="input-group-prepend">
-              <span 
-                class="input-group-text" 
-                style="color: #000; font-weight: bold; display: flex; align-items: center;"
-              >
+          <div class="row align-items-center justify-content-between py-3 px-3"
+            style="background-color: #f9f9f9; border-bottom: 1px solid #ddd;">
+            <!-- LEFT: Toggle icon + hidden "Add Text" controls -->
+            <div class="col-auto d-flex align-items-center">
+              <!-- Static "Add Text" label -->
+              <span style="font-weight: bold; color: #000; margin-right: 8px;">
                 Add Text
               </span>
-            </div>
-            <input 
-              type="text" 
-              class="form-control" 
-              [(ngModel)]="canvas.textString" 
-              placeholder="Enter your text here"
-              style="max-width: 200px;"
-            />
-          </div>
+               <!-- 1) Small icon that toggles the Add Text controls -->
+               <button
+                class="btn p-0"
+                (click)="toggleShowAddText()"
+                style="
+                  background-color: #fdc323; 
+                  border: none; 
+                  border-radius: 50%;
+                  width: 40px;
+                  height: 40px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i class="fa fa-arrow-right" style="font-size: 18px; color: #000;"></i>
+              </button>
+             
+
+              <!-- 2) The “Add Text” controls, shown inline if showAddText == true -->
+              <div
+              *ngIf="showAddText"
+              class="d-flex align-items-center ml-3"
+              style="gap: 5px;"
+            >
+              <!-- Remove the old “Add Text” label. Just a plain input now. -->
+              <input
+                type="text"
+                class="form-control"
+                style="cursor: text !important; width: 200px;"
+                [(ngModel)]="canvas.textString"
+                placeholder="Enter your text here"
+              />
           
+          <!-- (B) Font dropdown -->
+          <select
+          class="form-control"
+          [(ngModel)]="selectedFont"
+          (change)="onFontFamilyChange()"
+          style="width: 200px;"
+        >
+          <option
+            value="ArialRoundedMTBold"
+            style="font-family: ArialRoundedMTBold"
+            selected
+          >
+            Arial Rounded MT Bold
+          </option>
+          <option value="PremiumUltra" style="font-family: PremiumUltra">
+            PremiumUltra
+          </option>
+          <option value="Ctorres" style="font-family: Ctorres">
+            Ctorres
+          </option>
+          <option value="Lindy-Bold" style="font-family: Lindy-Bold">
+            Lindy-Bold
+          </option>
+        </select>
 
-          <!-- Font dropdown -->
-          <div class="p-1">
-            <select
-              class="form-control"
-              [(ngModel)]="selectedFont"
-              (change)="onFontFamilyChange()"
-            >
-              <option value="ArialRoundedMTBold" style="font-family: ArialRoundedMTBold" selected>
-                Arial Rounded MT Bold
-              </option>
-              <option value="PremiumUltra" style="font-family: PremiumUltra">PremiumUltra</option>
-              <option value="Ctorres" style="font-family: Ctorres">Ctorres</option>
-              <option value="Lindy-Bold" style="font-family: Lindy-Bold">Lindy-Bold</option>
-            </select>
-          </div>
+        <!-- (C) Font size dropdown -->
+        <select
+          class="form-control"
+          [(ngModel)]="selectedFontSize"
+          (change)="onFontSizeChange()"
+          style="width: 100px;"
+        >
+          <option *ngFor="let size of fontSizes" [value]="size">
+            {{ size }}px
+          </option>
+        </select>
 
-          <!-- Font size dropdown -->
-          <div class="p-1">
-            <select
-              class="form-control"
-              [(ngModel)]="selectedFontSize"
-              (change)="onFontSizeChange()"
-            >
-              <option *ngFor="let size of fontSizes" [value]="size">
-                {{ size }}px
-              </option>
-            </select>
-          </div>
+        <!-- (D) Bold & Italic buttons -->
+        <button
+          class="btn border"
+          style="background-color: #fdc323; color: #000;"
+          [ngClass]="{ active: isBold }"
+          (click)="toggleBold()"
+        >
+          <i class="fa fa-bold"></i>
+        </button>
+        <button
+          class="btn border"
+          style="background-color: #fdc323; color: #000;"
+          [ngClass]="{ active: isItalic }"
+          (click)="toggleItalic()"
+        >
+          <i class="fa fa-italic"></i>
+        </button>
 
-          <!-- Bold/Italic buttons -->
-          <div class="p-1">
-            <button
-              class="btn btn-light border mr-1"
-              style="background-color: #fdc323; color: #000; .btn-light:hover {background-color: #fab802;}"
-              [ngClass]="{ active: isBold }"
-              (click)="toggleBold()"
-            >
-              <i class="fa fa-bold"></i>
-            </button>
-            <button
-              class="btn btn-light border"
-              style="background-color: #fdc323; color: #000; .btn-light:hover {background-color: #fab802;}"
-              [ngClass]="{ active: isItalic }"
-              (click)="toggleItalic()"
-            >
-              <i class="fa fa-italic"></i>
-            </button>
-          </div>
+        <!-- (E) Text color picker -->
+        <input
+          type="color"
+          class="form-control p-1"
+          (input)="onObjectColorChange($event)"
+          value="#000000"
+          style="width: 70px; height: 40px;"
+        />
 
-          <!-- Text color picker -->
-          <div class="p-1">
-            <input
-              type="color"
-              class="form-control p-1"
-              (input)="onObjectColorChange($event)"
-              value="#000000"
-              style="width: 80px; height: 40px;"
-            />
-          </div>
-
-          <!-- Add Text button -->
-          <div class="p-1">
-            <button
-              id="add-text"
-              class="btn btn-yellow"
-              (click)="addText()"
-            >
-              <i class="fa fa-plus"></i> Add Text
-            </button>
-          </div>
-        </div>
-
+        <!-- (F) Add Text button -->
+        <button
+          id="add-text"
+          class="btn btn-yellow"
+          (click)="addText()"
+        >
+          <i class="fa fa-plus"></i> Add Text
+        </button>
+      </div>
+    </div>
     <!-- RIGHT COLUMN: "Import/Export" dropdown -->
-    <div class="col-auto text-right" style="width: 200px;">
+    <div class="col-auto d-flex align-items-center" style="width: 300px;">
+      <!-- 1) "Clean" button placed outside the dropdown -->
+      <button
+        class="btn btn-danger mr-2"
+        (click)="confirmClear()"
+      >
+        <i class="fa fa-ban mr-1"></i> Clean
+      </button>
       <div class="dropdown d-inline-block w-100">
         <style>
           /* Adjust dropdown styling as needed */
@@ -215,9 +240,6 @@
           </button>
           <button class="dropdown-item" (click)="exportToHtml()">
             <i class="fa fa-download mr-2"></i> Export to HTML
-          </button>
-          <button class="dropdown-item text-danger" (click)="confirmClear()">
-            <i class="fa fa-ban mr-2"></i> Clean
           </button>
           <button class="dropdown-item" (click)="loadCanvasFromJSON()">
             <i class="fa fa-upload mr-2"></i> Import Canvas
