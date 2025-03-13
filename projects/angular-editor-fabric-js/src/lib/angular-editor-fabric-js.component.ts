@@ -373,15 +373,31 @@ export class FabricjsEditorComponent implements AfterViewInit {
     }
   }
 
-  readUrl(event) {
+  public readUrl(event) {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
+      
       reader.onload = (readerEvent) => {
-        this.url = readerEvent.target.result;
+        const imageUrl = readerEvent.target?.result as string; // ✅ Force type to string
+  
+        // ✅ Add image directly to Fabric.js canvas
+        fabric.Image.fromURL(imageUrl, (img) => {
+          img.set({
+            left: 100, 
+            top: 100, 
+            scaleX: 0.5, // Adjust as needed
+            scaleY: 0.5,
+          });
+  
+          this.canvas.add(img); // ✅ Add image to Fabric.js canvas
+          this.canvas.renderAll(); // ✅ Refresh canvas
+        });
       };
+  
       reader.readAsDataURL(event.target.files[0]);
     }
   }
+  
 
   removeWhite(url) {
     this.url = "";

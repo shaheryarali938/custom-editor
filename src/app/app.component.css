@@ -75,4 +75,37 @@
   font-style: normal;
 }
 
+.custom-dropdown-btn {
+  background-color: #fdc323;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* When the dropdown is open */
+.custom-dropdown-btn[aria-expanded="true"] {
+  background-color: #fab802;
+  transform: scale(0.9);
+}
+
+/* Icon display rules */
+.custom-dropdown-btn .arrow-down {
+  display: block;
+}
+.custom-dropdown-btn .arrow-up {
+  display: none;
+}
+
+.custom-dropdown-btn[aria-expanded="true"] .arrow-down {
+  display: none;
+}
+.custom-dropdown-btn[aria-expanded="true"] .arrow-up {
+  display: block;
+}
 

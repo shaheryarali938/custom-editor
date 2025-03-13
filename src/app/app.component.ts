@@ -15,10 +15,24 @@ declare var FontFace: any;
 export class AppComponent implements OnInit {
   @ViewChild("canvasEditor", { static: false })
   canvasEditor!: FabricjsEditorComponent;
-  showAddText = false;
+  @ViewChild('uploadFileInput') uploadFileInput!: ElementRef;
+  showTextDropdown = false;
+  showImportExportDropdown = false;
+  showProductDropdown = false;
 
-  toggleShowAddText() {
-    this.showAddText = !this.showAddText;
+  toggleTextDropdown() {
+    this.showTextDropdown = !this.showTextDropdown;
+  }
+  toggleImportExportDropdown() {
+    this.showImportExportDropdown = !this.showImportExportDropdown;
+  }
+
+  toggleProductDropdown() {
+    this.showProductDropdown = !this.showProductDropdown;
+  }
+
+  openFileUpload() {
+    this.uploadFileInput.nativeElement.click();
   }
 
   ngAfterViewInit() {

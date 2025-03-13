@@ -69,127 +69,196 @@
               <span style="font-weight: bold; color: #000; margin-right: 8px;">
                 Add Text
               </span>
-               <!-- 1) Small icon that toggles the Add Text controls -->
-               <button
-                class="btn p-0"
-                (click)="toggleShowAddText()"
-                style="
-                  background-color: #fdc323; 
-                  border: none; 
-                  border-radius: 50%;
-                  width: 40px;
-                  height: 40px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
+              <!-- 1) Dropdown trigger: down arrow icon -->
+              <div class="dropdown mr-3" style="position: relative;">
+                <!-- Toggle Button -->
+                <button 
+                  class="btn p-0" 
+                  type="button" 
+                  (click)="toggleTextDropdown()"
+                  style="
+                    background-color: #fdc323;
+                    border: none;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fa" [ngClass]="showTextDropdown ? 'fa fa-angle-up' : 'fa fa-angle-down'" 
+                     style="font-size: 14px; color: #000;"></i>
+                </button>
+              
+                <!-- Dropdown Menu controlled by Angular -->
+                <div 
+                  *ngIf="showTextDropdown" 
+                  class="dropdown-menu dropdown-menu-right p-3 show" 
+                  style="
+                    display: block !important;
+                    min-width: 280px; 
+                    border-radius: 6px; 
+                    position: absolute; 
+                    top: 35px; 
+                    left: 0; 
+                    z-index: 1050;
+                    background-color: #fff;
+                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                  "
+                >
+                  <input 
+                    type="text" 
+                    class="form-control mb-2" 
+                    [(ngModel)]="canvas.textString" 
+                    placeholder="Enter your text here" 
+                    style="width: 100%;"
+                  />
+                  <button 
+                    class="btn btn-yellow w-100" 
+                    (click)="addText()"
+                  >
+                    <i class="fa fa-plus"></i> Add Text
+                  </button>
+                </div>
+              </div>    
+
+              <!-- 3) Always-visible font/style/color controls -->
+              <!-- (A) Font Family -->
+              <select
+                class="form-control mr-2"
+                style="width: 230px;"
+                [(ngModel)]="selectedFont"
+                (change)="onFontFamilyChange()"
               >
-                <i class="fa fa-arrow-right" style="font-size: 18px; color: #000;"></i>
+                <option
+                  value="ArialRoundedMTBold"
+                  style="font-family: ArialRoundedMTBold"
+                  selected
+                >
+                  Arial Rounded MT Bold
+                </option>
+                <option value="PremiumUltra" style="font-family: PremiumUltra">
+                  PremiumUltra
+                </option>
+                <option value="Ctorres" style="font-family: Ctorres">
+                  Ctorres
+                </option>
+                <option value="Lindy-Bold" style="font-family: Lindy-Bold">
+                  Lindy-Bold
+                </option>
+                <!-- etc. -->
+              </select>
+
+              <!-- (B) Font Size -->
+              <select
+                class="form-control mr-2"
+                style="width: 100px;"
+                [(ngModel)]="selectedFontSize"
+                (change)="onFontSizeChange()"
+              >
+                <option *ngFor="let size of fontSizes" [value]="size">
+                  {{ size }}px
+                </option>
+              </select>
+
+              <!-- (C) Bold -->
+              <button
+                class="btn border mr-1"
+                style="background-color: #fdc323; color: #000;"
+                [ngClass]="{ active: isBold }"
+                (click)="toggleBold()"
+              >
+                <i class="fa fa-bold"></i>
               </button>
-             
+              <!-- (D) Italic -->
+              <button
+                class="btn border mr-2"
+                style="background-color: #fdc323; color: #000;"
+                [ngClass]="{ active: isItalic }"
+                (click)="toggleItalic()"
+              >
+                <i class="fa fa-italic"></i>
+              </button>
 
-              <!-- 2) The “Add Text” controls, shown inline if showAddText == true -->
-              <div
-              *ngIf="showAddText"
-              class="d-flex align-items-center ml-3"
-              style="gap: 5px;"
-            >
-              <!-- Remove the old “Add Text” label. Just a plain input now. -->
+              <!-- (E) Text color picker -->
               <input
-                type="text"
-                class="form-control"
-                style="cursor: text !important; width: 200px;"
-                [(ngModel)]="canvas.textString"
-                placeholder="Enter your text here"
+                type="color"
+                class="form-control p-1"
+                (input)="onObjectColorChange($event)"
+                value="#000000"
+                style="width: 70px; height: 40px;"
               />
-          
-          <!-- (B) Font dropdown -->
-          <select
-          class="form-control"
-          [(ngModel)]="selectedFont"
-          (change)="onFontFamilyChange()"
-          style="width: 200px;"
-        >
-          <option
-            value="ArialRoundedMTBold"
-            style="font-family: ArialRoundedMTBold"
-            selected
-          >
-            Arial Rounded MT Bold
-          </option>
-          <option value="PremiumUltra" style="font-family: PremiumUltra">
-            PremiumUltra
-          </option>
-          <option value="Ctorres" style="font-family: Ctorres">
-            Ctorres
-          </option>
-          <option value="Lindy-Bold" style="font-family: Lindy-Bold">
-            Lindy-Bold
-          </option>
-          <option value="Arial Black" style="font-family: 'Arial Black', Arial, sans-serif;">
-            Arial Black
-          </option>
-        </select>
-
-        <!-- (C) Font size dropdown -->
-        <select
-          class="form-control"
-          [(ngModel)]="selectedFontSize"
-          (change)="onFontSizeChange()"
-          style="width: 100px;"
-        >
-          <option *ngFor="let size of fontSizes" [value]="size">
-            {{ size }}px
-          </option>
-        </select>
-
-        <!-- (D) Bold & Italic buttons -->
-        <button
-          class="btn border"
-          style="background-color: #fdc323; color: #000;"
-          [ngClass]="{ active: isBold }"
-          (click)="toggleBold()"
-        >
-          <i class="fa fa-bold"></i>
-        </button>
-        <button
-          class="btn border"
-          style="background-color: #fdc323; color: #000;"
-          [ngClass]="{ active: isItalic }"
-          (click)="toggleItalic()"
-        >
-          <i class="fa fa-italic"></i>
-        </button>
-
-        <!-- (E) Text color picker -->
-        <input
-          type="color"
-          class="form-control p-1"
-          (input)="onObjectColorChange($event)"
-          value="#000000"
-          style="width: 70px; height: 40px;"
-        />
-
-        <!-- (F) Add Text button -->
-        <button
-          id="add-text"
-          class="btn btn-yellow"
-          (click)="addText()"
-        >
-          <i class="fa fa-plus"></i> Add Text
-        </button>
-      </div>
-    </div>
+            </div>
     <!-- RIGHT COLUMN: "Import/Export" dropdown -->
-    <div class="col-auto d-flex align-items-center" style="width: 300px;">
+     
+    <div class="col-auto d-flex align-items-center">
       <!-- 1) "Clean" button placed outside the dropdown -->
+       <!-- Upload File Button -->
+       <!-- Upload File Button -->
+        <!-- Upload File Button -->
+        <input
+        type="file"
+        #uploadFileInput
+        style="display: none"
+        (change)="readUrl($event)"
+        />
+        <button
+        class="btn btn-yellow mr-2"
+        (click)="openFileUpload()"
+        style="padding: 6px 12px;"
+        >
+        <i class="fa fa-upload mr-1"></i> Upload Image
+        </button>
+
+        <!-- Select Product Dropdown -->
+        <div class="dropdown d-inline-block position-relative">
+        <button
+          class="btn btn-yellow dropdown-toggle mr-2"
+          type="button"
+          (click)="toggleProductDropdown()"
+          style="padding: 6px 12px;"
+        >
+          <i class="fa fa-list mr-1"></i> Select Product
+        </button>
+
+        <!-- Product Dropdown Menu -->
+        <div
+          *ngIf="showProductDropdown"
+          class="dropdown-menu dropdown-menu-right p-2 show"
+          style="
+            display: block !important;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 230px;
+            border-radius: 6px;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1050;
+          "
+        >
+          <button
+            class="dropdown-item"
+            (click)="changeSizeWithMeasures(408, 528, '4.25x5.5'); showProductDropdown = false;"
+          >
+            <i class=""></i> First Class Postcard (4.25x5.5)
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5'); showProductDropdown = false;"
+          >
+            <i class=""></i> Half Page Postcard (8.5x5.5)
+          </button>
+        </div>
+        </div>
       <button
         class="btn btn-danger mr-2"
         (click)="confirmClear()"
       >
         <i class="fa fa-ban mr-1"></i> Clean
       </button>
-      <div class="dropdown d-inline-block w-100">
+      <div class="dropdown d-inline-block position-relative">
         <style>
           /* Adjust dropdown styling as needed */
           .dropdown-menu {
@@ -219,18 +288,28 @@
         </style>
 
         <button
-          class="btn btn-yellow dropdown-toggle w-100"
+          class="btn btn-yellow dropdown-toggle"
           type="button"
-          id="importExportDropdown"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
+          (click)="toggleImportExportDropdown()"
+          style="position: relative; z-index: 1050; min-width: 180px;"
+          >
           Import/Export
         </button>
-        <div 
-          class="dropdown-menu w-100 dropdown-menu-right" 
-          aria-labelledby="importExportDropdown"
+        <!-- Dropdown menu controlled by Angular -->
+          <div
+          *ngIf="showImportExportDropdown"
+          class="dropdown-menu dropdown-menu-right p-3 show"
+          style="
+            display: block !important;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 180px;
+            border-radius: 6px;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1050;
+          "
         >
           <button class="dropdown-item" (click)="rasterize()">
             <i class="fa fa-download mr-2"></i> Export to Image
