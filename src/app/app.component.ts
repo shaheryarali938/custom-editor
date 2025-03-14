@@ -1301,19 +1301,28 @@ export class AppComponent implements OnInit {
   onObjectColorChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const selectedColor = inputElement.value; // Get selected color
-
+  
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
-
     if (!activeObjects || activeObjects.length === 0) return;
-
+  
     activeObjects.forEach((object) => {
-      if (object instanceof fabric.Textbox || object instanceof fabric.Text) {
-        object.set("fill", selectedColor);
+      if (
+        object instanceof fabric.Textbox || 
+        object instanceof fabric.Text || 
+        object instanceof fabric.Rect || 
+        object instanceof fabric.Circle || 
+        object instanceof fabric.Triangle || 
+        object instanceof fabric.Polygon
+      ) {
+        (object as fabric.Object).set("fill", selectedColor);
+      } else if (object instanceof fabric.Path) {
+        (object as fabric.Object).set("stroke", selectedColor);
       }
     });
-
-    this.canvas.getCanvas().renderAll();
+  
+    this.canvas.getCanvas().requestRenderAll(); // ✅ Use requestRenderAll() for smoother real-time updates
   }
+  
   getBleedAreaLines(): fabric.Object[] {
     return this.canvas
       .getCanvas()
