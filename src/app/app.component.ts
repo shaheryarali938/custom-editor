@@ -140,6 +140,7 @@ export class AppComponent implements OnInit {
     const canvasJSON = this.canvas.getCanvas().toJSON();
 
     if (this.isFront) {
+      this.selectedSide = this.isFront ? 'front' : 'back'
       this.frontCanvasData = canvasJSON; // Save front side design
       this.canvas.getCanvas().clear(); // Clear the canvas
       if (this.backCanvasData) {
@@ -485,6 +486,16 @@ export class AppComponent implements OnInit {
   fontsLoaded = false;
 
 
+  selectedSide: 'front'|'back' = 'front'; 
+
+  get filteredTemplates() {
+    return this.prebuiltTemplates.filter(template => 
+      template.size === this.selectedSize && 
+      template.side === this.selectedSide
+    );
+  }
+
+
   async ngOnInit() {
 
     await this.loadCustomFonts();
@@ -776,8 +787,32 @@ export class AppComponent implements OnInit {
   // }
 
   loadImageTemplate(template: any) {
-    this.canvas.loadImageTemplate(template);
-    this.showProductData = false;
+    let height: number, width: number;
+  
+  switch(template.size) {
+    case '4.25x5.5':
+      height = 408;
+      width = 528;
+      break;
+    case '8.5x5.5':
+      height = 528;
+      width = 1056;
+      break;
+    default:
+      console.error('Unsupported template size:', template.size);
+      return;
+  }
+
+  // Change canvas size first
+  this.changeSizeWithMeasures(height, width, template.size);
+
+  // Then load the template
+  this.canvas.loadImageTemplate(template);
+  this.showProductData = false;
+  
+  // Force refresh the template filtering
+  this.selectedSize = template.size;
+  this.selectedSide = template.side;
   }
 
   addDashedSafetyArea() {
@@ -1020,7 +1055,7 @@ export class AppComponent implements OnInit {
   }
 
   // In your component class:
-  public selectedSize: string | null = null;
+  public selectedSize: string = '4.25x5.5';
 
   public changeSizeWithMeasures(
     height: number,

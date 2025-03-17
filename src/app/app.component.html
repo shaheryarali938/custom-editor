@@ -194,33 +194,38 @@
      
     <div class="col-auto d-flex align-items-center">
       <!-- 1) "Clean" button placed outside the dropdown -->
-       <!-- Upload File Button -->
-       <!-- Upload File Button -->
+      <button 
+        class="btn btn-yellow btn-sm mr-1"
+        (click)="toggleSide()"
+        style="padding: 5px 10px;"
+      >
+        <i class=""></i> Switch Side
+      </button>
         <!-- Upload File Button -->
         <input
-        type="file"
-        #uploadFileInput
-        style="display: none"
-        (change)="readUrl($event)"
+          type="file"
+          #uploadFileInput
+          style="display: none"
+          (change)="readUrl($event)"
         />
         <button
-        class="btn btn-yellow mr-2"
-        (click)="openFileUpload()"
-        style="padding: 6px 12px;"
+          class="btn btn-yellow btn-sm mr-1"
+          (click)="openFileUpload()"
+          style="padding: 5px 10px;"
         >
-        <i class="fa fa-upload mr-1"></i> Upload Image
+          <i class=""></i> Upload Image
         </button>
 
         <!-- Select Product Dropdown -->
         <div class="dropdown d-inline-block position-relative">
-        <button
-          class="btn btn-yellow dropdown-toggle mr-2"
-          type="button"
-          (click)="toggleProductDropdown()"
-          style="padding: 6px 12px;"
-        >
-          <i class="fa fa-list mr-1"></i> Select Product
-        </button>
+          <button
+            class="btn btn-yellow btn-sm dropdown-toggle mr-1"
+            type="button"
+            (click)="toggleProductDropdown()"
+            style="padding: 5px 10px;"
+          >
+            <i class=""></i> Select Product
+          </button>
 
         <!-- Product Dropdown Menu -->
         <div
@@ -252,12 +257,13 @@
           </button>
         </div>
         </div>
-      <button
-        class="btn btn-danger mr-2"
-        (click)="confirmClear()"
-      >
-        <i class="fa fa-ban mr-1"></i> Clean
-      </button>
+        <button 
+          class="btn btn-danger btn-sm mr-1"
+          (click)="confirmClear()"
+          style="padding: 5px 10px;"
+        >
+          <i class=""></i> Clean
+        </button>
       <div class="dropdown d-inline-block position-relative">
         <style>
           /* Adjust dropdown styling as needed */
@@ -287,14 +293,14 @@
           }
         </style>
 
-        <button
-          class="btn btn-yellow dropdown-toggle"
+          <button
+          class="btn btn-yellow btn-sm dropdown-toggle"
           type="button"
           (click)="toggleImportExportDropdown()"
-          style="position: relative; z-index: 1050; min-width: 180px;"
+          style="padding: 5px 10px; font-size: 14px;"
           >
           Import/Export
-        </button>
+          </button>
         <!-- Dropdown menu controlled by Angular -->
           <div
           *ngIf="showImportExportDropdown"
@@ -1082,49 +1088,74 @@
           Table content
         </div>
 
+        <!-- In app.component.html -->
         <div
-          class="tab-pane fade"
-          [ngClass]="{ 'show active': activeTab === 'design-color' }"
-          id="v-pills-design-color"
-          role="tabpanel"
-          aria-labelledby="v-pills-design-color-tab"
+        class="tab-pane fade"
+        [ngClass]="{ 'show active': activeTab === 'design-color' }"
+        id="v-pills-design-color"
+        role="tabpanel"
+        aria-labelledby="v-pills-design-color-tab"
         >
-          <div class="card">
-            <div class="card-header bg-yellow">Templates</div>
-            <div class="card-body px-0 template-max-height">
-              <div class="row p-0 m-0 w-100">
-                <!-- Loop through image templates -->
-                <div
-                  class="col-6 text-center w-100 mb-3 template-name"
-                  *ngFor="let template of prebuiltTemplates"
-                  (click)="loadImageTemplate(template)"
-                  style="cursor: pointer; font-size: 12px"
-                >
-                  <!-- Image template -->
-                  <div
-                    class="template-thumbnail"
-                    style="
-                      border: 1px solid #ddd;
-                      padding: 5px;
-                      border-radius: 5px;
-                    "
-                  >
-                    <img
-                      [src]="template.image"
-                      alt="Template"
-                      class="img-fluid w-100"
-                      style="
-                        border-radius: 5px;
-                        max-height: 100px;
-                        object-fit: cover;
-                      "
-                    />
-                  </div>
-                  {{ template.name }}
+        <div class="card">
+          <div class="card-header bg-yellow">Templates</div>
+          <div class="card-body px-0 template-max-height">
+            <!-- Size Tabs -->
+            <div class="btn-group w-100 mb-3">
+              <button 
+                class="btn btn-yellow"
+                [class.active]="selectedSize === '4.25x5.5'"
+                (click)="selectedSize = '4.25x5.5'"
+              >
+                4.25x5.5
+              </button>
+              <button 
+                class="btn btn-yellow"
+                [class.active]="selectedSize === '8.5x5.5'"
+                (click)="selectedSize = '8.5x5.5'"
+              >
+                8.5x5.5
+              </button>
+            </div>
+
+            <!-- Side Filters -->
+            <div class="btn-group w-100 mb-3">
+              <button 
+                class="btn btn-yellow"
+                [class.active]="selectedSide === 'front'"
+                (click)="selectedSide = 'front'"
+              >
+                Front
+              </button>
+              <button 
+                class="btn btn-yellow"
+                [class.active]="selectedSide === 'back'"
+                (click)="selectedSide = 'back'"
+              >
+                Back
+              </button>
+            </div>
+
+            <!-- Template Grid -->
+            <div class="row p-0 m-0 w-100">
+              <div
+                class="col-6 text-center w-100 mb-3 template-name"
+                *ngFor="let template of filteredTemplates"
+                (click)="loadImageTemplate(template)"
+                style="cursor: pointer; font-size: 12px"
+              >
+                <div class="template-thumbnail" style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;">
+                  <img
+                    [src]="template.image"
+                    alt="Template"
+                    class="img-fluid w-100"
+                    style="border-radius: 5px; max-height: 100px; object-fit: cover;"
+                  />
                 </div>
+                {{ template.name }}
               </div>
             </div>
           </div>
+        </div>
         </div>
 
         <div

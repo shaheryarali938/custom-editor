@@ -109,3 +109,60 @@
   display: block;
 }
 
+.design-section {
+  padding: 16px;
+}
+
+/* Tab Styles */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #ddd;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #f8f8f8;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.tab-btn.active {
+  background: #ffc107;
+  font-weight: bold;
+}
+
+/* Filter Button Styles */
+.filter-buttons {
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-buttons button {
+  padding: 8px 12px;
+  border: none;
+  background: #ffc107;
+  color: black;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.filter-buttons button.active {
+  background: #ff9800;
+  font-weight: bold;
+}
+
+/* Template Grid */
+.template-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.template-img {
+  width: 100%;
+  border-radius: 8px;
+}
