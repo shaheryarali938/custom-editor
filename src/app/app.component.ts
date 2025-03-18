@@ -322,7 +322,7 @@ export class AppComponent implements OnInit {
 
     {
       name: "Casita Postcard (Front)",
-      size: "4.25x5.5",
+      size: "8.5x5.5",
       side: "front",
       image: "../assets/img/casita_postcard_front.png",
       filePathFront:
@@ -331,7 +331,7 @@ export class AppComponent implements OnInit {
     },
     {
       name: "Casita Postcard (Back)",
-      size: "4.25x5.5",
+      size: "8.5x5.5",
       side: "back",
       image: "../assets/img/casita_postcard_back.png",
       filePathFront:
@@ -399,14 +399,14 @@ export class AppComponent implements OnInit {
     },
     {
       name: "Street View Postcard (Back)",
-      size: "8.5x5.5",
+      size: "4.25x5.5",
       side: "back",
       image: "../assets/img/svp_back.png",
       filePathFront: "../assets/prebuilt-templates/Street View Postcard (Back).json",
     },
     {
       name: "Street View Postcard (Front)",
-      size: "8.5x5.5",
+      size: "4.25x5.5",
       side: "front",
       image: "../assets/img/svp.png",
       filePathFront: "../assets/prebuilt-templates/Street View Postcard (Front).json",
@@ -427,28 +427,28 @@ export class AppComponent implements OnInit {
     },
     {
       name: "Violet Postcard (Back)",
-      size: "8.5x5.5",
+      size: "4.25x5.5",
       side: "back",
       image: "../assets/img/vp_back.png",
       filePathFront: "../assets/prebuilt-templates/Violet Postcard (Back).json",
     },
     {
       name: "Violet Postcard (Front)",
-      size: "8.5x5.5",
+      size: "4.25x5.5",
       side: "front",
       image: "../assets/img/vp.png",
       filePathFront: "../assets/prebuilt-templates/Violet Postcard (Front).json",
     },
     {
       name: "Yellow Letter Postcard (Back)",
-      size: "8.5x5.5",
+      size: "4.25x5.5",
       side: "back",
       image: "../assets/img/ylp_back.png",
       filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Back).json",
     },
     {
       name: "Yellow Letter Postcard (Front)",
-      size: "8.5x5.5",
+      size: "4.25x5.5",
       side: "front",
       image: "../assets/img/ylp.png",
       filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Front).json",
