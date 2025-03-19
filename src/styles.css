@@ -61,3 +61,38 @@
   max-height: 500px;
   overflow-y: auto;
 }
+.canvas-wrapper {
+  position: relative;
+  width: fit-content;
+  margin: auto;
+}
+
+.canvas-labels {
+  position: absolute;
+  bottom: -30px; /* Places labels below canvas */
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.canvas-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+}
+/* Label for Safety Area */
+.safety-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: red; 
+}
+
+/* Label for Bleed Area */
+.bleed-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+}

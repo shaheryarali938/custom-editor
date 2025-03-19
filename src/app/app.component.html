@@ -1341,7 +1341,22 @@
     <div
       class="col-md-12 col-lg-9 p-0 d-flex justify-content-center order-3 order-lg-2 mt-4 mt-lg-0"
     >
+      <!-- Canvas Section -->
+    <div class="canvas-wrapper position-relative">
       <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
+
+      <!-- Safety & Bleed Boundaries -->
+      <div id="safety-area" class="canvas-boundary safety-boundary"></div>
+      <div id="bleed-area" class="canvas-boundary bleed-boundary"></div>
+
+      <!-- Labels for Safety and Bleed Areas -->
+      <!-- Labels for Safety and Bleed Areas -->
+      <div class="canvas-labels">
+        <div id="safety-label" class="canvas-label safety-label">Safety Area</div>
+        <div id="bleed-label" class="canvas-label bleed-label">Bleed Area</div>
+      </div>
+    </div>
+
     </div>
   </div>
 

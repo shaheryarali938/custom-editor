@@ -133,6 +133,14 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
     this.canvas.setWidth(this.size.width);
     this.canvas.setHeight(this.size.height);
+    this.htmlCanvas.nativeElement.style.border = "3px solid black";
+    this.htmlCanvas.nativeElement.style.borderRadius = "10px"; // Keep rounded corners
+
+    this.canvas.on({
+      "object:moving": (e) => {
+        this.addSafeAreaAndBleed(e);
+      },
+    });
     this.addDashedSafetyArea();
 
     // get references to the html canvas element & its context
@@ -230,7 +238,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
       width: canvasWidth - padding * 2,
       height: canvasHeight - padding * 2,
       fill: "transparent",
-      stroke: "grey",
+      stroke: "red",
       strokeDashArray: [5, 5],
       selectable: false,
       evented: false,
