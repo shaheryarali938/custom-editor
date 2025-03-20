@@ -17,7 +17,7 @@
             <ng-container *ngFor="let template of prebuiltTemplates">
               <!-- Display only if size matches and side matches -->
               <div
-                class="col-4 mb-4"
+                class="col-4 mb-4 mt-4"
                 *ngIf="
                   template.size === selectedSize &&
                   (isFront
@@ -1120,7 +1120,7 @@
             <!-- Template Grid -->
             <div class="row p-0 m-0 w-100">
               <div
-                class="col-6 text-center w-100 mb-3 template-name"
+                class="col-6 text-center w-100 mb-3 mt-4 template-name"
                 *ngFor="let template of filteredTemplates"
                 (click)="loadImageTemplate(template)"
                 style="cursor: pointer; font-size: 12px"
