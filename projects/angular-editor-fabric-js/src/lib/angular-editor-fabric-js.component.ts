@@ -331,8 +331,27 @@ export class FabricjsEditorComponent implements AfterViewInit {
           // Load the canvas from the JSON string
           this.canvas.loadFromJSON(jsonString, () => {
             console.log("Canvas loaded from JSON template");
+          
+            // Loop through all canvas objects
+            this.canvas.getObjects().forEach((obj: any) => {
+              // Lock the barcode image only (you can refine the check below if needed)
+              if (obj.type === 'image' && obj.width === 943 && obj.height === 357) {
+                obj.set({
+                  lockMovementX: true,
+                  lockMovementY: true,
+                  lockScalingX: true,
+                  lockScalingY: true,
+                  lockRotation: true,
+                  selectable: false,
+                  evented: false,
+                  hoverCursor: 'default'
+                });
+              }
+            });
+          
             this.canvas.renderAll();
           });
+          
         },
         error => {
           console.error("Error loading template JSON file:", error);

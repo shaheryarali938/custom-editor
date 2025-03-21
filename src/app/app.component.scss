@@ -7,7 +7,7 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 15px;
+  // padding: 0 15px;
 }
 
 .main-title {
@@ -199,7 +199,7 @@
   border-radius: 5px !important;
 }
 .form-control {
-  padding: 4px 21px !important;
+  padding: 4px 10px !important;
 }
 
 .note {
@@ -224,6 +224,7 @@
   left: 0;
   // width: 100vw;
   height: 100vh;
+  width: 100vw;
   background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
   display: flex;
   justify-content: center;
@@ -373,4 +374,22 @@
   color: #000000;
   background-color: transparent;
   border-radius: 10px;
+}
+/* 🛡️ Prevent canvas from overlapping the sidebar */
+.responsive-layout {
+  display: flex;
+  flex-wrap: nowrap;
+
+  @media (max-width: 1150px) {
+    flex-wrap: wrap; // 💡 stack sidebar and canvas vertically
+  }
+}
+
+.canvas-section-wrapper {
+  max-width: calc(100% - 250px);
+
+  @media (max-width: 1150px) {
+    max-width: 100%;
+    margin-top: 20px;
+  }
 }
