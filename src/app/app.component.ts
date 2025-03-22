@@ -138,31 +138,79 @@ export class AppComponent implements OnInit {
 
   toggleSide() {
     const canvasJSON = this.canvas.getCanvas().toJSON();
-
+  
     if (this.isFront) {
-      this.selectedSide = this.isFront ? 'front' : 'back'
-      this.frontCanvasData = canvasJSON; // Save front side design
-      this.canvas.getCanvas().clear(); // Clear the canvas
+      this.selectedSide = 'front';
+      this.frontCanvasData = canvasJSON;
+      this.canvas.getCanvas().clear();
+  
       if (this.backCanvasData) {
         this.canvas.getCanvas().loadFromJSON(this.backCanvasData, () => {
-          this.canvas.getCanvas().renderAll(); // Render back side
+          this.canvas.getCanvas().renderAll();
           this.addDashedSafetyArea();
+  
+          // 🔒 Lock barcodes AFTER render
+          this.canvas.getCanvas().getObjects().forEach((obj: any) => {
+            const isBarcode = obj.type === 'image' && (
+              (obj.src && obj.src.includes("barcode")) ||
+              (obj.src && obj.src.includes("download.png")) ||
+              (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+            );
+  
+            if (isBarcode) {
+              obj.set({
+                lockMovementX: true,
+                lockMovementY: true,
+                lockScalingX: true,
+                lockScalingY: true,
+                lockRotation: true,
+                selectable: false,
+                evented: false,
+                hoverCursor: 'default',
+              });
+            }
+          });
         });
       }
     } else {
-      this.backCanvasData = canvasJSON; // Save back side design
-      this.canvas.getCanvas().clear(); // Clear the canvas
+      this.selectedSide = 'back';
+      this.backCanvasData = canvasJSON;
+      this.canvas.getCanvas().clear();
+  
       if (this.frontCanvasData) {
         this.canvas.getCanvas().loadFromJSON(this.frontCanvasData, () => {
-          this.canvas.getCanvas().renderAll(); // Render front side
+          this.canvas.getCanvas().renderAll();
           this.addDashedSafetyArea();
+  
+          // 🔒 Lock barcodes AFTER render
+          this.canvas.getCanvas().getObjects().forEach((obj: any) => {
+            const isBarcode = obj.type === 'image' && (
+              (obj.src && obj.src.includes("barcode")) ||
+              (obj.src && obj.src.includes("download.png")) ||
+              (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+            );
+  
+            if (isBarcode) {
+              obj.set({
+                lockMovementX: true,
+                lockMovementY: true,
+                lockScalingX: true,
+                lockScalingY: true,
+                lockRotation: true,
+                selectable: false,
+                evented: false,
+                hoverCursor: 'default',
+              });
+            }
+          });
         });
       }
     }
-
-    this.isFront = !this.isFront; // Toggle side
+  
+    this.isFront = !this.isFront;
     this.addDashedSafetyArea();
   }
+  
 
   saveDesigns() {
     const canvasJSON = this.canvas.getCanvas().toJSON();

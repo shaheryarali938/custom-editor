@@ -348,6 +348,29 @@ export class FabricjsEditorComponent implements AfterViewInit {
                 });
               }
             });
+
+            this.canvas.getObjects().forEach((obj: any) => {
+              // ✅ Match barcode image by its "src" or similar patterns
+              const isBarcode = obj.type === 'image' && (
+                (obj.src && obj.src.includes("barcode")) || 
+                (obj.src && obj.src.includes("download.png")) || 
+                (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+              );
+            
+              if (isBarcode) {
+                obj.set({
+                  lockMovementX: true,
+                  lockMovementY: true,
+                  lockScalingX: true,
+                  lockScalingY: true,
+                  lockRotation: true,
+                  selectable: false,
+                  evented: false,
+                  hoverCursor: 'default',
+                });
+              }
+            });
+            
           
             this.canvas.renderAll();
           });
