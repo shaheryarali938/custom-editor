@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { FabricjsEditorComponent } from "projects/angular-editor-fabric-js/src/public-api";
 import { fabric } from "fabric";
+import { HttpClient, HttpXhrBackend } from "@angular/common/http";
 
 declare var FontFace: any;
 
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit {
   showTextDropdown = false;
   showImportExportDropdown = false;
   showProductDropdown = false;
+  currentTemplates: { front: any, back: any } = { front: null, back: null };
 
   toggleTextDropdown() {
     this.showTextDropdown = !this.showTextDropdown;
@@ -148,28 +150,7 @@ export class AppComponent implements OnInit {
         this.canvas.getCanvas().loadFromJSON(this.backCanvasData, () => {
           this.canvas.getCanvas().renderAll();
           this.addDashedSafetyArea();
-  
-          // 🔒 Lock barcodes AFTER render
-          this.canvas.getCanvas().getObjects().forEach((obj: any) => {
-            const isBarcode = obj.type === 'image' && (
-              (obj.src && obj.src.includes("barcode")) ||
-              (obj.src && obj.src.includes("download.png")) ||
-              (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
-            );
-  
-            if (isBarcode) {
-              obj.set({
-                lockMovementX: true,
-                lockMovementY: true,
-                lockScalingX: true,
-                lockScalingY: true,
-                lockRotation: true,
-                selectable: false,
-                evented: false,
-                hoverCursor: 'default',
-              });
-            }
-          });
+          this.lockBarcodes();
         });
       }
     } else {
@@ -181,34 +162,36 @@ export class AppComponent implements OnInit {
         this.canvas.getCanvas().loadFromJSON(this.frontCanvasData, () => {
           this.canvas.getCanvas().renderAll();
           this.addDashedSafetyArea();
-  
-          // 🔒 Lock barcodes AFTER render
-          this.canvas.getCanvas().getObjects().forEach((obj: any) => {
-            const isBarcode = obj.type === 'image' && (
-              (obj.src && obj.src.includes("barcode")) ||
-              (obj.src && obj.src.includes("download.png")) ||
-              (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
-            );
-  
-            if (isBarcode) {
-              obj.set({
-                lockMovementX: true,
-                lockMovementY: true,
-                lockScalingX: true,
-                lockScalingY: true,
-                lockRotation: true,
-                selectable: false,
-                evented: false,
-                hoverCursor: 'default',
-              });
-            }
-          });
+          this.lockBarcodes();
         });
       }
     }
   
     this.isFront = !this.isFront;
     this.addDashedSafetyArea();
+  }
+  
+  lockBarcodes() {
+    this.canvas.getCanvas().getObjects().forEach((obj: any) => {
+      const isBarcode = obj.type === 'image' && (
+        (obj.src && obj.src.includes("barcode")) ||
+        (obj.src && obj.src.includes("download.png")) ||
+        (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+      );
+  
+      if (isBarcode) {
+        obj.set({
+          lockMovementX: true,
+          lockMovementY: true,
+          lockScalingX: true,
+          lockScalingY: true,
+          lockRotation: true,
+          selectable: false,
+          evented: false,
+          hoverCursor: 'default',
+        });
+      }
+    });
   }
   
 
@@ -834,34 +817,75 @@ export class AppComponent implements OnInit {
   //   this.updateSelectedText();
   // }
 
-  loadImageTemplate(template: any) {
+  async loadImageTemplate(template: any) {
     let height: number, width: number;
   
-  switch(template.size) {
-    case '4.25x5.5':
-      height = 408;
-      width = 528;
-      break;
-    case '8.5x5.5':
-      height = 528;
-      width = 1056;
-      break;
-    default:
-      console.error('Unsupported template size:', template.size);
-      return;
-  }
-
-  // Change canvas size first
-  this.changeSizeWithMeasures(height, width, template.size);
-
-  // Then load the template
-  this.canvas.loadImageTemplate(template);
-  this.showProductData = false;
+    switch (template.size) {
+      case '4.25x5.5':
+        height = 408;
+        width = 528;
+        break;
+      case '8.5x5.5':
+        height = 528;
+        width = 1056;
+        break;
+      default:
+        console.error('Unsupported template size:', template.size);
+        return;
+    }
   
-  // Force refresh the template filtering
-  this.selectedSize = template.size;
-  this.selectedSide = template.side;
+    this.changeSizeWithMeasures(height, width, template.size);
+  
+    // Find matching front/back templates
+    let frontTemplate = template;
+    let backTemplate = template;
+  
+    if (template.side === 'front') {
+      backTemplate = this.prebuiltTemplates.find(t =>
+        t.size === template.size &&
+        t.side === 'back' &&
+        t.name.replace(/\s*\(.*\)/g, '') === template.name.replace(/\s*\(.*\)/g, '')
+      );
+    } else {
+      frontTemplate = this.prebuiltTemplates.find(t =>
+        t.size === template.size &&
+        t.side === 'front' &&
+        t.name.replace(/\s*\(.*\)/g, '') === template.name.replace(/\s*\(.*\)/g, '')
+      );
+    }
+  
+    if (!frontTemplate || !backTemplate) {
+      console.error('Matching front/back template not found.');
+      return;
+    }
+  
+    // Load both JSONs
+    const handler = new HttpXhrBackend({ build: () => new XMLHttpRequest() });
+    const http = new HttpClient(handler);
+  
+    try {
+      const frontJson = await http.get(frontTemplate.filePathFront, { responseType: 'text' }).toPromise();
+      const backJson = await http.get(backTemplate.filePathFront, { responseType: 'text' }).toPromise();
+  
+      this.frontCanvasData = frontJson;
+      this.backCanvasData = backJson;
+  
+      // Load selected side onto canvas
+      this.isFront = (template.side === 'front');
+      const jsonToLoad = this.isFront ? this.frontCanvasData : this.backCanvasData;
+  
+      this.canvas.loadJsonToCanvas(jsonToLoad); // Must exist in your fabric-js component
+  
+      this.selectedSize = template.size;
+      this.selectedSide = template.side;
+      this.selectedTemplate = template;
+      this.showProductData = false;
+    } catch (err) {
+      console.error('Error loading template JSONs:', err);
+    }
   }
+  
+  
 
   addDashedSafetyArea() {
     this.canvas.addDashedSafetyArea();

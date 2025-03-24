@@ -320,6 +320,35 @@ export class FabricjsEditorComponent implements AfterViewInit {
     }
   }
 
+  loadJsonToCanvas(json: string): void {
+    this.canvas.loadFromJSON(json, () => {
+      this.canvas.renderAll();
+  
+      this.canvas.getObjects().forEach((obj: any) => {
+        const isBarcode = obj.type === 'image' && (
+          (obj.src && obj.src.includes("barcode")) ||
+          (obj.src && obj.src.includes("download.png")) ||
+          (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+        );
+  
+        if (isBarcode) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default'
+          });
+        }
+      });
+    });
+  }
+  
+  
+
   loadImageTemplate(template: any): void {
     const handler: HttpHandler = new HttpXhrBackend({ build: () => new XMLHttpRequest() });
     const httpClient = new HttpClient(handler);
