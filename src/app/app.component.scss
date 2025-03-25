@@ -393,3 +393,66 @@
     margin-top: 20px;
   }
 }
+.canvas-labels {
+  position: absolute;
+  width: 100%;
+  bottom: -40px; /* move outside canvas bottom */
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.canvas-label {
+  position: relative;
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 4px 6px;
+  font-weight: bold;
+  border-radius: 4px;
+  color: black;
+  text-align: center;
+}
+
+/* Shared vertical line */
+.canvas-label::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background-color: currentColor;
+}
+
+/* Dot at end of line */
+.canvas-label::after {
+  content: '▲'; /* or '▲' for solid triangle */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: currentColor;
+}
+.safety-label::before {
+  height: 30px;
+  top: -23px;
+  color: rgb(255, 54, 54);
+}
+
+.safety-label::after {
+  top: -31px; /* 1px above the line */
+  font-size: 12px;
+  color: rgb(255, 54, 54);
+}
+
+.bleed-label::before {
+  height: 20px;
+  top: -15px;
+}
+
+.bleed-label::after {
+  top: -21px;
+  font-size: 12px;
+}
+
