@@ -245,7 +245,7 @@ export class AppComponent implements OnInit {
   // Pre-built templates
   prebuiltTemplates = [
     {
-      name: "Blessed Postcard 4.25 (Front)",
+      name: "Blessed Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/blessed.png",
@@ -253,7 +253,7 @@ export class AppComponent implements OnInit {
         "../assets/prebuilt-templates/Blessed Postcard (Front).json",
     },
     {
-      name: "Blessed Postcard 4.25 (Back)",
+      name: "Blessed Postcard 4.25",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/blessed-back.png",
@@ -261,7 +261,7 @@ export class AppComponent implements OnInit {
         "../assets/prebuilt-templates/Blessed Postcard (Back).json",
     },
     {
-      name: "Doodle Street View (Front)",
+      name: "Doodle Street View",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/doodle_street_view.png",
@@ -269,7 +269,7 @@ export class AppComponent implements OnInit {
         "../assets/prebuilt-templates/Doodle Streetview Postcard (Front).json",
     },
     {
-      name: "Doodle Street View (Back)",
+      name: "Doodle Street View",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/doodle_street_view_back.png",
@@ -277,7 +277,7 @@ export class AppComponent implements OnInit {
         "../assets/prebuilt-templates/Doodle Streetview Postcard (Back).json",
     },
     {
-      name: "Flower Postcard (Front)",
+      name: "Flower Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/flower_postcard_front.png",
@@ -285,7 +285,7 @@ export class AppComponent implements OnInit {
         "../assets/prebuilt-templates/Flower Postcard (Front).json",
     },
     {
-      name: "Flower Postcard (Back)",
+      name: "Flower Postcard",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/flower_postcard_back.png",
@@ -293,14 +293,14 @@ export class AppComponent implements OnInit {
         "../assets/prebuilt-templates/Flower Postcard (Back).json",
     },
     {
-      name: "Realistic Postcard (Back)",
+      name: "Realistic Postcard",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/rp_back.png",
       filePathFront: "../assets/prebuilt-templates/Realistic Postcard (Back).json",
     },
     {
-      name: "Realistic Postcard (Front)",
+      name: "Realistic Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/rp.png",
@@ -352,7 +352,7 @@ export class AppComponent implements OnInit {
     // },
 
     {
-      name: "Casita Postcard (Front)",
+      name: "Casita Postcard",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/casita_postcard_front.png",
@@ -361,7 +361,7 @@ export class AppComponent implements OnInit {
       filePathBack: "../assets/prebuilt-templates/Casita Postcard (Front).json"
     },
     {
-      name: "Casita Postcard (Back)",
+      name: "Casita Postcard",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/casita_postcard_back.png",
@@ -415,70 +415,70 @@ export class AppComponent implements OnInit {
     //   filePathFront: "../assets/prebuilt-templates/8.5×5.5/rp_front_8.5.json",
     // },
     {
-      name: "Standard Handwritten Postcard (Back)",
+      name: "Standard Handwritten Postcard",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/shp_back.png",
       filePathFront: "../assets/prebuilt-templates/Standard Handwritten (Back).json",
     },
     {
-      name: "Standard Handwritten Postcard (Front)",
+      name: "Standard Handwritten Postcard",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/shp.png",
       filePathFront: "../assets/prebuilt-templates/Standard Handwritten (Front).json",
     },
     {
-      name: "Street View Postcard (Back)",
+      name: "Street View Postcard",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/svp_back.png",
       filePathFront: "../assets/prebuilt-templates/Street View Postcard (Back).json",
     },
     {
-      name: "Street View Postcard (Front)",
+      name: "Street View Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/svp.png",
       filePathFront: "../assets/prebuilt-templates/Street View Postcard (Front).json",
     },
     {
-      name: "Sorry We Missed You Postcard (Back)",
+      name: "Sorry We Missed You Postcard",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/swmy_back.png",
       filePathFront: "../assets/prebuilt-templates/Sorry We Missed You Postcard (Back).json",
     },
     {
-      name: "Sorry We Missed You Postcard (Front)",
+      name: "Sorry We Missed You Postcard",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/swmy.png",
       filePathFront: "../assets/prebuilt-templates/Sorry We Missed You Postcard (Front).json",
     },
     {
-      name: "Violet Postcard (Back)",
+      name: "Violet Postcard",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/vp_back.png",
       filePathFront: "../assets/prebuilt-templates/Violet Postcard (Back).json",
     },
     {
-      name: "Violet Postcard (Front)",
+      name: "Violet Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/vp.png",
       filePathFront: "../assets/prebuilt-templates/Violet Postcard (Front).json",
     },
     {
-      name: "Yellow Letter Postcard (Back)",
+      name: "Yellow Letter Postcard",
       size: "4.25x5.5",
       side: "back",
       image: "../assets/img/ylp_back.png",
       filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Back).json",
     },
     {
-      name: "Yellow Letter Postcard (Front)",
+      name: "Yellow Letter Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/ylp.png",
