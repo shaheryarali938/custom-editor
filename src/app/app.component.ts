@@ -245,7 +245,7 @@ export class AppComponent implements OnInit {
   // Pre-built templates
   prebuiltTemplates = [
     {
-      name: "Blessed Postcard",
+      name: "Blessed Postcard 4.25",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/blessed.png",

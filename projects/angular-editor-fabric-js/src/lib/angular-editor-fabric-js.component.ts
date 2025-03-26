@@ -136,12 +136,8 @@ export class FabricjsEditorComponent implements AfterViewInit {
     this.htmlCanvas.nativeElement.style.border = "3px solid black";
     this.htmlCanvas.nativeElement.style.borderRadius = "10px"; // Keep rounded corners
 
-    this.canvas.on({
-      "object:moving": (e) => {
-        this.addSafeAreaAndBleed(e);
-      },
-    });
     this.addDashedSafetyArea();
+    
 
     // get references to the html canvas element & its context
     this.canvas.on("mouse:down", (e) => {
