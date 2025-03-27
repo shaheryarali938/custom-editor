@@ -316,9 +316,121 @@ export class FabricjsEditorComponent implements AfterViewInit {
     }
   }
 
+// Configuration for your specific barcode area
+private barcodeArea = {
+  // Coordinates for the barcode area in your document
+  left: 50,       // Adjust based on your document layout
+  top: 700,       // Vertical position of barcode area
+  width: 300,     // Width of barcode area
+  height: 100     // Height of barcode area
+};
+
+// Add this configuration at the top of your component
+private barcodeDetectionSettings = {
+  padding: 2, // Reduce this to make the detection area tighter
+  minWidth: 100,
+  maxWidth: 1100,
+  minHeight: 80,
+  maxHeight: 400
+};
+  // In your component class
+private lastValidPositions = new WeakMap<fabric.Object, { left: number; top: number }>();
+
+setupMovementProtection(): void {
+  // Initialize last known positions
+  this.canvas.getObjects().forEach(obj => {
+    if (!this.isBarcode(obj)) {
+      this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
+    }
+  });
+
+  // Handle movement events
+  this.canvas.on('object:modified', (e) => {
+    if (!e.target || this.isBarcode(e.target)) return;
+    
+    const movingObj = e.target;
+    const isOverlapping = this.checkBarcodeOverlap(movingObj);
+    
+    if (isOverlapping) {
+      // Revert to last valid position
+      const lastPos = this.lastValidPositions.get(movingObj);
+      if (lastPos) {
+        movingObj.set({
+          left: lastPos.left,
+          top: lastPos.top
+        });
+        this.canvas.requestRenderAll();
+      }
+    } else {
+      // Update last valid position
+      this.lastValidPositions.set(movingObj, { 
+        left: movingObj.left || 0, 
+        top: movingObj.top || 0 
+      });
+    }
+  });
+}
+
+// Modified checkBarcodeOverlap method
+private checkBarcodeOverlap(obj: fabric.Object): boolean {
+  const objBounds = this.getAdjustedBounds(obj.getBoundingRect());
+  
+  return this.canvas.getObjects().some(canvasObj => {
+    if (!this.isBarcode(canvasObj)) return false;
+    
+    const barcodeBounds = this.getAdjustedBounds(
+      canvasObj.getBoundingRect(),
+      -this.barcodeDetectionSettings.padding // Negative padding makes barcode area smaller
+    );
+    return this.isOverlapping(objBounds, barcodeBounds);
+  });
+}
+
+// Helper method to adjust bounds with padding
+private getAdjustedBounds(rect: any, padding: number = 0): any {
+  return {
+    left: rect.left + padding,
+    top: rect.top + padding,
+    width: rect.width - (padding * 2),
+    height: rect.height - (padding * 2)
+  };
+}
+
+// Updated isBarcode method with precise detection
+private isBarcode(obj: fabric.Object): boolean {
+  if (obj.type !== 'image') return false;
+  
+  const src = (obj as any).getSrc?.() || (obj as any).src || '';
+  const settings = this.barcodeDetectionSettings;
+  
+  // Check if dimensions match barcode characteristics
+  const isBarcodeSize = (
+    obj.width! > settings.minWidth &&
+    obj.width! < settings.maxWidth &&
+    obj.height! > settings.minHeight &&
+    obj.height! < settings.maxHeight
+  );
+  
+  return src.includes('barcode') || src.includes('download.png') || isBarcodeSize;
+}
+
+private isOverlapping(rect1: any, rect2: any): boolean {
+  return !(
+    rect1.left > rect2.left + rect2.width ||
+    rect1.left + rect1.width < rect2.left ||
+    rect1.top > rect2.top + rect2.height ||
+    rect1.top + rect1.height < rect2.top
+  );
+}
+
+
+
   loadJsonToCanvas(json: string): void {
     this.canvas.loadFromJSON(json, () => {
       this.canvas.renderAll();
+
+      this.canvas.renderAll();
+      this.setupMovementProtection();
   
       this.canvas.getObjects().forEach((obj: any) => {
         const isBarcode = obj.type === 'image' && (
