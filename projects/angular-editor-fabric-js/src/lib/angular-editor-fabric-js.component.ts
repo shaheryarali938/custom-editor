@@ -84,12 +84,75 @@ export class FabricjsEditorComponent implements AfterViewInit {
       selectionBorderColor: "blue",
       isDrawingMode: false,
     });
+    this.canvas.on('object:added', (e) => {
+      const obj = e.target;
+      if (!obj || (obj as any).isBarcode) return;
+    
+      // Save initial position
+      this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
+    });    
+
+    this.canvas.on("object:scaling", (e) => {
+      const obj = e.target;
+      if (!obj || (obj as any).isBarcode) return;
+    
+      obj.setCoords();
+      const objBounds = obj.getBoundingRect(true);
+    
+      const isOverlapping = this.canvas.getObjects().some(barcode => {
+        if (!(barcode as any).isBarcode) return false;
+        barcode.setCoords();
+        const barcodeBounds = barcode.getBoundingRect(true);
+        return this.isOverlapping(objBounds, barcodeBounds);
+      });
+    
+      if (isOverlapping) {
+        // ❌ Cancel scaling by restoring previous scale immediately
+        obj.scaleX = (obj as any)._lastGoodScaleX || 1;
+        obj.scaleY = (obj as any)._lastGoodScaleY || 1;
+        obj.left = (obj as any)._lastGoodLeft || obj.left;
+        obj.top = (obj as any)._lastGoodTop || obj.top;
+        obj.setCoords();
+        this.canvas.requestRenderAll();
+      } else {
+        // ✅ Save good values
+        (obj as any)._lastGoodScaleX = obj.scaleX;
+        (obj as any)._lastGoodScaleY = obj.scaleY;
+        (obj as any)._lastGoodLeft = obj.left;
+        (obj as any)._lastGoodTop = obj.top;
+      }
+    });
+    
 
     this.canvas.on({
       "object:moving": (e) => {
         this.addSafeAreaAndBleed(e);
       },
-      "object:modified": (e) => {},
+      "object:modified": (e) => {
+      const obj = e.target;
+      if (!obj || (obj as any).isBarcode) return;
+
+      obj.setCoords();
+      const objBounds = obj.getBoundingRect(true);
+
+      const isOverlapping = this.canvas.getObjects().some(other => {
+        if (!(other as any).isBarcode) return false;
+        other.setCoords();
+        const barcodeBounds = other.getBoundingRect(true);
+        return this.isOverlapping(objBounds, barcodeBounds);
+      });
+
+      if (isOverlapping) {
+        const lastPos = this.lastValidPositions.get(obj);
+        if (lastPos) {
+          obj.set({ left: lastPos.left, top: lastPos.top });
+          obj.setCoords();
+          this.canvas.requestRenderAll();
+        }
+      } else {
+        this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
+      }
+    },
       "object:selected": (e) => {
         const selectedObject = e.target;
         this.selected = selectedObject;
@@ -144,6 +207,15 @@ export class FabricjsEditorComponent implements AfterViewInit {
       const canvasElement: any = document.getElementById("canvas");
     });
   }
+
+  public retrackObjects(): void {
+    this.canvas.getObjects().forEach((obj) => {
+      if (!(obj as any).isBarcode) {
+        this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
+      }
+    });
+  }
+  
 
   /*------------------------Block elements------------------------*/
   // Preview Canvas
@@ -373,18 +445,17 @@ setupMovementProtection(): void {
 
 // Modified checkBarcodeOverlap method
 private checkBarcodeOverlap(obj: fabric.Object): boolean {
-  const objBounds = this.getAdjustedBounds(obj.getBoundingRect());
-  
-  return this.canvas.getObjects().some(canvasObj => {
-    if (!this.isBarcode(canvasObj)) return false;
-    
-    const barcodeBounds = this.getAdjustedBounds(
-      canvasObj.getBoundingRect(),
-      -this.barcodeDetectionSettings.padding // Negative padding makes barcode area smaller
-    );
+  obj.setCoords(); // make sure coords are up-to-date
+  const objBounds = obj.getBoundingRect();
+
+  return this.canvas.getObjects().some(otherObj => {
+    if (!(otherObj as any).isBarcode) return false;
+    otherObj.setCoords();
+    const barcodeBounds = otherObj.getBoundingRect();
     return this.isOverlapping(objBounds, barcodeBounds);
   });
 }
+
 
 // Helper method to adjust bounds with padding
 private getAdjustedBounds(rect: any, padding: number = 0): any {
@@ -450,6 +521,7 @@ private isOverlapping(rect1: any, rect2: any): boolean {
             evented: false,
             hoverCursor: 'default'
           });
+          (obj as any).isBarcode = true;
         }
       });
     });
@@ -483,6 +555,7 @@ private isOverlapping(rect1: any, rect2: any): boolean {
                   evented: false,
                   hoverCursor: 'default'
                 });
+                (obj as any).isBarcode = true;
               }
             });
 
@@ -505,11 +578,13 @@ private isOverlapping(rect1: any, rect2: any): boolean {
                   evented: false,
                   hoverCursor: 'default',
                 });
+                (obj as any).isBarcode = true;
               }
             });
             
           
             this.canvas.renderAll();
+            
           });
           
         },

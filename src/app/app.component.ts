@@ -190,6 +190,7 @@ export class AppComponent implements OnInit {
           evented: false,
           hoverCursor: 'default',
         });
+        (obj as any).isBarcode = true;
       }
     });
   }
