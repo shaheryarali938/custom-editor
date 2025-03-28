@@ -170,6 +170,21 @@ export class AppComponent implements OnInit {
     this.isFront = !this.isFront;
     this.addDashedSafetyArea();
   }
+
+  private isBarcode(obj: fabric.Object): boolean {
+    if (obj.type !== 'image') return false;
+    const srcStr: string = (obj as any).getSrc?.() || (obj as any).src || '';
+    // Identify the barcode image by its filename or characteristics
+    if (srcStr.toLowerCase().includes('barcode')) {
+      return true;
+    }
+  
+    // Optionally: check dimensions or aspect ratio if filename is not enough
+    const bounds = obj.getBoundingRect();
+    const aspectRatio = bounds.width / bounds.height;
+    return (aspectRatio > 4 || aspectRatio < 0.25);  // very wide or tall = likely barcode
+  }
+  
   
   lockBarcodes() {
     this.canvas.getCanvas().getObjects().forEach((obj: any) => {
@@ -192,8 +207,33 @@ export class AppComponent implements OnInit {
         });
         (obj as any).isBarcode = true;
       }
+  
+      // 🔐 Lock protected postage text
+      if (obj.type === 'textbox' && typeof obj.text === 'string') {
+        const normalized = obj.text.replace(/\s+/g, '').toLowerCase();
+        if (
+          normalized.includes('firstclass') &&
+          normalized.includes('presort') &&
+          normalized.includes('postagepaid') &&
+          normalized.includes('ylhq')
+        ) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default',
+          });
+          (obj as any).isProtectedText = true;
+        }
+      }
     });
   }
+  
+  
   
 
   saveDesigns() {

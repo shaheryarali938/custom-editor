@@ -94,20 +94,19 @@ export class FabricjsEditorComponent implements AfterViewInit {
 
     this.canvas.on("object:scaling", (e) => {
       const obj = e.target;
-      if (!obj || (obj as any).isBarcode) return;
+      if (!obj) return;
     
       obj.setCoords();
       const objBounds = obj.getBoundingRect(true);
     
       const isOverlapping = this.canvas.getObjects().some(barcode => {
-        if (!(barcode as any).isBarcode) return false;
+        if (!(barcode as any).isBarcode && !(barcode as any).isProtectedText) return false;
         barcode.setCoords();
         const barcodeBounds = barcode.getBoundingRect(true);
         return this.isOverlapping(objBounds, barcodeBounds);
       });
     
       if (isOverlapping) {
-        // ❌ Cancel scaling by restoring previous scale immediately
         obj.scaleX = (obj as any)._lastGoodScaleX || 1;
         obj.scaleY = (obj as any)._lastGoodScaleY || 1;
         obj.left = (obj as any)._lastGoodLeft || obj.left;
@@ -115,7 +114,6 @@ export class FabricjsEditorComponent implements AfterViewInit {
         obj.setCoords();
         this.canvas.requestRenderAll();
       } else {
-        // ✅ Save good values
         (obj as any)._lastGoodScaleX = obj.scaleX;
         (obj as any)._lastGoodScaleY = obj.scaleY;
         (obj as any)._lastGoodLeft = obj.left;
@@ -123,36 +121,13 @@ export class FabricjsEditorComponent implements AfterViewInit {
       }
     });
     
+    
+    
 
     this.canvas.on({
       "object:moving": (e) => {
         this.addSafeAreaAndBleed(e);
       },
-      "object:modified": (e) => {
-      const obj = e.target;
-      if (!obj || (obj as any).isBarcode) return;
-
-      obj.setCoords();
-      const objBounds = obj.getBoundingRect(true);
-
-      const isOverlapping = this.canvas.getObjects().some(other => {
-        if (!(other as any).isBarcode) return false;
-        other.setCoords();
-        const barcodeBounds = other.getBoundingRect(true);
-        return this.isOverlapping(objBounds, barcodeBounds);
-      });
-
-      if (isOverlapping) {
-        const lastPos = this.lastValidPositions.get(obj);
-        if (lastPos) {
-          obj.set({ left: lastPos.left, top: lastPos.top });
-          obj.setCoords();
-          this.canvas.requestRenderAll();
-        }
-      } else {
-        this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
-      }
-    },
       "object:selected": (e) => {
         const selectedObject = e.target;
         this.selected = selectedObject;
@@ -207,6 +182,11 @@ export class FabricjsEditorComponent implements AfterViewInit {
       const canvasElement: any = document.getElementById("canvas");
     });
   }
+
+  private isProtectedZone(obj: fabric.Object): boolean {
+    return (obj as any).isBarcode || (obj as any).isProtectedText;
+  }
+  
 
   public retrackObjects(): void {
     this.canvas.getObjects().forEach((obj) => {
@@ -418,29 +398,36 @@ setupMovementProtection(): void {
 
   // Handle movement events
   this.canvas.on('object:modified', (e) => {
-    if (!e.target || this.isBarcode(e.target)) return;
-    
-    const movingObj = e.target;
-    const isOverlapping = this.checkBarcodeOverlap(movingObj);
-    
+    const obj = e.target;
+    if (!obj || this.isProtectedZone(obj)) return;
+  
+    const isOverlapping = this.canvas.getObjects().some(objToCheck => {
+      if (!this.isProtectedZone(objToCheck)) return false;
+      objToCheck.setCoords();
+      const protectedBounds = objToCheck.getBoundingRect(true);
+      obj.setCoords();
+      const objBounds = obj.getBoundingRect(true);
+      return this.isOverlapping(objBounds, protectedBounds);
+    });
+  
     if (isOverlapping) {
-      // Revert to last valid position
-      const lastPos = this.lastValidPositions.get(movingObj);
+      const lastPos = this.lastValidPositions.get(obj);
       if (lastPos) {
-        movingObj.set({
+        obj.set({
           left: lastPos.left,
           top: lastPos.top
         });
+        obj.setCoords();
         this.canvas.requestRenderAll();
       }
     } else {
-      // Update last valid position
-      this.lastValidPositions.set(movingObj, { 
-        left: movingObj.left || 0, 
-        top: movingObj.top || 0 
+      this.lastValidPositions.set(obj, {
+        left: obj.left || 0,
+        top: obj.top || 0
       });
     }
   });
+  
 }
 
 // Modified checkBarcodeOverlap method
@@ -496,103 +483,73 @@ private isOverlapping(rect1: any, rect2: any): boolean {
 
 
 
-  loadJsonToCanvas(json: string): void {
-    this.canvas.loadFromJSON(json, () => {
-      this.canvas.renderAll();
+loadJsonToCanvas(json: string, callback?: () => void): void {
+  this.canvas.loadFromJSON(json, () => {
+    this.canvas.renderAll();
+    this.addDashedSafetyArea();
+    this.setupMovementProtection();
 
-      this.canvas.renderAll();
-      this.setupMovementProtection();
-  
-      this.canvas.getObjects().forEach((obj: any) => {
-        const isBarcode = obj.type === 'image' && (
-          (obj.src && obj.src.includes("barcode")) ||
-          (obj.src && obj.src.includes("download.png")) ||
-          (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
-        );
-  
-        if (isBarcode) {
-          obj.set({
-            lockMovementX: true,
-            lockMovementY: true,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockRotation: true,
-            selectable: false,
-            evented: false,
-            hoverCursor: 'default'
-          });
-          (obj as any).isBarcode = true;
+    this.canvas.getObjects().forEach((obj: any) => {
+      const isBarcode = obj.type === 'image' && (
+        (obj.src && obj.src.includes("barcode")) ||
+        (obj.src && obj.src.includes("download.png")) ||
+        (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+      );
+
+      if (isBarcode) {
+        obj.set({
+          lockMovementX: true,
+          lockMovementY: true,
+          lockScalingX: true,
+          lockScalingY: true,
+          lockRotation: true,
+          selectable: false,
+          evented: false,
+          hoverCursor: 'default'
+        });
+        (obj as any).isBarcode = true;
+        return;
+      }
+
+      // Protected text detection
+      if (obj.type === 'textbox' && typeof obj.text === 'string') {
+        const normalizedText = obj.text.replace(/\s+/g, '').toLowerCase();
+        if (
+          normalizedText.includes('firstclass') &&
+          normalizedText.includes('presort') &&
+          normalizedText.includes('postagepaid') &&
+          normalizedText.includes('ylhq')
+        ) {
+          (obj as any).isProtectedText = true;
         }
-      });
+      }
     });
-  }
+
+    if (callback) callback();
+  });
+}
+
   
   
 
   loadImageTemplate(template: any): void {
     const handler: HttpHandler = new HttpXhrBackend({ build: () => new XMLHttpRequest() });
     const httpClient = new HttpClient(handler);
-    httpClient.get(template.filePathFront, { responseType: 'text' })
-      .subscribe(
-        (jsonString: string) => {
-          console.log("Loaded JSON template:", jsonString);
-
-          // Load the canvas from the JSON string
-          this.canvas.loadFromJSON(jsonString, () => {
-            console.log("Canvas loaded from JSON template");
-          
-            // Loop through all canvas objects
-            this.canvas.getObjects().forEach((obj: any) => {
-              // Lock the barcode image only (you can refine the check below if needed)
-              if (obj.type === 'image' && obj.width === 943 && obj.height === 357) {
-                obj.set({
-                  lockMovementX: true,
-                  lockMovementY: true,
-                  lockScalingX: true,
-                  lockScalingY: true,
-                  lockRotation: true,
-                  selectable: false,
-                  evented: false,
-                  hoverCursor: 'default'
-                });
-                (obj as any).isBarcode = true;
-              }
-            });
-
-            this.canvas.getObjects().forEach((obj: any) => {
-              // ✅ Match barcode image by its "src" or similar patterns
-              const isBarcode = obj.type === 'image' && (
-                (obj.src && obj.src.includes("barcode")) || 
-                (obj.src && obj.src.includes("download.png")) || 
-                (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
-              );
-            
-              if (isBarcode) {
-                obj.set({
-                  lockMovementX: true,
-                  lockMovementY: true,
-                  lockScalingX: true,
-                  lockScalingY: true,
-                  lockRotation: true,
-                  selectable: false,
-                  evented: false,
-                  hoverCursor: 'default',
-                });
-                (obj as any).isBarcode = true;
-              }
-            });
-            
-          
-            this.canvas.renderAll();
-            
-          });
-          
-        },
-        error => {
-          console.error("Error loading template JSON file:", error);
-        }
-      );
+  
+    httpClient.get(template.filePathFront, { responseType: 'text' }).subscribe(
+      (jsonString: string) => {
+        // ✅ Reuse your unified loader
+        this.loadJsonToCanvas(jsonString, () => {
+          // Barcode and protected text already handled inside loadJsonToCanvas()
+          this.retrackObjects(); // for snap-back protection
+        });
+      },
+      error => {
+        console.error("Error loading template JSON file:", error);
+      }
+    );
   }
+  
 
   // Block "Upload Image"
 
