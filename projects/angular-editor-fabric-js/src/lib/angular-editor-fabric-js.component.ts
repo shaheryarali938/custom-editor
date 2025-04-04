@@ -99,11 +99,17 @@ export class FabricjsEditorComponent implements AfterViewInit {
       obj.setCoords();
       const objBounds = obj.getBoundingRect(true);
     
-      const isOverlapping = this.canvas.getObjects().some(barcode => {
-        if (!(barcode as any).isBarcode && !(barcode as any).isProtectedText) return false;
-        barcode.setCoords();
-        const barcodeBounds = barcode.getBoundingRect(true);
-        return this.isOverlapping(objBounds, barcodeBounds);
+      const isOverlapping = this.canvas.getObjects().some(target => {
+        const isProtected =
+          (target as any).isBarcode ||
+          (target as any).isProtectedText ||
+          (target as any).isProtectedAddress;
+    
+        if (!isProtected) return false;
+    
+        target.setCoords();
+        const targetBounds = target.getBoundingRect(true);
+        return this.isOverlapping(objBounds, targetBounds);
       });
     
       if (isOverlapping) {
@@ -120,6 +126,7 @@ export class FabricjsEditorComponent implements AfterViewInit {
         (obj as any)._lastGoodTop = obj.top;
       }
     });
+    
     
     
     
@@ -184,8 +191,13 @@ export class FabricjsEditorComponent implements AfterViewInit {
   }
 
   private isProtectedZone(obj: fabric.Object): boolean {
-    return (obj as any).isBarcode || (obj as any).isProtectedText;
+    return (
+      (obj as any).isBarcode ||
+      (obj as any).isProtectedText ||
+      (obj as any).isProtectedAddress
+    );
   }
+  
   
 
   public retrackObjects(): void {
@@ -291,11 +303,22 @@ export class FabricjsEditorComponent implements AfterViewInit {
       selectable: false,
       evented: false,
       excludeFromExport: true,
-    });
+    } as any);
+    (this.safetyArea as any).id = 'safetyLine';
+    
 
     this.canvas.add(this.safetyArea);
     this.canvas.sendToBack(this.safetyArea);
   }
+
+  bringGuidesToFront(): void {
+    this.canvas.getObjects().forEach(obj => {
+      if ((obj as any).id === 'safetyLine' || (obj as any).id === 'bleedLine') {
+        this.canvas.bringToFront(obj);
+      }
+    });
+  }
+  
 
   // Block "Add text"
 
@@ -488,6 +511,7 @@ loadJsonToCanvas(json: string, callback?: () => void): void {
     this.canvas.renderAll();
     this.addDashedSafetyArea();
     this.setupMovementProtection();
+    this.bringGuidesToFront();
 
     this.canvas.getObjects().forEach((obj: any) => {
       const isBarcode = obj.type === 'image' && (
@@ -511,16 +535,49 @@ loadJsonToCanvas(json: string, callback?: () => void): void {
         return;
       }
 
-      // Protected text detection
+      // Protected postage text detection
       if (obj.type === 'textbox' && typeof obj.text === 'string') {
         const normalizedText = obj.text.replace(/\s+/g, '').toLowerCase();
+
         if (
           normalizedText.includes('firstclass') &&
           normalizedText.includes('presort') &&
           normalizedText.includes('postagepaid') &&
           normalizedText.includes('ylhq')
         ) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default',
+          });
           (obj as any).isProtectedText = true;
+        }
+
+        // ✅ Address detection and protection
+        const text = obj.text.trim();
+        const lines = text.split('\n');
+
+        const cityStateZipRegex = /,\s?[A-Z]{2}\s+\d{4,5}(?:\s?-\s?\d{4})?$/;
+        const hasAtLeastTwoLines = lines.length >= 2;
+        const endsWithCityStateZip = cityStateZipRegex.test(lines[lines.length - 1]);
+
+        if (hasAtLeastTwoLines && endsWithCityStateZip) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default',
+          });
+          (obj as any).isProtectedAddress = true;
         }
       }
     });
@@ -528,6 +585,7 @@ loadJsonToCanvas(json: string, callback?: () => void): void {
     if (callback) callback();
   });
 }
+
 
   
   

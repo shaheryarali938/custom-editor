@@ -151,6 +151,7 @@ export class AppComponent implements OnInit {
           this.canvas.getCanvas().renderAll();
           this.addDashedSafetyArea();
           this.lockBarcodes();
+          this.canvas.bringGuidesToFront();
         });
       }
     } else {
@@ -163,6 +164,7 @@ export class AppComponent implements OnInit {
           this.canvas.getCanvas().renderAll();
           this.addDashedSafetyArea();
           this.lockBarcodes();
+          this.canvas.bringGuidesToFront();
         });
       }
     }
@@ -207,6 +209,32 @@ export class AppComponent implements OnInit {
         });
         (obj as any).isBarcode = true;
       }
+
+      if (obj.type === 'textbox' && typeof obj.text === 'string') {
+        const text = obj.text.trim();
+        const lines = text.split('\n');
+      
+        const zipRegex = /\b\d{5}(?:\s?-\s?\d{4})?\b/;
+        const cityStateZipRegex = /,\s?[A-Z]{2}\s+\d{4,5}(?:\s?-\s?\d{4})?$/;
+      
+        const hasAtLeastTwoLines = lines.length >= 2;
+        const endsWithCityStateZip = cityStateZipRegex.test(lines[lines.length - 1]);
+      
+        if (hasAtLeastTwoLines && endsWithCityStateZip) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default',
+          });
+          (obj as any).isProtectedAddress = true;
+        }
+      }
+      
   
       // 🔐 Lock protected postage text
       if (obj.type === 'textbox' && typeof obj.text === 'string') {
