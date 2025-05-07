@@ -21,6 +21,8 @@ export class AppComponent implements OnInit {
   showImportExportDropdown = false;
   showProductDropdown = false;
   currentTemplates: { front: any, back: any } = { front: null, back: null };
+extraField1: any;
+extraField2: any;
 
   toggleTextDropdown() {
     this.showTextDropdown = !this.showTextDropdown;
@@ -298,6 +300,41 @@ export class AppComponent implements OnInit {
   title = "angular-editor-fabric-js";
 
   activeTab: string = "text";
+
+  addVariableText() {
+    // Add Extra Field 1 if filled
+    if (this.extraField1?.trim()) {
+      const text1 = new fabric.Textbox(`{{${this.extraField1.trim()}}}`, {
+        left: 100,
+        top: 100,
+        fontFamily: this.selectedFont,
+        fontWeight: this.selectedFontWeight,
+        fontStyle: this.isItalic ? "italic" : "normal",
+        fontSize: this.selectedFontSize,
+        fill: "#000",
+      });
+      this.canvas.getCanvas().add(text1);
+    }
+  
+    // Add Extra Field 2 if filled
+    if (this.extraField2?.trim()) {
+      const text2 = new fabric.Textbox(`{{${this.extraField2.trim()}}}`, {
+        left: 100,
+        top: 150,
+        fontFamily: this.selectedFont,
+        fontWeight: this.selectedFontWeight,
+        fontStyle: this.isItalic ? "italic" : "normal",
+        fontSize: this.selectedFontSize,
+        fill: "#000",
+      });
+      this.canvas.getCanvas().add(text2);
+    }
+  
+    // Clear the input fields
+    this.extraField1 = '';
+    this.extraField2 = '';
+  }
+  
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
