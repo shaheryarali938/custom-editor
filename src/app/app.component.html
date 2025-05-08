@@ -920,37 +920,21 @@
                 <div class="card mb-2">
                   <div class="card-header bg-yellow">Add Variable Text</div>
                   <div class="card-body p-2 bg-light-gray">
-                    <!-- Input for entering text -->
-                    <div class="custom-item-title">Extra Field 1</div>
-                    <input
-                      type="text"
-                      class="form-control"
-                      style="cursor: text !important;"
-                      [(ngModel)]="extraField1"
-                      placeholder="Add variable"
-                    />
-                    <div class="custom-item-title pt-2">Extra Field 2</div>
-                    <input
-                      type="text"
-                      class="form-control"
-                      style="cursor: text !important;"
-                      [(ngModel)]="extraField2"
-                      placeholder="Add variable"
-                    />
-                    <!-- Button to add text -->
+                    <!-- Single Button to Add Fields -->
                     <div class="input-group mt-2">
                       <button
                         id="add-text"
                         class="btn btn-yellow w-100"
-                        (click)="addVariableText()"
+                        (click)="addNextExtraField()"
                       >
-                        <i class="fa fa-plus"></i> Add Text
+                        <i class=""></i> {{ addButtonText }}
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            
           </div>
         </div>
 

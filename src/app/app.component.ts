@@ -301,39 +301,32 @@ extraField2: any;
 
   activeTab: string = "text";
 
-  addVariableText() {
-    // Add Extra Field 1 if filled
-    if (this.extraField1?.trim()) {
-      const text1 = new fabric.Textbox(`{{${this.extraField1.trim()}}}`, {
-        left: 100,
-        top: 100,
-        fontFamily: this.selectedFont,
-        fontWeight: this.selectedFontWeight,
-        fontStyle: this.isItalic ? "italic" : "normal",
-        fontSize: this.selectedFontSize,
-        fill: "#000",
-      });
-      this.canvas.getCanvas().add(text1);
-    }
-  
-    // Add Extra Field 2 if filled
-    if (this.extraField2?.trim()) {
-      const text2 = new fabric.Textbox(`{{${this.extraField2.trim()}}}`, {
-        left: 100,
-        top: 150,
-        fontFamily: this.selectedFont,
-        fontWeight: this.selectedFontWeight,
-        fontStyle: this.isItalic ? "italic" : "normal",
-        fontSize: this.selectedFontSize,
-        fill: "#000",
-      });
-      this.canvas.getCanvas().add(text2);
-    }
-  
-    // Clear the input fields
-    this.extraField1 = '';
-    this.extraField2 = '';
-  }
+  // Starting index
+extraFieldCounter = 1;
+addButtonText = 'Add Extra Field 1';
+
+addNextExtraField() {
+  const variableName = `extra_field${this.extraFieldCounter}`;
+  const displayText = `{{${variableName}}}`;
+
+  const newText = new fabric.Textbox(displayText, {
+    left: 100,
+    top: 100 + (this.extraFieldCounter - 1) * 50, // har naye field ko neeche shift karne ke liye
+    fontFamily: this.selectedFont,
+    fontWeight: this.selectedFontWeight,
+    fontStyle: this.isItalic ? "italic" : "normal",
+    fontSize: this.selectedFontSize,
+    fill: "#000",
+    editable: false,
+  });
+
+  this.canvas.getCanvas().add(newText);
+
+  // Counter aur button text update karo
+  this.extraFieldCounter++;
+  this.addButtonText = `Add Extra Field ${this.extraFieldCounter}`;
+}
+
   
 
   setActiveTab(tab: string): void {
