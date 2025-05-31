@@ -5,6 +5,10 @@ import { HttpClient, HttpXhrBackend } from "@angular/common/http";
 
 declare var FontFace: any;
 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+
+
 
 @Component({
   selector: "app-root",
@@ -174,6 +178,165 @@ extraField2: any;
     this.isFront = !this.isFront;
     this.addDashedSafetyArea();
   }
+
+
+public exportToOLConnectHtml(): void {
+  const canvas = this.canvas.getCanvas();
+  const objects = canvas.getObjects();
+  const width = canvas.getWidth();
+  const height = canvas.getHeight();
+  const bgColor = canvas.backgroundColor || 'white'; // Default to white if none
+
+  let htmlContent = `<div class="page" style="
+    position:relative;
+    width:${width}px;
+    height:${height}px;
+    background-color:${bgColor};
+    overflow:hidden;
+  ">\n`;
+
+  for (const obj of objects) {
+    if (obj.type === 'textbox' || obj.type === 'text') {
+      const text = (obj as fabric.Textbox).text || '';
+      htmlContent += `
+        <div style="
+          position:absolute;
+          left:${obj.left}px;
+          top:${obj.top}px;
+          width:${obj.width}px;
+          font-family:'${(obj as any).fontFamily}';
+          font-size:${(obj as any).fontSize}px;
+          font-weight:${(obj as any).fontWeight || 'normal'};
+          font-style:${(obj as any).fontStyle || 'normal'};
+          color:${(obj as any).fill};
+        ">
+          ${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+        </div>\n`;
+    }
+
+    if (obj.type === 'image') {
+      const img = obj as fabric.Image;
+      const src = (img.getElement() as HTMLImageElement).src;
+
+      htmlContent += `
+        <img src="${src}" style="
+          position:absolute;
+          left:${img.left}px;
+          top:${img.top}px;
+          width:${img.width * (img.scaleX || 1)}px;
+          height:${img.height * (img.scaleY || 1)}px;
+        "/>\n`;
+    }
+  }
+
+  htmlContent += `</div>`;
+
+  const blob = new Blob([htmlContent], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `olconnect-template.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+
+
+
+public exportAsOLTemplate(): void {
+  const canvas = this.canvas.getCanvas();
+  const objects = canvas.getObjects();
+  const width = canvas.getWidth();
+  const height = canvas.getHeight();
+  const bgColor = canvas.backgroundColor || '#ffffff';
+
+  const zip = new JSZip();
+
+  // 1. Create HTML content
+  let html = `<div class="page" style="position:relative; width:${width}px; height:${height}px; background-color:${bgColor}; overflow:hidden;">\n`;
+
+  for (const obj of objects) {
+    if (obj.type === 'textbox' || obj.type === 'text') {
+      const text = (obj as fabric.Textbox).text || '';
+      html += `<div style="
+        position:absolute;
+        left:${obj.left}px;
+        top:${obj.top}px;
+        width:${obj.width}px;
+        font-family:'${(obj as any).fontFamily}';
+        font-size:${(obj as any).fontSize}px;
+        font-weight:${(obj as any).fontWeight || 'normal'};
+        font-style:${(obj as any).fontStyle || 'normal'};
+        color:${(obj as any).fill};
+      ">
+        ${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+      </div>\n`;
+    }
+
+    if (obj.type === 'image') {
+      const img = obj as fabric.Image;
+      const imgElement = img.getElement() as HTMLImageElement;
+      const base64 = imgElement.src;
+
+      // Save image inside the "Images" folder
+      const base64Data = base64.split(',')[1]; // remove data:image/png;base64,
+      const imageName = `image-${Date.now()}.png`;
+
+      html += `<img src="../Images/${imageName}" style="
+        position:absolute;
+        left:${img.left}px;
+        top:${img.top}px;
+        width:${img.width * (img.scaleX || 1)}px;
+        height:${img.height * (img.scaleY || 1)}px;
+      "/>\n`;
+
+      zip.folder('Images')?.file(imageName, base64Data, { base64: true });
+    }
+  }
+
+  html += `</div>`;
+
+  // 2. Add HTML file in correct folder
+  zip.folder('Contexts/Web/Section 1')?.file('content.html', html);
+
+  // 3. Add basic CSS
+  zip.folder('Stylesheets')?.file('default.css', `.page { font-family: Arial, sans-serif; overflow: hidden; }`);
+
+  // 4. Add required template.xml
+  const templateXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+  <name>CanvasTemplate</name>
+  <version>1.0</version>
+  <contexts>
+    <context>
+      <type>Web</type>
+      <sections>
+        <section>
+          <name>Section 1</name>
+        </section>
+      </sections>
+    </context>
+  </contexts>
+</template>
+`;
+  zip.file('template.xml', templateXml.trim());
+
+  // 5. Add empty folders
+  zip.folder('Fonts');
+  zip.folder('Media');
+  zip.folder('Master pages');
+  zip.folder('Snippets');
+  zip.folder('Translations');
+
+  // 6. Generate and download
+  zip.generateAsync({ type: 'blob' }).then((content) => {
+    saveAs(content, 'CanvasTemplate.ol'); // .ol is actually just .zip with a different extension
+  });
+}
+
 
   private isBarcode(obj: fabric.Object): boolean {
     if (obj.type !== 'image') return false;
