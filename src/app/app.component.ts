@@ -245,95 +245,401 @@ public exportToOLConnectHtml(): void {
 
 
 
-public exportAsOLTemplate(): void {
-  const canvas = this.canvas.getCanvas();
-  const objects = canvas.getObjects();
-  const width = canvas.getWidth();
-  const height = canvas.getHeight();
-  const bgColor = canvas.backgroundColor || '#ffffff';
+public async exportAsOLTemplate(): Promise<void> {
+  try {
+    // 1. Get canvas data
+    const canvas = this.canvas.getCanvas();
+    const width = canvas.getWidth();
+    const height = canvas.getHeight();
+    const bgColor = canvas.backgroundColor || '#ffffff';
 
-  const zip = new JSZip();
+    // 2. Create JSZip instance
+    const zip = new JSZip();
+    
+    // 3. Create the directory structure
+    const publicFolder = zip.folder('public')!;
+    const documentFolder = publicFolder.folder('document')!;
+    const imagesFolder = documentFolder.folder('images')!;
+    const cssFolder = documentFolder.folder('css')!;
+    
+    // 4. Process canvas objects and create HTML content
+    let htmlContent = `<!DOCTYPE html>
+<html section="Section 1" dpi="96" scale="1.0" style="transform-origin: 0px 0px 0px; transform: scale(1); width: 100% ! important; height: 100% ! important;">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" rel="stylesheet" href="css/default.css">
+<link type="text/css" rel="stylesheet" href="css/context_all_styles.css">
+<link type="text/css" rel="stylesheet" href="css/context_web_styles.css">
+</head>
+<body spellcheck="false" contenteditable="false">
+  <div class="page" style="
+      position:relative;
+      width:${width}px;
+      height:${height}px;
+      background-color:${bgColor};
+      overflow:hidden;
+    ">\n`;
 
-  // 1. Create HTML content
-  let html = `<div class="page" style="position:relative; width:${width}px; height:${height}px; background-color:${bgColor}; overflow:hidden;">\n`;
-
-  for (const obj of objects) {
-    if (obj.type === 'textbox' || obj.type === 'text') {
-      const text = (obj as fabric.Textbox).text || '';
-      html += `<div style="
-        position:absolute;
-        left:${obj.left}px;
-        top:${obj.top}px;
-        width:${obj.width}px;
-        font-family:'${(obj as any).fontFamily}';
-        font-size:${(obj as any).fontSize}px;
-        font-weight:${(obj as any).fontWeight || 'normal'};
-        font-style:${(obj as any).fontStyle || 'normal'};
-        color:${(obj as any).fill};
-      ">
-        ${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
-      </div>\n`;
+    // Process each object
+    const imageResources: Array<{id: string, filename: string}> = [];
+    
+    for (const obj of canvas.getObjects()) {
+      if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
+        const text = (obj as fabric.Textbox).text || '';
+        htmlContent += `  <div style="
+            position:absolute;
+            left:${obj.left}px;
+            top:${obj.top}px;
+            width:${obj.width}px;
+            font-family:'${(obj as any).fontFamily || 'Arial'}';
+            font-size:${(obj as any).fontSize || 12}px;
+            font-weight:${(obj as any).fontWeight || 'normal'};
+            font-style:${(obj as any).fontStyle || 'normal'};
+            color:${(obj as any).fill || '#000000'};
+            text-align:${(obj as any).textAlign || 'left'};
+          ">
+            ${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+          </div>\n`;
+      }
+      else if (obj.type === 'image') {
+        const img = obj as fabric.Image;
+        const imgElement = img.getElement() as HTMLImageElement;
+        const src = imgElement.src;
+        
+        // Generate unique filename
+        const imageId = `res-${this.generateUUID()}`;
+        const ext = src.split(';')[0].split('/')[1] || 'png';
+        const filename = `image_${imageResources.length}.${ext}`;
+        
+        // Add to image resources
+        imageResources.push({
+          id: imageId,
+          filename: filename
+        });
+        
+        // Add image to zip
+        if (src.startsWith('data:')) {
+          const base64Data = src.split(',')[1];
+          imagesFolder.file(filename, base64Data, { base64: true });
+        } else {
+          // Handle external images (would need additional logic to fetch)
+          console.warn('External images need special handling');
+        }
+        
+        // Add to HTML
+        htmlContent += `  <img src="images/${filename}" style="
+            position:absolute;
+            left:${img.left}px;
+            top:${img.top}px;
+            width:${img.width * (img.scaleX || 1)}px;
+            height:${img.height * (img.scaleY || 1)}px;
+          "/>\n`;
+      }
+      // Add handling for other object types if needed
     }
 
-    if (obj.type === 'image') {
-      const img = obj as fabric.Image;
-      const imgElement = img.getElement() as HTMLImageElement;
-      const base64 = imgElement.src;
-
-      // Save image inside the "Images" folder
-      const base64Data = base64.split(',')[1]; // remove data:image/png;base64,
-      const imageName = `image-${Date.now()}.png`;
-
-      html += `<img src="../Images/${imageName}" style="
-        position:absolute;
-        left:${img.left}px;
-        top:${img.top}px;
-        width:${img.width * (img.scaleX || 1)}px;
-        height:${img.height * (img.scaleY || 1)}px;
-      "/>\n`;
-
-      zip.folder('Images')?.file(imageName, base64Data, { base64: true });
-    }
+    htmlContent += `  </div>
+</body>
+</html>`;
+    
+    // 5. Create section HTML file
+    const sectionId = `res-${this.generateUUID()}`;
+    const sectionFilename = `section-${sectionId}.html`;
+    documentFolder.file(sectionFilename, htmlContent);
+    
+    // 6. Create CSS files
+    cssFolder.file('default.css', `/* Default CSS */
+body {
+  margin: 0;
+  padding: 0;
+}`);
+    
+    cssFolder.file('context_all_styles.css', `/* Context all styles */`);
+    cssFolder.file('context_web_styles.css', `/* Context web styles */`);
+    
+    // 7. Create index.xml with all required elements
+    const contextId = `res-${this.generateUUID()}`;
+    const stylesheetIds = {
+      default: `res-${this.generateUUID()}`,
+      all_styles: `res-${this.generateUUID()}`,
+      web_styles: `res-${this.generateUUID()}`
+    };
+    
+    const colorSpaceIds = {
+      CMYK: `res-${this.generateUUID()}`,
+      RGB: `res-${this.generateUUID()}`
+    };
+    
+    const colorIds = {
+      Black: `res-${this.generateUUID()}`,
+      Cyan: `res-${this.generateUUID()}`,
+      Magenta: `res-${this.generateUUID()}`,
+      Yellow: `res-${this.generateUUID()}`,
+      WebRed: `res-${this.generateUUID()}`,
+      WebGreen: `res-${this.generateUUID()}`,
+      WebBlue: `res-${this.generateUUID()}`,
+      White: `res-${this.generateUUID()}`
+    };
+    
+    // Generate images XML
+    const imagesXml = imageResources.map(img => 
+      `        <image id="${img.id}">
+            <location>public/document/images/${img.filename}</location>
+        </image>`
+    ).join('\n');
+    
+    // Create the complete index.xml
+    const indexXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<package schemaVersion="1.0.0.59" htmlVersion="1.0.0.3" xmlns="http://www.objectiflune.com/connectschemas/Template" xsi:schemaLocation="http://www.objectiflune.com/connectschemas/Template http://www.objectiflune.com/connectschemas/Template/1_0_0_59.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <metadata/>
+    <manifest>
+        <colorProfiles/>
+        <colorSpaces>
+            <colorSpace id="${colorSpaceIds.CMYK}">
+                <colorSpaceType>2</colorSpaceType>
+                <name>CMYK</name>
+            </colorSpace>
+            <colorSpace id="${colorSpaceIds.RGB}">
+                <colorSpaceType>1</colorSpaceType>
+                <name>RGB</name>
+            </colorSpace>
+        </colorSpaces>
+        <colorTints/>
+        <colors>
+            <color id="${colorIds.Black}">
+                <name>Black</name>
+                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
+                <values>0.0</values>
+                <values>0.0</values>
+                <values>0.0</values>
+                <values>1.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.Cyan}">
+                <name>Cyan</name>
+                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
+                <values>1.0</values>
+                <values>0.0</values>
+                <values>0.0</values>
+                <values>0.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.Magenta}">
+                <name>Magenta</name>
+                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
+                <values>0.0</values>
+                <values>1.0</values>
+                <values>0.0</values>
+                <values>0.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.Yellow}">
+                <name>Yellow</name>
+                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
+                <values>0.0</values>
+                <values>0.0</values>
+                <values>1.0</values>
+                <values>0.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.WebRed}">
+                <name>WebRed</name>
+                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
+                <values>1.0</values>
+                <values>0.0</values>
+                <values>0.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.WebGreen}">
+                <name>WebGreen</name>
+                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
+                <values>0.0</values>
+                <values>1.0</values>
+                <values>0.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.WebBlue}">
+                <name>WebBlue</name>
+                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
+                <values>0.0</values>
+                <values>0.0</values>
+                <values>1.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+            <color id="${colorIds.White}">
+                <name>White</name>
+                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
+                <values>1.0</values>
+                <values>1.0</values>
+                <values>1.0</values>
+                <spot>false</spot>
+                <autoName>false</autoName>
+                <overprint>false</overprint>
+            </color>
+        </colors>
+        <contexts>
+            <context id="${contextId}">
+                <type>WEB</type>
+                <section>${sectionId}</section>
+                <includedResources>${stylesheetIds.default}</includedResources>
+                <includedResources>${stylesheetIds.all_styles}</includedResources>
+                <includedResources>${stylesheetIds.web_styles}</includedResources>
+                <defSection>${sectionId}</defSection>
+            </context>
+        </contexts>
+        <fontDefinitions/>
+        <fonts/>
+        <images>
+${imagesXml}
+        </images>
+        <javascripts/>
+        <masters/>
+        <media/>
+        <scssResources/>
+        <sections>
+            <section id="${sectionId}">
+                <location>public/document/${sectionFilename}</location>
+                <context>${contextId}</context>
+                <name>Section 1</name>
+                <size>
+                    <name>Custom</name>
+                    <width>100%</width>
+                    <height>100%</height>
+                </size>
+                <portrait>true</portrait>
+                <left-margin>0cm</left-margin>
+                <top-margin>0cm</top-margin>
+                <right-margin>0cm</right-margin>
+                <bottom-margin>0cm</bottom-margin>
+                <left-bleed>3mm</left-bleed>
+                <top-bleed>3mm</top-bleed>
+                <right-bleed>3mm</right-bleed>
+                <bottom-bleed>3mm</bottom-bleed>
+                <zoomLevel>100%</zoomLevel>
+                <finishing>
+                    <binding>
+                        <style>NONE</style>
+                        <edge>DEFAULT</edge>
+                        <type>DEFAULT</type>
+                        <angle>DEFAULT</angle>
+                        <item-count>0</item-count>
+                        <area>0cm</area>
+                    </binding>
+                </finishing>
+                <sectionBackground>
+                    <image/>
+                    <resource>NONE</resource>
+                    <position>CENTERED</position>
+                    <top/>
+                    <left/>
+                    <allPages>false</allPages>
+                    <from>1</from>
+                    <to>999</to>
+                    <rotation>0</rotation>
+                    <scaleX>100.0</scaleX>
+                    <scaleY>100.0</scaleY>
+                </sectionBackground>
+                <duplex>false</duplex>
+                <repeatAfterNSheets>0</repeatAfterNSheets>
+                <repeatSheetConfiguration>false</repeatSheetConfiguration>
+                <email-attachpdf>false</email-attachpdf>
+                <email-addPlainText>true</email-addPlainText>
+                <numbering>
+                    <restartPageNumbering>false</restartPageNumbering>
+                    <format>ARABIC</format>
+                    <leadingZeros></leadingZeros>
+                    <prefix></prefix>
+                    <addPrefixToPageCounts>false</addPrefixToPageCounts>
+                </numbering>
+                <guides/>
+                <tumble>false</tumble>
+                <facingPages>false</facingPages>
+                <mediaRotation>0</mediaRotation>
+                <sameSheetConfigForAll>false</sameSheetConfigForAll>
+                <omitEmptyBackside>false</omitEmptyBackside>
+                <minPages>1</minPages>
+                <email-inlineMode>INSIDE_HEAD</email-inlineMode>
+                <masterSheets/>
+            </section>
+        </sections>
+        <snippets/>
+        <stylesheets>
+            <stylesheet id="${stylesheetIds.default}">
+                <location>public/document/css/default.css</location>
+                <readOnly>false</readOnly>
+            </stylesheet>
+            <stylesheet id="${stylesheetIds.all_styles}">
+                <location>public/document/css/context_all_styles.css</location>
+                <readOnly>false</readOnly>
+            </stylesheet>
+            <stylesheet target-context="WEB" id="${stylesheetIds.web_styles}">
+                <location>public/document/css/context_web_styles.css</location>
+                <readOnly>false</readOnly>
+            </stylesheet>
+        </stylesheets>
+        <translationResources/>
+    </manifest>
+    <datamodelconfigadapter>
+        <dataTypes/>
+        <datamodel version="1">
+            <configs>
+                <field type="string" name="ExtraData" required="true"/>
+            </configs>
+        </datamodel>
+    </datamodelconfigadapter>
+    <locale>
+        <source>SYSTEM</source>
+    </locale>
+    <colorSettings>
+        <colorManagement>false</colorManagement>
+        <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
+    </colorSettings>
+    <scripts/>
+    <translationFileEntries/>
+    <defaultParameters/>
+</package>`;
+    
+    zip.file('index.xml', indexXml);
+    
+    // 8. Create datamodel file
+    const datamodelXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<datamodel schemaVersion="1.0.0.6" version="1" xmlns="http://www.objectiflune.com/connectschemas/DataModelConfig" xsi:schemaLocation="http://www.objectiflune.com/connectschemas/DataModelConfig http://www.objectiflune.com/connectschemas/DataModelConfig/1_0_0_6.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <configs>
+        <field type="string" name="ExtraData" required="true"/>
+    </configs>
+</datamodel>`;
+    
+    zip.file('null.OL-datamodel', datamodelXml);
+    
+    // 9. Generate and download the zip file
+    const content = await zip.generateAsync({ type: 'blob' });
+    saveAs(content, 'template.OL-template');
+    
+    console.log('OL-template generated successfully');
+  } catch (error) {
+    console.error('Error generating OL-template:', error);
+    alert('Error generating OL-template. See console for details.');
   }
+}
 
-  html += `</div>`;
-
-  // 2. Add HTML file in correct folder
-  zip.folder('Contexts/Web/Section 1')?.file('content.html', html);
-
-  // 3. Add basic CSS
-  zip.folder('Stylesheets')?.file('default.css', `.page { font-family: Arial, sans-serif; overflow: hidden; }`);
-
-  // 4. Add required template.xml
-  const templateXml = `
-<?xml version="1.0" encoding="UTF-8"?>
-<template>
-  <name>CanvasTemplate</name>
-  <version>1.0</version>
-  <contexts>
-    <context>
-      <type>Web</type>
-      <sections>
-        <section>
-          <name>Section 1</name>
-        </section>
-      </sections>
-    </context>
-  </contexts>
-</template>
-`;
-  zip.file('template.xml', templateXml.trim());
-
-  // 5. Add empty folders
-  zip.folder('Fonts');
-  zip.folder('Media');
-  zip.folder('Master pages');
-  zip.folder('Snippets');
-  zip.folder('Translations');
-
-  // 6. Generate and download
-  zip.generateAsync({ type: 'blob' }).then((content) => {
-    saveAs(content, 'CanvasTemplate.ol'); // .ol is actually just .zip with a different extension
+private generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
   });
 }
 

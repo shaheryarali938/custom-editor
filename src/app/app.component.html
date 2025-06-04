@@ -312,7 +312,7 @@
             position: absolute;
             top: 100%;
             right: 0;
-            min-width: 180px;
+            min-width: 205px;
             border-radius: 6px;
             background-color: #fff;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -335,8 +335,12 @@
             <i class="fa fa-upload mr-2"></i> Import Canvas
           </button>
 
-          <button class="dropdown-item" (click)="exportToOLConnectHtml()">
-                        <i class="fa fa-upload mr-2"></i> Export to OL HTML</button>
+          <!-- <button class="dropdown-item" (click)="exportToOLConnectHtml()">
+                        <i class="fa fa-upload mr-2"></i> Export to OL HTML</button> -->
+
+          <button class="dropdown-item" (click)="exportAsOLTemplate()">
+            <i class="fa fa-upload mr-2"></i>Export as OL-Template
+          </button>
 
 
         </div>
