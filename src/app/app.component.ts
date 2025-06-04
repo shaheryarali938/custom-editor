@@ -244,27 +244,22 @@ public exportToOLConnectHtml(): void {
 
 
 
-
 public async exportAsOLTemplate(): Promise<void> {
   try {
-    // 1. Get canvas data
     const canvas = this.canvas.getCanvas();
     const width = canvas.getWidth();
     const height = canvas.getHeight();
     const bgColor = canvas.backgroundColor || '#ffffff';
 
-    // 2. Create JSZip instance
     const zip = new JSZip();
-    
-    // 3. Create the directory structure
+
     const publicFolder = zip.folder('public')!;
     const documentFolder = publicFolder.folder('document')!;
     const imagesFolder = documentFolder.folder('images')!;
     const cssFolder = documentFolder.folder('css')!;
-    
-    // 4. Process canvas objects and create HTML content
+
     let htmlContent = `<!DOCTYPE html>
-<html section="Section 1" dpi="96" scale="1.0" style="transform-origin: 0px 0px 0px; transform: scale(1); width: 100% ! important; height: 100% ! important;">
+<html section="Section 1" dpi="96" scale="1.0" style="transform-origin: 0px 0px 0px; transform: scale(1); width: 100% !important; height: 100% !important;">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link type="text/css" rel="stylesheet" href="css/default.css">
 <link type="text/css" rel="stylesheet" href="css/context_all_styles.css">
@@ -279,12 +274,12 @@ public async exportAsOLTemplate(): Promise<void> {
       overflow:hidden;
     ">\n`;
 
-    // Process each object
     const imageResources: Array<{id: string, filename: string}> = [];
-    
+
     for (const obj of canvas.getObjects()) {
       if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
         const text = (obj as fabric.Textbox).text || '';
+        const processedText = this.convertPlainTextToVariables(text);
         htmlContent += `  <div style="
             position:absolute;
             left:${obj.left}px;
@@ -297,35 +292,30 @@ public async exportAsOLTemplate(): Promise<void> {
             color:${(obj as any).fill || '#000000'};
             text-align:${(obj as any).textAlign || 'left'};
           ">
-            ${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+            ${processedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
           </div>\n`;
       }
       else if (obj.type === 'image') {
         const img = obj as fabric.Image;
         const imgElement = img.getElement() as HTMLImageElement;
         const src = imgElement.src;
-        
-        // Generate unique filename
+
         const imageId = `res-${this.generateUUID()}`;
         const ext = src.split(';')[0].split('/')[1] || 'png';
         const filename = `image_${imageResources.length}.${ext}`;
-        
-        // Add to image resources
+
         imageResources.push({
           id: imageId,
           filename: filename
         });
-        
-        // Add image to zip
+
         if (src.startsWith('data:')) {
           const base64Data = src.split(',')[1];
           imagesFolder.file(filename, base64Data, { base64: true });
         } else {
-          // Handle external images (would need additional logic to fetch)
           console.warn('External images need special handling');
         }
-        
-        // Add to HTML
+
         htmlContent += `  <img src="images/${filename}" style="
             position:absolute;
             left:${img.left}px;
@@ -334,41 +324,30 @@ public async exportAsOLTemplate(): Promise<void> {
             height:${img.height * (img.scaleY || 1)}px;
           "/>\n`;
       }
-      // Add handling for other object types if needed
     }
 
     htmlContent += `  </div>
 </body>
 </html>`;
-    
-    // 5. Create section HTML file
+
     const sectionId = `res-${this.generateUUID()}`;
     const sectionFilename = `section-${sectionId}.html`;
     documentFolder.file(sectionFilename, htmlContent);
-    
-    // 6. Create CSS files
-    cssFolder.file('default.css', `/* Default CSS */
-body {
-  margin: 0;
-  padding: 0;
-}`);
-    
+
+    cssFolder.file('default.css', `/* Default CSS */ body { margin: 0; padding: 0; }`);
     cssFolder.file('context_all_styles.css', `/* Context all styles */`);
     cssFolder.file('context_web_styles.css', `/* Context web styles */`);
-    
-    // 7. Create index.xml with all required elements
+
     const contextId = `res-${this.generateUUID()}`;
     const stylesheetIds = {
       default: `res-${this.generateUUID()}`,
       all_styles: `res-${this.generateUUID()}`,
       web_styles: `res-${this.generateUUID()}`
     };
-    
     const colorSpaceIds = {
       CMYK: `res-${this.generateUUID()}`,
       RGB: `res-${this.generateUUID()}`
     };
-    
     const colorIds = {
       Black: `res-${this.generateUUID()}`,
       Cyan: `res-${this.generateUUID()}`,
@@ -379,15 +358,13 @@ body {
       WebBlue: `res-${this.generateUUID()}`,
       White: `res-${this.generateUUID()}`
     };
-    
-    // Generate images XML
-    const imagesXml = imageResources.map(img => 
+
+    const imagesXml = imageResources.map(img =>
       `        <image id="${img.id}">
             <location>public/document/images/${img.filename}</location>
         </image>`
     ).join('\n');
-    
-    // Create the complete index.xml
+
     const indexXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <package schemaVersion="1.0.0.59" htmlVersion="1.0.0.3" xmlns="http://www.objectiflune.com/connectschemas/Template" xsi:schemaLocation="http://www.objectiflune.com/connectschemas/Template http://www.objectiflune.com/connectschemas/Template/1_0_0_59.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <metadata/>
@@ -408,86 +385,50 @@ body {
             <color id="${colorIds.Black}">
                 <name>Black</name>
                 <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>0.0</values>
-                <values>0.0</values>
-                <values>0.0</values>
-                <values>1.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>0.0</values><values>0.0</values><values>0.0</values><values>1.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.Cyan}">
                 <name>Cyan</name>
                 <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>1.0</values>
-                <values>0.0</values>
-                <values>0.0</values>
-                <values>0.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>1.0</values><values>0.0</values><values>0.0</values><values>0.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.Magenta}">
                 <name>Magenta</name>
                 <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>0.0</values>
-                <values>1.0</values>
-                <values>0.0</values>
-                <values>0.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>0.0</values><values>1.0</values><values>0.0</values><values>0.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.Yellow}">
                 <name>Yellow</name>
                 <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>0.0</values>
-                <values>0.0</values>
-                <values>1.0</values>
-                <values>0.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>0.0</values><values>0.0</values><values>1.0</values><values>0.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.WebRed}">
                 <name>WebRed</name>
                 <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>1.0</values>
-                <values>0.0</values>
-                <values>0.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>1.0</values><values>0.0</values><values>0.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.WebGreen}">
                 <name>WebGreen</name>
                 <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>0.0</values>
-                <values>1.0</values>
-                <values>0.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>0.0</values><values>1.0</values><values>0.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.WebBlue}">
                 <name>WebBlue</name>
                 <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>0.0</values>
-                <values>0.0</values>
-                <values>1.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>0.0</values><values>0.0</values><values>1.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
             <color id="${colorIds.White}">
                 <name>White</name>
                 <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>1.0</values>
-                <values>1.0</values>
-                <values>1.0</values>
-                <spot>false</spot>
-                <autoName>false</autoName>
-                <overprint>false</overprint>
+                <values>1.0</values><values>1.0</values><values>1.0</values>
+                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
             </color>
         </colors>
         <contexts>
@@ -514,65 +455,13 @@ ${imagesXml}
                 <location>public/document/${sectionFilename}</location>
                 <context>${contextId}</context>
                 <name>Section 1</name>
-                <size>
-                    <name>Custom</name>
-                    <width>100%</width>
-                    <height>100%</height>
-                </size>
+                <size><name>Custom</name><width>100%</width><height>100%</height></size>
                 <portrait>true</portrait>
-                <left-margin>0cm</left-margin>
-                <top-margin>0cm</top-margin>
-                <right-margin>0cm</right-margin>
-                <bottom-margin>0cm</bottom-margin>
-                <left-bleed>3mm</left-bleed>
-                <top-bleed>3mm</top-bleed>
-                <right-bleed>3mm</right-bleed>
-                <bottom-bleed>3mm</bottom-bleed>
+                <left-margin>0cm</left-margin><top-margin>0cm</top-margin>
+                <right-margin>0cm</right-margin><bottom-margin>0cm</bottom-margin>
+                <left-bleed>3mm</left-bleed><top-bleed>3mm</top-bleed>
+                <right-bleed>3mm</right-bleed><bottom-bleed>3mm</bottom-bleed>
                 <zoomLevel>100%</zoomLevel>
-                <finishing>
-                    <binding>
-                        <style>NONE</style>
-                        <edge>DEFAULT</edge>
-                        <type>DEFAULT</type>
-                        <angle>DEFAULT</angle>
-                        <item-count>0</item-count>
-                        <area>0cm</area>
-                    </binding>
-                </finishing>
-                <sectionBackground>
-                    <image/>
-                    <resource>NONE</resource>
-                    <position>CENTERED</position>
-                    <top/>
-                    <left/>
-                    <allPages>false</allPages>
-                    <from>1</from>
-                    <to>999</to>
-                    <rotation>0</rotation>
-                    <scaleX>100.0</scaleX>
-                    <scaleY>100.0</scaleY>
-                </sectionBackground>
-                <duplex>false</duplex>
-                <repeatAfterNSheets>0</repeatAfterNSheets>
-                <repeatSheetConfiguration>false</repeatSheetConfiguration>
-                <email-attachpdf>false</email-attachpdf>
-                <email-addPlainText>true</email-addPlainText>
-                <numbering>
-                    <restartPageNumbering>false</restartPageNumbering>
-                    <format>ARABIC</format>
-                    <leadingZeros></leadingZeros>
-                    <prefix></prefix>
-                    <addPrefixToPageCounts>false</addPrefixToPageCounts>
-                </numbering>
-                <guides/>
-                <tumble>false</tumble>
-                <facingPages>false</facingPages>
-                <mediaRotation>0</mediaRotation>
-                <sameSheetConfigForAll>false</sameSheetConfigForAll>
-                <omitEmptyBackside>false</omitEmptyBackside>
-                <minPages>1</minPages>
-                <email-inlineMode>INSIDE_HEAD</email-inlineMode>
-                <masterSheets/>
             </section>
         </sections>
         <snippets/>
@@ -595,14 +484,10 @@ ${imagesXml}
     <datamodelconfigadapter>
         <dataTypes/>
         <datamodel version="1">
-            <configs>
-                <field type="string" name="ExtraData" required="true"/>
-            </configs>
+${this.generateDataModelFields()}
         </datamodel>
     </datamodelconfigadapter>
-    <locale>
-        <source>SYSTEM</source>
-    </locale>
+    <locale><source>SYSTEM</source></locale>
     <colorSettings>
         <colorManagement>false</colorManagement>
         <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
@@ -611,29 +496,62 @@ ${imagesXml}
     <translationFileEntries/>
     <defaultParameters/>
 </package>`;
-    
+
     zip.file('index.xml', indexXml);
-    
-    // 8. Create datamodel file
-    const datamodelXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<datamodel schemaVersion="1.0.0.6" version="1" xmlns="http://www.objectiflune.com/connectschemas/DataModelConfig" xsi:schemaLocation="http://www.objectiflune.com/connectschemas/DataModelConfig http://www.objectiflune.com/connectschemas/DataModelConfig/1_0_0_6.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <configs>
-        <field type="string" name="ExtraData" required="true"/>
-    </configs>
-</datamodel>`;
-    
-    zip.file('null.OL-datamodel', datamodelXml);
-    
-    // 9. Generate and download the zip file
+
     const content = await zip.generateAsync({ type: 'blob' });
     saveAs(content, 'template.OL-template');
-    
     console.log('OL-template generated successfully');
   } catch (error) {
     console.error('Error generating OL-template:', error);
     alert('Error generating OL-template. See console for details.');
   }
 }
+
+// New helper methods
+private convertPlainTextToVariables(text: string): string {
+  return text.replace(/\[([^\]]+)\]/g, (_match, p1) => {
+    return `<span data-field="${p1}">{{${p1}}}</span>`;
+  });
+}
+
+
+
+private extractVariableFieldsFromCanvas(canvas: fabric.Canvas): Set<string> {
+  const fields = new Set<string>();
+  for (const obj of canvas.getObjects()) {
+    if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
+      const text = (obj as fabric.Textbox).text || '';
+      const matches = text.match(/\[([^\]]+)\]/g);
+      if (matches) {
+        matches.forEach(match => {
+          const fieldName = match.replace(/\[|\]/g, '');
+          fields.add(fieldName);
+        });
+      }
+    }
+  }
+  return fields;
+}
+
+private generateDataModelFields(): string {
+  const discFields = [
+    'FirstName', 'LastName', 'full_name', 'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
+    'MailingAddress', 'address2', 'Mailingcity', 'MailingState', 'Mailingzip',
+    'AgentName', 'AgentNumber', 'ReturnAddressStreet', 'ReturnAddressCityStateZip',
+    'extra_field_1', 'extra_field_2', 'extra_field_3',
+    'sequence', 'cont_id', 'imbarcode', 'Website', 'list', 'batch', 'ylhq_id',
+    'order_id', 'short_code', 'user_id', 'MailingDate', 'Pictures', 'imbDigits'
+  ];
+
+  let xml = '<configs>\n';
+  discFields.forEach(field => {
+    xml += `        <field type="string" name="${field}" required="true"/>\n`;
+  });
+  xml += '    </configs>';
+  return xml;
+}
+
 
 private generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -642,6 +560,7 @@ private generateUUID(): string {
     return v.toString(16);
   });
 }
+
 
 
   private isBarcode(obj: fabric.Object): boolean {
