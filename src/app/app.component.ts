@@ -568,6 +568,7 @@ private convertPlainTextToVariables(text: string): string {
 
 
 
+
 private extractVariableFieldsFromCanvas(canvas: fabric.Canvas): Set<string> {
   const fields = new Set<string>();
   for (const obj of canvas.getObjects()) {
