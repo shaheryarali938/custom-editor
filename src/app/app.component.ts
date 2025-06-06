@@ -28,6 +28,24 @@ export class AppComponent implements OnInit {
 extraField1: any;
 extraField2: any;
 
+sampleRecord = {
+  FirstName: 'Jessica',
+  LastName: 'Neuwirth',
+  full_name: 'Jessica Neuwirth',
+  PropertyAddress: '177 Main St #c',
+  PropertyCity: 'Millbury',
+  PropertyState: 'MA',
+  PropertyZip: '1527',
+  MailingAddress: '28 Church St',
+  Mailingcity: 'Grafton',
+  Mailingzip: '01519-1518',
+  AgentName: 'Auntie Gina',
+  AgentNumber: '559-206-1566',
+  ReturnAddressStreet: '1099 East Champlain Drive, Suite A #229',
+  ReturnAddressCityStateZip: 'Fresno, CA 93720'
+};
+
+
   toggleTextDropdown() {
     this.showTextDropdown = !this.showTextDropdown;
   }
@@ -244,7 +262,7 @@ public exportToOLConnectHtml(): void {
 
 
 
-public async exportAsOLTemplate(): Promise<void> {
+public async exportAsOLTemplate(record: { [key: string]: string }): Promise<void> {
   try {
     const canvas = this.canvas.getCanvas();
     const width = canvas.getWidth();
@@ -252,7 +270,6 @@ public async exportAsOLTemplate(): Promise<void> {
     const bgColor = canvas.backgroundColor || '#ffffff';
 
     const zip = new JSZip();
-
     const publicFolder = zip.folder('public')!;
     const documentFolder = publicFolder.folder('document')!;
     const imagesFolder = documentFolder.folder('images')!;
@@ -274,12 +291,12 @@ public async exportAsOLTemplate(): Promise<void> {
       overflow:hidden;
     ">\n`;
 
-    const imageResources: Array<{id: string, filename: string}> = [];
+    const imageResources: Array<{ id: string; filename: string }> = [];
 
     for (const obj of canvas.getObjects()) {
       if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
         const text = (obj as fabric.Textbox).text || '';
-        const processedText = this.convertPlainTextToVariables(text);
+const processedText = this.convertPlainTextToVariables(text);
         htmlContent += `  <div style="
             position:absolute;
             left:${obj.left}px;
@@ -287,15 +304,14 @@ public async exportAsOLTemplate(): Promise<void> {
             width:${obj.width}px;
             font-family:'${(obj as any).fontFamily || 'Arial'}';
             font-size:${(obj as any).fontSize || 12}px;
-            font-weight:${(obj as any).fontWeight || 'normal'};
-            font-style:${(obj as any).fontStyle || 'normal'};
-            color:${(obj as any).fill || '#000000'};
-            text-align:${(obj as any).textAlign || 'left'};
+            font-weight:${(obj as any).fontWeight || 'normal'}';
+            font-style:${(obj as any).fontStyle || 'normal'}';
+            color:${(obj as any).fill || '#000000'}';
+            text-align:${(obj as any).textAlign || 'left'}';
           ">
             ${processedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
           </div>\n`;
-      }
-      else if (obj.type === 'image') {
+      } else if (obj.type === 'image') {
         const img = obj as fabric.Image;
         const imgElement = img.getElement() as HTMLImageElement;
         const src = imgElement.src;
@@ -510,10 +526,45 @@ ${this.generateDataModelFields()}
 
 // New helper methods
 private convertPlainTextToVariables(text: string): string {
-  return text.replace(/\[([^\]]+)\]/g, (_match, p1) => {
-    return `<span data-field="${p1}">{{${p1}}}</span>`;
-  });
+  let updatedText = text;
+
+  // Property Address (before PropertyState and PropertyZip)
+  const propertyAddressRegex = /^([0-9]{3,5}\s[\w\s#]+?)\s[A-Z]{2}\s\d{5}(?:-\d{4})?/m;
+  const propertyAddressMatch = updatedText.match(propertyAddressRegex);
+  if (propertyAddressMatch) {
+    updatedText = updatedText.replace(propertyAddressMatch[1], '{{PropertyAddress}}');
+  }
+
+  // Property State (2 Capital Letters)
+  updatedText = updatedText.replace(/\b([A-Z]{2})\b(?=\s\d{5}(?:-\d{4})?)/, '{{PropertyState}}');
+
+  // Property Zip (5 digit or 5+4)
+  updatedText = updatedText.replace(/\b\d{5}(?:-\d{4})?\b/, '{{PropertyZip}}');
+
+  // Full Name (FirstName LastName)
+  const fullNameRegex = /^([A-Z][a-z]+)\s([A-Z][a-z]+)$/m;
+  const fullNameMatch = updatedText.match(fullNameRegex);
+  if (fullNameMatch) {
+    updatedText = updatedText.replace(fullNameMatch[0], '{{full_name}}');
+    updatedText = updatedText.replace('{{full_name}}', '{{FirstName}} {{LastName}}');
+  }
+
+  // Mailing Address (before MailingState and MailingZip)
+  const mailingAddressRegex = /^([0-9]{3,5}\s[\w\s#]+?)\s[A-Z]{2}\s\d{5}(?:-\d{4})?/m;
+  const mailingAddressMatch = updatedText.match(mailingAddressRegex);
+  if (mailingAddressMatch) {
+    updatedText = updatedText.replace(mailingAddressMatch[1], '{{MailingAddress}}');
+  }
+
+  // Mailing State (2 Capital Letters after mailing address)
+  updatedText = updatedText.replace(/\b([A-Z]{2})\b(?=\s\d{5}(?:-\d{4})?)/, '{{MailingState}}');
+
+  // Mailing Zip
+  updatedText = updatedText.replace(/\b\d{5}(?:-\d{4})?\b/, '{{Mailingzip}}');
+
+  return updatedText;
 }
+
 
 
 
