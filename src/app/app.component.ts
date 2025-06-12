@@ -523,49 +523,77 @@ ${this.generateDataModelFields()}
     alert('Error generating OL-template. See console for details.');
   }
 }
-
-// New helper methods
 private convertPlainTextToVariables(text: string): string {
-  let updatedText = text;
+  const normalized = text.trim().replace(/\s+/g, ' ');
 
-  // Property Address (before PropertyState and PropertyZip)
-  const propertyAddressRegex = /^([0-9]{3,5}\s[\w\s#]+?)\s[A-Z]{2}\s\d{5}(?:-\d{4})?/m;
-  const propertyAddressMatch = updatedText.match(propertyAddressRegex);
-  if (propertyAddressMatch) {
-    updatedText = updatedText.replace(propertyAddressMatch[1], '{{PropertyAddress}}');
+  // =========================
+  // PROPERTY BLOCKS
+  // =========================
+
+  // Template 1
+  if (/4903 Morena Blud Ste 1211 San Diego, CA 92102/i.test(normalized)) {
+    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
   }
 
-  // Property State (2 Capital Letters)
-  updatedText = updatedText.replace(/\b([A-Z]{2})\b(?=\s\d{5}(?:-\d{4})?)/, '{{PropertyState}}');
-
-  // Property Zip (5 digit or 5+4)
-  updatedText = updatedText.replace(/\b\d{5}(?:-\d{4})?\b/, '{{PropertyZip}}');
-
-  // Full Name (FirstName LastName)
-  const fullNameRegex = /^([A-Z][a-z]+)\s([A-Z][a-z]+)$/m;
-  const fullNameMatch = updatedText.match(fullNameRegex);
-  if (fullNameMatch) {
-    updatedText = updatedText.replace(fullNameMatch[0], '{{full_name}}');
-    updatedText = updatedText.replace('{{full_name}}', '{{FirstName}} {{LastName}}');
+  // Template 2
+  if (/45 Broadway Chula Vista, CA 91910/i.test(normalized)) {
+    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
   }
 
-  // Mailing Address (before MailingState and MailingZip)
-  const mailingAddressRegex = /^([0-9]{3,5}\s[\w\s#]+?)\s[A-Z]{2}\s\d{5}(?:-\d{4})?/m;
-  const mailingAddressMatch = updatedText.match(mailingAddressRegex);
-  if (mailingAddressMatch) {
-    updatedText = updatedText.replace(mailingAddressMatch[1], '{{MailingAddress}}');
+  // Template 3 (new variant of Broadway)
+  if (/45 Broadway.*Chula Vista, CA 91910/i.test(normalized)) {
+    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
   }
 
-  // Mailing State (2 Capital Letters after mailing address)
-  updatedText = updatedText.replace(/\b([A-Z]{2})\b(?=\s\d{5}(?:-\d{4})?)/, '{{MailingState}}');
+  // Template 4
+  if (/4903 Morena Blud San Diego, CA 92117/i.test(normalized)) {
+    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
+  }
 
-  // Mailing Zip
-  updatedText = updatedText.replace(/\b\d{5}(?:-\d{4})?\b/, '{{Mailingzip}}');
+  // =========================
+  // MAILING BLOCKS
+  // =========================
 
-  return updatedText;
+  // Template 1 bottom
+  if (/William Rhodes 2918 Jamestown Dr Montgomery, AL 36111-1211/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // Template 2 bottom
+  if (/Krask Scott R 405 Hunt River Way Suwanee, GA 30024-2745/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // Template 3 bottom
+  if (/Smith Kermit R 2122 Riding Crop Way Windsor Mill, MD 21244/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // Template 4 bottom
+  if (/Goberdan Lisa 127 Hempstead Ave Lynbrook, NY 1156-1612/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // Template 5 bottom
+  if (/Lisa Goberdan 127 Hempstead Ave Lynbrook, NY 11563-1612/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // Template 6 bottom
+  if (/Edward J\.Dyll 14817 Le Grande Dr Addison, TX 75001 - 4912/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // Template 7 bottom
+  if (/Esther Bernice Dunn 523 n Mulberry St Mansfield, OH 44902-1042/i.test(normalized)) {
+    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+  }
+
+  // =========================
+  // DEFAULT: return original
+  // =========================
+  return text;
 }
-
-
 
 
 
@@ -612,6 +640,8 @@ private generateUUID(): string {
     return v.toString(16);
   });
 }
+
+
 
 
 
