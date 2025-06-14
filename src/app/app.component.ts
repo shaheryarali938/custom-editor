@@ -274,6 +274,15 @@ public async exportAsOLTemplate(record: { [key: string]: string }): Promise<void
     const documentFolder = publicFolder.folder('document')!;
     const imagesFolder = documentFolder.folder('images')!;
     const cssFolder = documentFolder.folder('css')!;
+    const fontsFolder = documentFolder.folder('fonts')!;
+
+    fontsFolder.file('Lindy-Bold.woff', await this.loadAssetAsBase64('assets/fonts/Lindy-Bold.woff'), { base64: true });
+fontsFolder.file('PremiumUltra26.woff', await this.loadAssetAsBase64('assets/fonts/PremiumUltra26.woff'), { base64: true });
+fontsFolder.file('Ctorres.woff', await this.loadAssetAsBase64('assets/fonts/Ctorres.woff'), { base64: true });
+fontsFolder.file('ArialRoundedMTBold.woff', await this.loadAssetAsBase64('assets/fonts/ArialRoundedMTBold.woff'), { base64: true });
+
+
+    
 
     let htmlContent = `<!DOCTYPE html>
 <html section="Section 1" dpi="96" scale="1.0" style="transform-origin: 0px 0px 0px; transform: scale(1); width: 100% !important; height: 100% !important;">
@@ -297,17 +306,23 @@ public async exportAsOLTemplate(record: { [key: string]: string }): Promise<void
       if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
         const text = (obj as fabric.Textbox).text || '';
 const processedText = this.convertPlainTextToVariables(text);
+const rawColor = (obj as any).fill || '#000000';
+const fillColor = typeof rawColor === 'string' && /^#[0-9A-Fa-f]{6}$/.test(rawColor)
+  ? rawColor
+  : '#000000'; // fallback if color isn't valid hex
+
         htmlContent += `  <div style="
             position:absolute;
             left:${obj.left}px;
             top:${obj.top}px;
             width:${obj.width}px;
             font-family:'${(obj as any).fontFamily || 'Arial'}';
-            font-size:${(obj as any).fontSize || 12}px;
-            font-weight:${(obj as any).fontWeight || 'normal'}';
-            font-style:${(obj as any).fontStyle || 'normal'}';
-            color:${(obj as any).fill || '#000000'}';
-            text-align:${(obj as any).textAlign || 'left'}';
+        font-size:${(obj as any).fontSize || 12}px;
+font-weight:${(obj as any).fontWeight || 'normal'};
+font-style:${(obj as any).fontStyle || 'normal'};
+color:${fillColor};
+text-align:${(obj as any).textAlign || 'left'};
+
           ">
             ${processedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
           </div>\n`;
@@ -350,7 +365,28 @@ const processedText = this.convertPlainTextToVariables(text);
     const sectionFilename = `section-${sectionId}.html`;
     documentFolder.file(sectionFilename, htmlContent);
 
-    cssFolder.file('default.css', `/* Default CSS */ body { margin: 0; padding: 0; }`);
+cssFolder.file('default.css', `
+@font-face {
+  font-family: 'Lindy-Bold';
+  src: url('../fonts/Lindy-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'PremiumUltra';
+  src: url('../fonts/PremiumUltra26.woff') format('woff');
+}
+@font-face {
+  font-family: 'Ctorres';
+  src: url('../fonts/Ctorres.woff') format('woff');
+}
+@font-face {
+  font-family: 'ArialRoundedMTBold';
+  src: url('../fonts/ArialRoundedMTBold.woff') format('woff');
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+`);
     cssFolder.file('context_all_styles.css', `/* Context all styles */`);
     cssFolder.file('context_web_styles.css', `/* Context web styles */`);
 
@@ -597,6 +633,8 @@ private convertPlainTextToVariables(text: string): string {
 
 
 
+
+
 private extractVariableFieldsFromCanvas(canvas: fabric.Canvas): Set<string> {
   const fields = new Set<string>();
   for (const obj of canvas.getObjects()) {
@@ -643,6 +681,12 @@ private generateUUID(): string {
 
 
 
+private async loadAssetAsBase64(path: string): Promise<string> {
+  const response = await fetch(path);
+  const blob = await response.blob();
+const buffer = await (blob as any).arrayBuffer();
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
 
 
   private isBarcode(obj: fabric.Object): boolean {
