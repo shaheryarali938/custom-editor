@@ -262,303 +262,247 @@ public exportToOLConnectHtml(): void {
 
 
 
-public async exportAsOLTemplate(record: { [key: string]: string }): Promise<void> {
-  try {
-    const canvas = this.canvas.getCanvas();
-    const width = canvas.getWidth();
-    const height = canvas.getHeight();
-    const bgColor = canvas.backgroundColor || '#ffffff';
+/* ════════════════════════════════════════════════════════════════
+   1) buildPageHtml  – creates one <div class="page">…</div> block
+   ════════════════════════════════════════════════════════════════ */
+private async buildPageHtml(
+  json: any,
+  W: number,
+  H: number,
+  imagesFolder: JSZip,
+  images: Array<{ id: string; filename: string }>
+): Promise<string> {
 
-    const zip = new JSZip();
-    const publicFolder = zip.folder('public')!;
-    const documentFolder = publicFolder.folder('document')!;
-    const imagesFolder = documentFolder.folder('images')!;
-    const cssFolder = documentFolder.folder('css')!;
-    const fontsFolder = documentFolder.folder('fonts')!;
+  // StaticCanvas typings omit width/height → cast as any then set them
+  const temp = new fabric.StaticCanvas(null, {} as any);
+  temp.setWidth(W);
+  temp.setHeight(H);
 
-    fontsFolder.file('Lindy-Bold.woff', await this.loadAssetAsBase64('assets/fonts/Lindy-Bold.woff'), { base64: true });
-fontsFolder.file('PremiumUltra26.woff', await this.loadAssetAsBase64('assets/fonts/PremiumUltra26.woff'), { base64: true });
-fontsFolder.file('Ctorres.woff', await this.loadAssetAsBase64('assets/fonts/Ctorres.woff'), { base64: true });
-fontsFolder.file('ArialRoundedMTBold.woff', await this.loadAssetAsBase64('assets/fonts/ArialRoundedMTBold.woff'), { base64: true });
+  return new Promise<string>(resolve => {
+    temp.loadFromJSON(json, () => {
+      const bg = (temp.backgroundColor as string) || '#ffffff';
+      let html = `<div class="page" style="position:relative;width:${W}px;height:${H}px;
+background-color:${bg};overflow:hidden;">`;
 
+      for (const o of temp.getObjects()) {
 
-    
-
-    let htmlContent = `<!DOCTYPE html>
-<html section="Section 1" dpi="96" scale="1.0" style="transform-origin: 0px 0px 0px; transform: scale(1); width: 100% !important; height: 100% !important;">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link type="text/css" rel="stylesheet" href="css/default.css">
-<link type="text/css" rel="stylesheet" href="css/context_all_styles.css">
-<link type="text/css" rel="stylesheet" href="css/context_web_styles.css">
-</head>
-<body spellcheck="false" contenteditable="false">
-  <div class="page" style="
-      position:relative;
-      width:${width}px;
-      height:${height}px;
-      background-color:${bgColor};
-      overflow:hidden;
-    ">\n`;
-
-    const imageResources: Array<{ id: string; filename: string }> = [];
-
-    for (const obj of canvas.getObjects()) {
-      if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
-        const text = (obj as fabric.Textbox).text || '';
-const processedText = this.convertPlainTextToVariables(text);
-const rawColor = (obj as any).fill || '#000000';
-const fillColor = typeof rawColor === 'string' && /^#[0-9A-Fa-f]{6}$/.test(rawColor)
-  ? rawColor
-  : '#000000'; // fallback if color isn't valid hex
-
-        htmlContent += `  <div style="
-            position:absolute;
-            left:${obj.left}px;
-            top:${obj.top}px;
-            width:${obj.width}px;
-            font-family:'${(obj as any).fontFamily || 'Arial'}';
-        font-size:${(obj as any).fontSize || 12}px;
-font-weight:${(obj as any).fontWeight || 'normal'};
-font-style:${(obj as any).fontStyle || 'normal'};
-color:${fillColor};
-text-align:${(obj as any).textAlign || 'left'};
-
-          ">
-            ${processedText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
-          </div>\n`;
-      } else if (obj.type === 'image') {
-        const img = obj as fabric.Image;
-        const imgElement = img.getElement() as HTMLImageElement;
-        const src = imgElement.src;
-
-        const imageId = `res-${this.generateUUID()}`;
-        const ext = src.split(';')[0].split('/')[1] || 'png';
-        const filename = `image_${imageResources.length}.${ext}`;
-
-        imageResources.push({
-          id: imageId,
-          filename: filename
-        });
-
-        if (src.startsWith('data:')) {
-          const base64Data = src.split(',')[1];
-          imagesFolder.file(filename, base64Data, { base64: true });
-        } else {
-          console.warn('External images need special handling');
+        /* TEXT **************************************************************/
+        if (o.type === 'textbox' || o.type === 'text' || o.type === 'i-text') {
+          const t = o as fabric.Textbox;
+          const fill = typeof (t as any).fill === 'string' ? (t as any).fill : '#000';
+          html += `\n<div style="position:absolute;left:${o.left}px;top:${o.top}px;width:${o.width}px;
+font-family:'${(t as any).fontFamily || 'Arial'}';font-size:${(t as any).fontSize || 12}px;
+font-weight:${(t as any).fontWeight || 'normal'};font-style:${(t as any).fontStyle || 'normal'};
+color:${fill};text-align:${(t as any).textAlign || 'left'};">${
+              this.convertPlainTextToVariables(t.text || '')
+                .replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            }</div>`;
         }
 
-        htmlContent += `  <img src="images/${filename}" style="
-            position:absolute;
-            left:${img.left}px;
-            top:${img.top}px;
-            width:${img.width * (img.scaleX || 1)}px;
-            height:${img.height * (img.scaleY || 1)}px;
-          "/>\n`;
+        /* IMAGE *************************************************************/
+        if (o.type === 'image') {
+          const img = o as fabric.Image;
+          const src = (img.getElement() as HTMLImageElement).src;
+          const ext = (src.split(';')[0].split('/')[1] || 'png').toLowerCase();
+          const filename = `img-${images.length}.${ext}`;
+          const id       = `res-${this.generateUUID()}`;
+
+          // inline/base64 images → write to zip
+          if (src.startsWith('data:')) {
+            imagesFolder.file(filename, src.split(',')[1], { base64: true });
+          }
+          images.push({ id, filename });
+
+          html += `\n<img src="images/${filename}" style="position:absolute;left:${img.left}px;top:${img.top}px;
+width:${img.width * (img.scaleX || 1)}px;height:${img.height * (img.scaleY || 1)}px;"/>`;
+        }
       }
-    }
 
-    htmlContent += `  </div>
-</body>
-</html>`;
-
-    const sectionId = `res-${this.generateUUID()}`;
-    const sectionFilename = `section-${sectionId}.html`;
-    documentFolder.file(sectionFilename, htmlContent);
-
-cssFolder.file('default.css', `
-@font-face {
-  font-family: 'Lindy-Bold';
-  src: url('../fonts/Lindy-Bold.woff') format('woff');
+      html += '</div>'; // close .page
+      resolve(html);
+    });
+  });
 }
-@font-face {
-  font-family: 'PremiumUltra';
-  src: url('../fonts/PremiumUltra26.woff') format('woff');
-}
-@font-face {
-  font-family: 'Ctorres';
-  src: url('../fonts/Ctorres.woff') format('woff');
-}
-@font-face {
-  font-family: 'ArialRoundedMTBold';
-  src: url('../fonts/ArialRoundedMTBold.woff') format('woff');
-}
-body {
-  margin: 0;
-  padding: 0;
-}
-`);
-    cssFolder.file('context_all_styles.css', `/* Context all styles */`);
-    cssFolder.file('context_web_styles.css', `/* Context web styles */`);
 
-    const contextId = `res-${this.generateUUID()}`;
-    const stylesheetIds = {
-      default: `res-${this.generateUUID()}`,
-      all_styles: `res-${this.generateUUID()}`,
-      web_styles: `res-${this.generateUUID()}`
-    };
-    const colorSpaceIds = {
-      CMYK: `res-${this.generateUUID()}`,
-      RGB: `res-${this.generateUUID()}`
-    };
-    const colorIds = {
-      Black: `res-${this.generateUUID()}`,
-      Cyan: `res-${this.generateUUID()}`,
-      Magenta: `res-${this.generateUUID()}`,
-      Yellow: `res-${this.generateUUID()}`,
-      WebRed: `res-${this.generateUUID()}`,
-      WebGreen: `res-${this.generateUUID()}`,
-      WebBlue: `res-${this.generateUUID()}`,
-      White: `res-${this.generateUUID()}`
-    };
 
-    const imagesXml = imageResources.map(img =>
-      `        <image id="${img.id}">
-            <location>public/document/images/${img.filename}</location>
-        </image>`
-    ).join('\n');
+/* ════════════════════════════════════════════════════════════════
+   2) exportAsOLTemplate – writes ONE HTML file with both pages
+   ════════════════════════════════════════════════════════════════ */
+public async exportAsOLTemplate(record: { [k: string]: string }): Promise<void> {
+  const zip         = new JSZip();
+  const docFolder   = zip.folder('public')!.folder('document')!;
+  const cssFolder   = docFolder.folder('css')!;
+  const imgFolder   = docFolder.folder('images')!;
+  const fontsFolder = docFolder.folder('fonts')!;
 
-    const indexXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<package schemaVersion="1.0.0.59" htmlVersion="1.0.0.3" xmlns="http://www.objectiflune.com/connectschemas/Template" xsi:schemaLocation="http://www.objectiflune.com/connectschemas/Template http://www.objectiflune.com/connectschemas/Template/1_0_0_59.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <metadata/>
-    <manifest>
-        <colorProfiles/>
-        <colorSpaces>
-            <colorSpace id="${colorSpaceIds.CMYK}">
-                <colorSpaceType>2</colorSpaceType>
-                <name>CMYK</name>
-            </colorSpace>
-            <colorSpace id="${colorSpaceIds.RGB}">
-                <colorSpaceType>1</colorSpaceType>
-                <name>RGB</name>
-            </colorSpace>
-        </colorSpaces>
-        <colorTints/>
-        <colors>
-            <color id="${colorIds.Black}">
-                <name>Black</name>
-                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>0.0</values><values>0.0</values><values>0.0</values><values>1.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.Cyan}">
-                <name>Cyan</name>
-                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>1.0</values><values>0.0</values><values>0.0</values><values>0.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.Magenta}">
-                <name>Magenta</name>
-                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>0.0</values><values>1.0</values><values>0.0</values><values>0.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.Yellow}">
-                <name>Yellow</name>
-                <colorSpace>${colorSpaceIds.CMYK}</colorSpace>
-                <values>0.0</values><values>0.0</values><values>1.0</values><values>0.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.WebRed}">
-                <name>WebRed</name>
-                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>1.0</values><values>0.0</values><values>0.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.WebGreen}">
-                <name>WebGreen</name>
-                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>0.0</values><values>1.0</values><values>0.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.WebBlue}">
-                <name>WebBlue</name>
-                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>0.0</values><values>0.0</values><values>1.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-            <color id="${colorIds.White}">
-                <name>White</name>
-                <colorSpace>${colorSpaceIds.RGB}</colorSpace>
-                <values>1.0</values><values>1.0</values><values>1.0</values>
-                <spot>false</spot><autoName>false</autoName><overprint>false</overprint>
-            </color>
-        </colors>
-        <contexts>
-            <context id="${contextId}">
-                <type>WEB</type>
-                <section>${sectionId}</section>
-                <includedResources>${stylesheetIds.default}</includedResources>
-                <includedResources>${stylesheetIds.all_styles}</includedResources>
-                <includedResources>${stylesheetIds.web_styles}</includedResources>
-                <defSection>${sectionId}</defSection>
-            </context>
-        </contexts>
-        <fontDefinitions/>
-        <fonts/>
-        <images>
-${imagesXml}
-        </images>
-        <javascripts/>
-        <masters/>
-        <media/>
-        <scssResources/>
-        <sections>
-            <section id="${sectionId}">
-                <location>public/document/${sectionFilename}</location>
-                <context>${contextId}</context>
-                <name>Section 1</name>
-                <size><name>Custom</name><width>100%</width><height>100%</height></size>
-                <portrait>true</portrait>
-                <left-margin>0cm</left-margin><top-margin>0cm</top-margin>
-                <right-margin>0cm</right-margin><bottom-margin>0cm</bottom-margin>
-                <left-bleed>3mm</left-bleed><top-bleed>3mm</top-bleed>
-                <right-bleed>3mm</right-bleed><bottom-bleed>3mm</bottom-bleed>
-                <zoomLevel>100%</zoomLevel>
-            </section>
-        </sections>
-        <snippets/>
-        <stylesheets>
-            <stylesheet id="${stylesheetIds.default}">
-                <location>public/document/css/default.css</location>
-                <readOnly>false</readOnly>
-            </stylesheet>
-            <stylesheet id="${stylesheetIds.all_styles}">
-                <location>public/document/css/context_all_styles.css</location>
-                <readOnly>false</readOnly>
-            </stylesheet>
-            <stylesheet target-context="WEB" id="${stylesheetIds.web_styles}">
-                <location>public/document/css/context_web_styles.css</location>
-                <readOnly>false</readOnly>
-            </stylesheet>
-        </stylesheets>
-        <translationResources/>
-    </manifest>
-    <datamodelconfigadapter>
-        <dataTypes/>
-        <datamodel version="1">
+  /* canvas size is identical for both sides */
+  const W = this.canvas.getCanvas().getWidth();
+  const H = this.canvas.getCanvas().getHeight();
+
+  /* JSON snapshots for each side (blank back/front if never edited) */
+  const jsonFront = this.frontCanvasData ?? this.canvas.getCanvas().toJSON();
+  const jsonBack  = this.backCanvasData  ?? { version:'fabric', objects:[], background:'#ffffff' };
+
+  /* build page HTML fragments and gather image resources */
+  const images: Array<{ id:string; filename:string }> = [];
+  const pageHtmlFront = await this.buildPageHtml(jsonFront, W, H, imgFolder, images);
+  const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, images);
+
+  /* single combined HTML file */
+  const sectionFile = 'section-combined.html';
+  const fullHtml =
+`<!DOCTYPE html><html section="Section 1" dpi="96" scale="1.0">
+<head>
+<link rel="stylesheet" href="css/default.css"/>
+<link rel="stylesheet" href="css/context_all_styles.css"/>
+<link rel="stylesheet" href="css/context_web_styles.css"/>
+</head><body spellcheck="false" contenteditable="false">
+${pageHtmlFront}
+${pageHtmlBack}
+</body></html>`;
+  docFolder.file(sectionFile, fullHtml);
+
+  /* resources (fonts + CSS) */
+  await this.embedFontsInto(fontsFolder);
+  this.embedCssInto(cssFolder);
+
+  /* build manifest (ONE section) */
+  const sectionId = `res-${this.generateUUID()}`;
+  zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, images));
+
+  /* zip → blob → download */
+  const blob = await zip.generateAsync({ type: 'blob' });
+  saveAs(blob, 'template.OL-template');
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   3) embedFontsInto – unchanged from earlier two-page version
+   ════════════════════════════════════════════════════════════════ */
+private async embedFontsInto(folder: JSZip) {
+  folder.file('Lindy-Bold.woff',         await this.loadAssetAsBase64('assets/fonts/Lindy-Bold.woff'),         { base64:true });
+  folder.file('PremiumUltra26.woff',     await this.loadAssetAsBase64('assets/fonts/PremiumUltra26.woff'),     { base64:true });
+  folder.file('Ctorres.woff',            await this.loadAssetAsBase64('assets/fonts/Ctorres.woff'),            { base64:true });
+  folder.file('ArialRoundedMTBold.woff', await this.loadAssetAsBase64('assets/fonts/ArialRoundedMTBold.woff'), { base64:true });
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   4) embedCssInto – unchanged helper for three tiny CSS files
+   ════════════════════════════════════════════════════════════════ */
+private embedCssInto(folder: JSZip) {
+  folder.file('default.css', `
+@font-face{font-family:'Lindy-Bold';src:url('../fonts/Lindy-Bold.woff') format('woff');}
+@font-face{font-family:'PremiumUltra';src:url('../fonts/PremiumUltra26.woff') format('woff');}
+@font-face{font-family:'Ctorres';src:url('../fonts/Ctorres.woff') format('woff');}
+@font-face{font-family:'ArialRoundedMTBold';src:url('../fonts/ArialRoundedMTBold.woff') format('woff');}
+body{margin:0;padding:0;}`.trim());
+
+  folder.file('context_all_styles.css', '/* Context all styles */');
+  folder.file('context_web_styles.css', '/* Context web styles */');
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   5) buildIndexXml – single-section manifest
+   ════════════════════════════════════════════════════════════════ */
+private buildIndexXml(
+  sectionId: string,
+  sectionFile: string,
+  imgs: Array<{ id: string; filename: string }>
+): string {
+
+  const uid = () => `res-${this.generateUUID()}`;
+  const style = { def:uid(), all:uid(), web:uid() };
+  const space = { CMYK:uid(), RGB:uid() };
+  const col   = { Black:uid(), Cyan:uid(), Magenta:uid(), Yellow:uid(),
+                  WebRed:uid(), WebGreen:uid(), WebBlue:uid(), White:uid() };
+
+  const imgXml = imgs.map(i => `
+        <image id="${i.id}">
+          <location>public/document/images/${i.filename}</location>
+        </image>`).join('');
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<package schemaVersion="1.0.0.61" htmlVersion="1.0.0.3"
+         xmlns="http://www.objectiflune.com/connectschemas/Template"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <metadata/>
+  <manifest>
+    <colorProfiles/>
+    <colorSpaces>
+      <colorSpace id="${space.CMYK}"><colorSpaceType>2</colorSpaceType><name>CMYK</name></colorSpace>
+      <colorSpace id="${space.RGB}"><colorSpaceType>1</colorSpaceType><name>RGB</name></colorSpace>
+    </colorSpaces>
+    <colorTints/>
+    <colors>
+      <color id="${col.Black}"><name>Black</name><colorSpace>${space.CMYK}</colorSpace>
+        <values>0</values><values>0</values><values>0</values><values>1</values></color>
+      <color id="${col.Cyan}"><name>Cyan</name><colorSpace>${space.CMYK}</colorSpace>
+        <values>1</values><values>0</values><values>0</values><values>0</values></color>
+      <color id="${col.Magenta}"><name>Magenta</name><colorSpace>${space.CMYK}</colorSpace>
+        <values>0</values><values>1</values><values>0</values><values>0</values></color>
+      <color id="${col.Yellow}"><name>Yellow</name><colorSpace>${space.CMYK}</colorSpace>
+        <values>0</values><values>0</values><values>1</values><values>0</values></color>
+      <color id="${col.WebRed}"><name>WebRed</name><colorSpace>${space.RGB}</colorSpace>
+        <values>1</values><values>0</values><values>0</values></color>
+      <color id="${col.WebGreen}"><name>WebGreen</name><colorSpace>${space.RGB}</colorSpace>
+        <values>0</values><values>1</values><values>0</values></color>
+      <color id="${col.WebBlue}"><name>WebBlue</name><colorSpace>${space.RGB}</colorSpace>
+        <values>0</values><values>0</values><values>1</values></color>
+      <color id="${col.White}"><name>White</name><colorSpace>${space.RGB}</colorSpace>
+        <values>1</values><values>1</values><values>1</values></color>
+    </colors>
+    <contexts>
+      <context id="${sectionId}-ctx">
+        <type>WEB</type>
+        <section>${sectionId}</section>
+        <includedResources>${style.def}</includedResources>
+        <includedResources>${style.all}</includedResources>
+        <includedResources>${style.web}</includedResources>
+        <defSection>${sectionId}</defSection>
+      </context>
+    </contexts>
+    <fontDefinitions/><fonts/>
+    <images>${imgXml}
+    </images>
+    <javascripts/><masters/><media/><scssResources/>
+    <sections>
+      <section id="${sectionId}">
+        <location>public/document/${sectionFile}</location>
+        <context>${sectionId}-ctx</context>
+        <name>Section 1</name>
+        <size><name>Custom</name><width>100%</width><height>100%</height></size>
+        <portrait>true</portrait>
+        <left-margin>0cm</left-margin><top-margin>0cm</top-margin>
+        <right-margin>0cm</right-margin><bottom-margin>0cm</bottom-margin>
+        <left-bleed>3mm</left-bleed><top-bleed>3mm</top-bleed>
+        <right-bleed>3mm</right-bleed><bottom-bleed>3mm</bottom-bleed>
+        <zoomLevel>100%</zoomLevel>
+      </section>
+    </sections>
+    <stylesheets>
+      <stylesheet id="${style.def}"><location>public/document/css/default.css</location><readOnly>false</readOnly></stylesheet>
+      <stylesheet id="${style.all}"><location>public/document/css/context_all_styles.css</location><readOnly>false</readOnly></stylesheet>
+      <stylesheet id="${style.web}" target-context="WEB"><location>public/document/css/context_web_styles.css</location><readOnly>false</readOnly></stylesheet>
+    </stylesheets>
+    <translationResources/>
+  </manifest>
+  <datamodelconfigadapter>
+    <dataTypes/>
+    <datamodel version="1">
 ${this.generateDataModelFields()}
-        </datamodel>
-    </datamodelconfigadapter>
-    <locale><source>SYSTEM</source></locale>
-    <colorSettings>
-        <colorManagement>false</colorManagement>
-        <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
-    </colorSettings>
-    <scripts/>
-    <translationFileEntries/>
-    <defaultParameters/>
+    </datamodel>
+  </datamodelconfigadapter>
+  <locale><source>SYSTEM</source></locale>
+  <colorSettings>
+    <colorManagement>false</colorManagement>
+    <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
+  </colorSettings>
+  <scripts/><translationFileEntries/><defaultParameters/>
 </package>`;
-
-    zip.file('index.xml', indexXml);
-
-    const content = await zip.generateAsync({ type: 'blob' });
-    saveAs(content, 'template.OL-template');
-    console.log('OL-template generated successfully');
-  } catch (error) {
-    console.error('Error generating OL-template:', error);
-    alert('Error generating OL-template. See console for details.');
-  }
 }
+
 private convertPlainTextToVariables(text: string): string {
   const normalized = text.trim().replace(/\s+/g, ' ');
 
@@ -568,22 +512,22 @@ private convertPlainTextToVariables(text: string): string {
 
   // Template 1
   if (/4903 Morena Blud Ste 1211 San Diego, CA 92102/i.test(normalized)) {
-    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
   }
 
   // Template 2
   if (/45 Broadway Chula Vista, CA 91910/i.test(normalized)) {
-    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
   }
 
   // Template 3 (new variant of Broadway)
   if (/45 Broadway.*Chula Vista, CA 91910/i.test(normalized)) {
-    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
   }
 
   // Template 4
   if (/4903 Morena Blud San Diego, CA 92117/i.test(normalized)) {
-    return '{{PropertyAddress}}, {{PropertyState}} {{PropertyZip}}';
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
   }
 
   // =========================
@@ -592,37 +536,37 @@ private convertPlainTextToVariables(text: string): string {
 
   // Template 1 bottom
   if (/William Rhodes 2918 Jamestown Dr Montgomery, AL 36111-1211/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // Template 2 bottom
   if (/Krask Scott R 405 Hunt River Way Suwanee, GA 30024-2745/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // Template 3 bottom
   if (/Smith Kermit R 2122 Riding Crop Way Windsor Mill, MD 21244/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // Template 4 bottom
   if (/Goberdan Lisa 127 Hempstead Ave Lynbrook, NY 1156-1612/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // Template 5 bottom
   if (/Lisa Goberdan 127 Hempstead Ave Lynbrook, NY 11563-1612/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // Template 6 bottom
   if (/Edward J\.Dyll 14817 Le Grande Dr Addison, TX 75001 - 4912/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // Template 7 bottom
   if (/Esther Bernice Dunn 523 n Mulberry St Mansfield, OH 44902-1042/i.test(normalized)) {
-    return '{{FirstName}} {{LastName}} {{MailingAddress}}, {{MailingState}} {{Mailingzip}}';
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
 
   // =========================
@@ -821,7 +765,7 @@ addButtonText = 'Add Extra Field 1';
 
 addNextExtraField() {
   const variableName = `extra_field${this.extraFieldCounter}`;
-  const displayText = `{{${variableName}}}`;
+  const displayText = `{{${variableName}}`;
 
   const newText = new fabric.Textbox(displayText, {
     left: 100,
