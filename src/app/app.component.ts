@@ -8,6 +8,12 @@ declare var FontFace: any;
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
+/** -----------------------------------------------------------------
+ *  Which PlanetPress Connect schema do we want to emit?
+ *  1.0.0.59  → opens in EVERY Connect release since 2018
+ *  1.0.0.61  → required only for the very latest 2023-08+ builds
+ *  ----------------------------------------------------------------- */
+const CONNECT_SCHEMA_VERSION: '1.0.0.59' | '1.0.0.61' = '1.0.0.59';
 
 
 @Component({
@@ -424,7 +430,7 @@ private buildIndexXml(
         </image>`).join('');
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<package schemaVersion="1.0.0.61" htmlVersion="1.0.0.3"
+<package schemaVersion="1.0.0.59" htmlVersion="1.0.0.3"
          xmlns="http://www.objectiflune.com/connectschemas/Template"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <metadata/>
