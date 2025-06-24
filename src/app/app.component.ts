@@ -266,6 +266,18 @@ public exportToOLConnectHtml(): void {
   URL.revokeObjectURL(url);
 }
 
+private buildMasterSheetsXml(mediaId: string, masterId: string, n = 4): string {
+  const one = `
+    <masterSheet>
+      <medium>${mediaId}</medium>
+      <frontMaster>${masterId}</frontMaster>
+      <frontAllowContent>true</frontAllowContent>
+      <backAllowContent>false</backAllowContent>
+      <omitEmptyMasterBack>false</omitEmptyMasterBack>
+    </masterSheet>`;
+  return Array(n).fill(one).join('');
+}
+
 
 
 /* ════════════════════════════════════════════════════════════════
@@ -335,51 +347,60 @@ width:${img.width * (img.scaleX || 1)}px;height:${img.height * (img.scaleY || 1)
    2) exportAsOLTemplate – writes ONE HTML file with both pages
    ════════════════════════════════════════════════════════════════ */
 public async exportAsOLTemplate(record: { [k: string]: string }): Promise<void> {
+
+  /* 1 ─ folders & canvas sizes ─────────────────────────────────────────── */
   const zip         = new JSZip();
   const docFolder   = zip.folder('public')!.folder('document')!;
   const cssFolder   = docFolder.folder('css')!;
   const imgFolder   = docFolder.folder('images')!;
   const fontsFolder = docFolder.folder('fonts')!;
 
-  /* canvas size is identical for both sides */
   const W = this.canvas.getCanvas().getWidth();
   const H = this.canvas.getCanvas().getHeight();
 
-  /* JSON snapshots for each side (blank back/front if never edited) */
+  /* 2 ─ JSON snapshots for each side ───────────────────────────────────── */
   const jsonFront = this.frontCanvasData ?? this.canvas.getCanvas().toJSON();
   const jsonBack  = this.backCanvasData  ?? { version:'fabric', objects:[], background:'#ffffff' };
 
-  /* build page HTML fragments and gather image resources */
+  /* 3 ─ build HTML pages & gather images ───────────────────────────────── */
   const images: Array<{ id:string; filename:string }> = [];
   const pageHtmlFront = await this.buildPageHtml(jsonFront, W, H, imgFolder, images);
   const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, images);
 
-  /* single combined HTML file */
   const sectionFile = 'section-combined.html';
-  const fullHtml =
-`<!DOCTYPE html><html section="Section 1" dpi="96" scale="1.0">
-<head>
-<link rel="stylesheet" href="css/default.css"/>
-<link rel="stylesheet" href="css/context_all_styles.css"/>
-<link rel="stylesheet" href="css/context_web_styles.css"/>
-</head><body spellcheck="false" contenteditable="false">
-${pageHtmlFront}
-${pageHtmlBack}
-</body></html>`;
-  docFolder.file(sectionFile, fullHtml);
+  docFolder.file(sectionFile, `<!DOCTYPE html><html section="Section 1" dpi="96" scale="1.0">
+  <head>
+    <link rel="stylesheet" href="css/default.css"/>
+    <link rel="stylesheet" href="css/context_all_styles.css"/>
+    <link rel="stylesheet" href="css/context_print_styles.css"/>
+  </head><body spellcheck="false" contenteditable="false">
+  ${pageHtmlFront}${pageHtmlBack}
+  </body></html>`);
 
-  /* resources (fonts + CSS) */
+  /* 4 ─ add master-page HTML *here* ────────────────────────────────────── */
+  const masterPageId = `res-${this.generateUUID()}`;                 // ← generate once …
+  const masterPageFile = `master-${masterPageId}.html`;              //   … reuse everywhere
+
+  docFolder.file(
+    masterPageFile,
+    '<!DOCTYPE html><html masterpage="Master page 1"><head><meta charset="UTF-8"></head><body></body></html>'
+  );
+
+  /* 5 ─ resources (fonts & CSS) ────────────────────────────────────────── */
   await this.embedFontsInto(fontsFolder);
-  this.embedCssInto(cssFolder);
+  this.embedCssInto(cssFolder);            // make sure embedCssInto() creates context_print_styles.css
 
-  /* build manifest (ONE section) */
+  /* 6 ─ build manifest, now pass masterPageId ──────────────────────────── */
   const sectionId = `res-${this.generateUUID()}`;
-  zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, images));
+  const indexXml  = this.buildIndexXml(sectionId, sectionFile, masterPageId, images);  // ← new arg
 
-  /* zip → blob → download */
+zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, masterPageId, images));
+
+  /* 7 ─ zip → blob → download ─────────────────────────────────────────── */
   const blob = await zip.generateAsync({ type: 'blob' });
   saveAs(blob, 'template.OL-template');
 }
+
 
 
 /* ════════════════════════════════════════════════════════════════
@@ -406,93 +427,194 @@ body{margin:0;padding:0;}`.trim());
 
   folder.file('context_all_styles.css', '/* Context all styles */');
   folder.file('context_web_styles.css', '/* Context web styles */');
+  folder.file('context_print_styles.css', '/* Context print styles */');
 }
 
 
-/* ════════════════════════════════════════════════════════════════
-   5) buildIndexXml – single-section manifest
-   ════════════════════════════════════════════════════════════════ */
 private buildIndexXml(
   sectionId: string,
   sectionFile: string,
+  masterPageId: string, // ✅ Accept as param
   imgs: Array<{ id: string; filename: string }>
-): string {
-
+): string  {
   const uid = () => `res-${this.generateUUID()}`;
-  const style = { def:uid(), all:uid(), web:uid() };
-  const space = { CMYK:uid(), RGB:uid() };
-  const col   = { Black:uid(), Cyan:uid(), Magenta:uid(), Yellow:uid(),
-                  WebRed:uid(), WebGreen:uid(), WebBlue:uid(), White:uid() };
+  const printContextId = uid();
+  const mediaId = uid();
+  const stylesheetDefault = uid();
+  const stylesheetAll = uid();
+  const stylesheetPrint = uid();
 
-  const imgXml = imgs.map(i => `
-        <image id="${i.id}">
-          <location>public/document/images/${i.filename}</location>
-        </image>`).join('');
+  const colorSpaceCMYK = uid();
+  const colorSpaceRGB = uid();
+
+  const color = {
+    Black: uid(),
+    Cyan: uid(),
+    Magenta: uid(),
+    Yellow: uid(),
+    WebRed: uid(),
+    WebGreen: uid(),
+    WebBlue: uid(),
+    White: uid(),
+  };
+
+const imgXml = imgs.map(i => `
+  <image id="${i.id}">
+    <location>public/document/images/${i.filename}</location>
+  </image>`).join('');
+
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<package schemaVersion="1.0.0.59" htmlVersion="1.0.0.3"
-         xmlns="http://www.objectiflune.com/connectschemas/Template"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<package schemaVersion="${CONNECT_SCHEMA_VERSION}" htmlVersion="1.0.0.3"
+  xmlns="http://www.objectiflune.com/connectschemas/Template"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.objectiflune.com/connectschemas/Template http://www.objectiflune.com/connectschemas/Template/1_0_0_59.xsd">
   <metadata/>
   <manifest>
     <colorProfiles/>
     <colorSpaces>
-      <colorSpace id="${space.CMYK}"><colorSpaceType>2</colorSpaceType><name>CMYK</name></colorSpace>
-      <colorSpace id="${space.RGB}"><colorSpaceType>1</colorSpaceType><name>RGB</name></colorSpace>
+      <colorSpace id="${colorSpaceCMYK}">
+        <colorSpaceType>2</colorSpaceType><name>CMYK</name>
+      </colorSpace>
+      <colorSpace id="${colorSpaceRGB}">
+        <colorSpaceType>1</colorSpaceType><name>RGB</name>
+      </colorSpace>
     </colorSpaces>
-    <colorTints/>
     <colors>
-      <color id="${col.Black}"><name>Black</name><colorSpace>${space.CMYK}</colorSpace>
-        <values>0</values><values>0</values><values>0</values><values>1</values></color>
-      <color id="${col.Cyan}"><name>Cyan</name><colorSpace>${space.CMYK}</colorSpace>
-        <values>1</values><values>0</values><values>0</values><values>0</values></color>
-      <color id="${col.Magenta}"><name>Magenta</name><colorSpace>${space.CMYK}</colorSpace>
-        <values>0</values><values>1</values><values>0</values><values>0</values></color>
-      <color id="${col.Yellow}"><name>Yellow</name><colorSpace>${space.CMYK}</colorSpace>
-        <values>0</values><values>0</values><values>1</values><values>0</values></color>
-      <color id="${col.WebRed}"><name>WebRed</name><colorSpace>${space.RGB}</colorSpace>
-        <values>1</values><values>0</values><values>0</values></color>
-      <color id="${col.WebGreen}"><name>WebGreen</name><colorSpace>${space.RGB}</colorSpace>
-        <values>0</values><values>1</values><values>0</values></color>
-      <color id="${col.WebBlue}"><name>WebBlue</name><colorSpace>${space.RGB}</colorSpace>
-        <values>0</values><values>0</values><values>1</values></color>
-      <color id="${col.White}"><name>White</name><colorSpace>${space.RGB}</colorSpace>
-        <values>1</values><values>1</values><values>1</values></color>
+      <color id="${color.Black}"><name>Black</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>0</values><values>0</values><values>0</values><values>1</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.Cyan}"><name>Cyan</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>1</values><values>0</values><values>0</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.Magenta}"><name>Magenta</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>0</values><values>1</values><values>0</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.Yellow}"><name>Yellow</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>0</values><values>0</values><values>1</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.WebRed}"><name>WebRed</name><colorSpace>${colorSpaceRGB}</colorSpace><values>1</values><values>0</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.WebGreen}"><name>WebGreen</name><colorSpace>${colorSpaceRGB}</colorSpace><values>0</values><values>1</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.WebBlue}"><name>WebBlue</name><colorSpace>${colorSpaceRGB}</colorSpace><values>0</values><values>0</values><values>1</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      <color id="${color.White}"><name>White</name><colorSpace>${colorSpaceRGB}</colorSpace><values>1</values><values>1</values><values>1</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
     </colors>
     <contexts>
-      <context id="${sectionId}-ctx">
-        <type>WEB</type>
+      <context id="${printContextId}">
+        <type>PRINT</type>
         <section>${sectionId}</section>
-        <includedResources>${style.def}</includedResources>
-        <includedResources>${style.all}</includedResources>
-        <includedResources>${style.web}</includedResources>
-        <defSection>${sectionId}</defSection>
+        <finishing>
+          <binding>
+            <style>NONE</style>
+            <edge>DEFAULT</edge>
+            <type>DEFAULT</type>
+            <angle>DEFAULT</angle>
+            <item-count>0</item-count>
+            <area>0cm</area>
+          </binding>
+        </finishing>
+        <colorOutput>
+          <keepRgbBlack>false</keepRgbBlack>
+        </colorOutput>
       </context>
     </contexts>
-    <fontDefinitions/><fonts/>
-    <images>${imgXml}
-    </images>
-    <javascripts/><masters/><media/><scssResources/>
+    <fontDefinitions/>
+    <fonts/>
+    <images>${imgXml}</images>
+    <javascripts/>
+    <masters>
+      <master id="${masterPageId}">
+        <location>public/document/master-${masterPageId}.html</location>
+        <name>Master page 1</name>
+        <medium>${mediaId}</medium>
+        <duplex>false</duplex>
+        <portrait>false</portrait>
+        <top-margin>0.25in</top-margin>
+        <bottom-margin>0.25in</bottom-margin>
+        <left-margin>0.25in</left-margin>
+        <right-margin>0.25in</right-margin>
+        <guides/>
+      </master>
+    </masters>
+    <media>
+      <medium id="${mediaId}">
+        <name>Media 1</name>
+        <preprinted>false</preprinted>
+        <size>
+          <name>Custom</name>
+          <width>19in</width>
+          <height>13in</height>
+        </size>
+        <media-type>Unspecified</media-type>
+        <media-front-coating>UNSPECIFIED</media-front-coating>
+        <media-back-coating>UNSPECIFIED</media-back-coating>
+        <media-texture>UNSPECIFIED</media-texture>
+        <media-grade>UNSPECIFIED</media-grade>
+        <use-front-side-background-image>false</use-front-side-background-image>
+        <use-back-side-background-image>false</use-back-side-background-image>
+      </medium>
+    </media>
     <sections>
       <section id="${sectionId}">
         <location>public/document/${sectionFile}</location>
-        <context>${sectionId}-ctx</context>
+        <context>${printContextId}</context>
         <name>Section 1</name>
-        <size><name>Custom</name><width>100%</width><height>100%</height></size>
-        <portrait>true</portrait>
-        <left-margin>0cm</left-margin><top-margin>0cm</top-margin>
-        <right-margin>0cm</right-margin><bottom-margin>0cm</bottom-margin>
-        <left-bleed>3mm</left-bleed><top-bleed>3mm</top-bleed>
-        <right-bleed>3mm</right-bleed><bottom-bleed>3mm</bottom-bleed>
+        <size>
+          <name>Custom</name>
+          <width>19in</width>
+          <height>13in</height>
+        </size>
+        <portrait>false</portrait>
+        <left-margin>0.25in</left-margin>
+        <top-margin>0.25in</top-margin>
+        <right-margin>0.25in</right-margin>
+        <bottom-margin>0.25in</bottom-margin>
+        <left-bleed>0in</left-bleed>
+        <top-bleed>0in</top-bleed>
+        <right-bleed>0in</right-bleed>
+        <bottom-bleed>0in</bottom-bleed>
         <zoomLevel>100%</zoomLevel>
+        <styleSheetOrder>${stylesheetDefault}</styleSheetOrder>
+        <styleSheetOrder>${stylesheetAll}</styleSheetOrder>
+        <styleSheetOrder>${stylesheetPrint}</styleSheetOrder>
+        <includedStyleSheets>${stylesheetDefault}</includedStyleSheets>
+        <includedStyleSheets>${stylesheetAll}</includedStyleSheets>
+        <includedStyleSheets>${stylesheetPrint}</includedStyleSheets>
+        <finishing>
+          <binding>
+            <style>NONE</style>
+            <edge>DEFAULT</edge>
+            <type>DEFAULT</type>
+            <angle>DEFAULT</angle>
+            <item-count>0</item-count>
+            <area>0cm</area>
+          </binding>
+        </finishing>
+        <sectionBackground>
+          <image/>
+          <resource>NONE</resource>
+          <position>CENTERED</position>
+          <top/>
+          <left/>
+          <allPages>false</allPages>
+          <from>1</from>
+          <to>999</to>
+          <rotation>0</rotation>
+          <scaleX>100.0</scaleX>
+          <scaleY>100.0</scaleY>
+        </sectionBackground>
+        <duplex>false</duplex>
+ <masterSheets>
+ ${this.buildMasterSheetsXml(mediaId, masterPageId)}
+ </masterSheets>
+
       </section>
     </sections>
     <stylesheets>
-      <stylesheet id="${style.def}"><location>public/document/css/default.css</location><readOnly>false</readOnly></stylesheet>
-      <stylesheet id="${style.all}"><location>public/document/css/context_all_styles.css</location><readOnly>false</readOnly></stylesheet>
-      <stylesheet id="${style.web}" target-context="WEB"><location>public/document/css/context_web_styles.css</location><readOnly>false</readOnly></stylesheet>
+      <stylesheet id="${stylesheetDefault}">
+        <location>public/document/css/default.css</location>
+        <readOnly>false</readOnly>
+      </stylesheet>
+      <stylesheet id="${stylesheetAll}">
+        <location>public/document/css/context_all_styles.css</location>
+        <readOnly>false</readOnly>
+      </stylesheet>
+      <stylesheet id="${stylesheetPrint}" target-context="PRINT">
+        <location>public/document/css/context_print_styles.css</location>
+        <readOnly>false</readOnly>
+      </stylesheet>
     </stylesheets>
-    <translationResources/>
   </manifest>
   <datamodelconfigadapter>
     <dataTypes/>
@@ -505,7 +627,9 @@ ${this.generateDataModelFields()}
     <colorManagement>false</colorManagement>
     <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
   </colorSettings>
-  <scripts/><translationFileEntries/><defaultParameters/>
+  <scripts/>
+  <translationFileEntries/>
+  <defaultParameters/>
 </package>`;
 }
 

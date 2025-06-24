@@ -166,3 +166,20 @@
   width: 100%;
   border-radius: 8px;
 }
+.overlay {
+  position: fixed;
+  inset: 0;                     /* top:0 right:0 bottom:0 left:0 */
+  background: rgba(0,0,0,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 👇 NEW  */
+  overflow-y: auto;            /* allow the page to scroll if needed */
+  padding: 2rem 0;             /* a little breathing-space top & bottom */
+}
+.content-box {
+  background: #fff;
+  max-height: calc(100vh - 4rem);   /* never taller than viewport */
+  overflow-y: auto;                 /* scroll inside if it’s still too tall */
+}
