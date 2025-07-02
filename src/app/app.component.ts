@@ -318,22 +318,55 @@ color:${fill};text-align:${(t as any).textAlign || 'left'};">${
         }
 
         /* IMAGE *************************************************************/
-        if (o.type === 'image') {
-          const img = o as fabric.Image;
-          const src = (img.getElement() as HTMLImageElement).src;
-          const ext = (src.split(';')[0].split('/')[1] || 'png').toLowerCase();
-          const filename = `img-${images.length}.${ext}`;
-          const id       = `res-${this.generateUUID()}`;
+       /* IMAGE *************************************************************/
+if (o.type === 'image') {
 
-          // inline/base64 images → write to zip
-          if (src.startsWith('data:')) {
-            imagesFolder.file(filename, src.split(',')[1], { base64: true });
-          }
-          images.push({ id, filename });
+/* 1️⃣  If this image is the barcode → output @imbarcode@ instead  */
+if (this.isBarcode(o)) {
 
-          html += `\n<img src="images/${filename}" style="position:absolute;left:${img.left}px;top:${img.top}px;
-width:${img.width * (img.scaleX || 1)}px;height:${img.height * (img.scaleY || 1)}px;"/>`;
-        }
+  /* ▸ box dimensions that the old <img> occupied */
+  const H = o.getScaledHeight();          // barcode height in px
+  const W = o.getScaledWidth();           // barcode width  in px
+
+  /* ▸ font-size: ~70 % of box height gives the IMB glyphs the right rise */
+  const fs = Math.round(H * 0.70);
+
+  /* ▸ IMB is 65 bars → derive letter-spacing so text exactly spans W */
+  const lsEm = (W / 65 / fs).toFixed(4);  // expressed in _em_
+
+  html += `\n<div style="
+      position:absolute; left:${o.left}px; top:${o.top}px;
+      width:${W}px; height:${H}px;
+      font-family:'USPS4CB';
+      font-size:${fs}px;
+      line-height:${H}px;           /* vertical centring */
+      letter-spacing:${lsEm}em;     /* bar-to-bar distance */
+      white-space:nowrap; overflow:hidden;
+    ">@imbarcode@</div>`;
+  continue;                              // ⛔️ skip normal image export
+}
+
+
+  /* 2️⃣  All other images keep working exactly as before */
+  const img = o as fabric.Image;
+  const src = (img.getElement() as HTMLImageElement).src;
+  const ext = (src.split(';')[0].split('/')[1] || 'png').toLowerCase();
+  const filename = `img-${images.length}.${ext}`;
+  const id       = `res-${this.generateUUID()}`;
+
+  // inline/base64 images → write to zip
+  if (src.startsWith('data:')) {
+    imagesFolder.file(filename, src.split(',')[1], { base64: true });
+  }
+  images.push({ id, filename });
+
+  html += `\n<img src="images/${filename}" style="
+      position:absolute;
+      left:${img.left}px; top:${img.top}px;
+      width:${img.width * (img.scaleX || 1)}px;
+      height:${img.height * (img.scaleY || 1)}px;" />`;
+}
+
       }
 
       html += '</div>'; // close .page
