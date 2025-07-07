@@ -288,8 +288,9 @@ private async buildPageHtml(
   W: number,
   H: number,
   imagesFolder: JSZip,
-  images: Array<{ id: string; filename: string }>
-): Promise<string> {
+  images: Array<{ id: string; filename: string }>,
+  pageNumber: number  // ← add this
+): Promise<string>{
 
   // StaticCanvas typings omit width/height → cast as any then set them
   const temp = new fabric.StaticCanvas(null, {} as any);
@@ -299,8 +300,28 @@ private async buildPageHtml(
   return new Promise<string>(resolve => {
     temp.loadFromJSON(json, () => {
       const bg = (temp.backgroundColor as string) || '#ffffff';
-      let html = `<div class="page" style="position:relative;width:${W}px;height:${H}px;
-background-color:${bg};overflow:hidden;">`;
+      
+let topMargin = 20;
+let bottomMargin = 20;
+
+if (pageNumber === 1) {
+  topMargin = 0;         // Customize for page 1
+  bottomMargin = 30;     // Customize for page 1
+} else if (pageNumber === 2) {
+  topMargin = 40;        // Customize for page 2
+  bottomMargin = 10;     // Customize for page 2
+}
+
+let html = `<div class="page" pagenumber="${pageNumber}" style="
+  position:relative;
+  width:${W}px;
+  height:${H}px;
+  background-color:${bg};
+  overflow:hidden;
+  margin-top:${topMargin}px;
+  margin-bottom:${bottomMargin}px;
+">`;
+
 
       for (const o of temp.getObjects()) {
 
@@ -397,8 +418,9 @@ public async exportAsOLTemplate(record: { [k: string]: string }): Promise<void> 
 
   /* 3 ─ build HTML pages & gather images ───────────────────────────────── */
   const images: Array<{ id:string; filename:string }> = [];
-  const pageHtmlFront = await this.buildPageHtml(jsonFront, W, H, imgFolder, images);
-  const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, images);
+const pageHtmlFront = await this.buildPageHtml(jsonFront, W, H, imgFolder, images, 1);
+const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, images, 2);
+
 
   const sectionFile = 'section-combined.html';
   docFolder.file(sectionFile, `<!DOCTYPE html><html section="Section 1" dpi="96" scale="1.0">
@@ -406,7 +428,14 @@ public async exportAsOLTemplate(record: { [k: string]: string }): Promise<void> 
     <link rel="stylesheet" href="css/default.css"/>
     <link rel="stylesheet" href="css/context_all_styles.css"/>
     <link rel="stylesheet" href="css/context_print_styles.css"/>
-  </head><body spellcheck="false" contenteditable="false">
+    <style>
+      .page-spacer {
+        height: 30px; /* adjust as needed */
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body spellcheck="false" contenteditable="false">
   ${pageHtmlFront}${pageHtmlBack}
   </body></html>`);
 
@@ -566,8 +595,8 @@ const imgXml = imgs.map(i => `
         <preprinted>false</preprinted>
         <size>
           <name>Custom</name>
-          <width>19in</width>
-          <height>13in</height>
+          <width>5in</width>
+          <height>11in</height>
         </size>
         <media-type>Unspecified</media-type>
         <media-front-coating>UNSPECIFIED</media-front-coating>
@@ -585,8 +614,8 @@ const imgXml = imgs.map(i => `
         <name>Section 1</name>
         <size>
           <name>Custom</name>
-          <width>19in</width>
-          <height>13in</height>
+          <width>5in</width>
+          <height>11in</height>
         </size>
         <portrait>false</portrait>
         <left-margin>0.25in</left-margin>
