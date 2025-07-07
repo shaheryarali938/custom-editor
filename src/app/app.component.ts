@@ -329,13 +329,28 @@ let html = `<div class="page" pagenumber="${pageNumber}" style="
         if (o.type === 'textbox' || o.type === 'text' || o.type === 'i-text') {
           const t = o as fabric.Textbox;
           const fill = typeof (t as any).fill === 'string' ? (t as any).fill : '#000';
-          html += `\n<div style="position:absolute;left:${o.left}px;top:${o.top}px;width:${o.width}px;
-font-family:'${(t as any).fontFamily || 'Arial'}';font-size:${(t as any).fontSize || 12}px;
-font-weight:${(t as any).fontWeight || 'normal'};font-style:${(t as any).fontStyle || 'normal'};
-color:${fill};text-align:${(t as any).textAlign || 'left'};">${
-              this.convertPlainTextToVariables(t.text || '')
-                .replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            }</div>`;
+          const escapedText = this.convertPlainTextToVariables(t.text || '')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/\n/g, '<br>');
+
+
+html += `<div style="
+  position:absolute;
+  left:${o.left}px;
+  top:${o.top}px;
+  width:${o.width}px;
+  font-family:'${(t as any).fontFamily || 'Arial'}';
+  font-size:${(t as any).fontSize || 12}px;
+  font-weight:${(t as any).fontWeight || 'normal'};
+  font-style:${(t as any).fontStyle || 'normal'};
+  color:${fill};
+  text-align:${(t as any).textAlign || 'left'};
+  line-height:${(t as any).lineHeight || 1.16};
+  transform: rotate(${o.angle || 0}deg);
+  transform-origin: top left;
+">${escapedText}</div>`;
+
         }
 
         /* IMAGE *************************************************************/
@@ -381,11 +396,19 @@ if (this.isBarcode(o)) {
   }
   images.push({ id, filename });
 
-  html += `\n<img src="images/${filename}" style="
-      position:absolute;
-      left:${img.left}px; top:${img.top}px;
-      width:${img.width * (img.scaleX || 1)}px;
-      height:${img.height * (img.scaleY || 1)}px;" />`;
+html += `
+  <img src="images/${filename}" style="
+    position:absolute;
+    left:${img.left}px;
+    top:${img.top}px;
+    width:${img.width}px;
+    height:${img.height}px;
+    transform:
+      scale(${img.scaleX || 1}, ${img.scaleY || 1})
+      rotate(${img.angle || 0}deg);
+    transform-origin: top left;
+  "/>`;
+
 }
 
       }
@@ -454,9 +477,9 @@ const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, image
 
   /* 6 ─ build manifest, now pass masterPageId ──────────────────────────── */
   const sectionId = `res-${this.generateUUID()}`;
-  const indexXml  = this.buildIndexXml(sectionId, sectionFile, masterPageId, images);  // ← new arg
+const indexXml = this.buildIndexXml(sectionId, sectionFile, masterPageId, images, W, H);
 
-zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, masterPageId, images));
+zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, masterPageId, images, W, H));
 
   /* 7 ─ zip → blob → download ─────────────────────────────────────────── */
   const blob = await zip.generateAsync({ type: 'blob' });
@@ -496,9 +519,11 @@ body{margin:0;padding:0;}`.trim());
 private buildIndexXml(
   sectionId: string,
   sectionFile: string,
-  masterPageId: string, // ✅ Accept as param
-  imgs: Array<{ id: string; filename: string }>
-): string  {
+  masterPageId: string,
+  imgs: Array<{ id: string; filename: string }>,
+  W: number,
+  H: number
+): string {
   const uid = () => `res-${this.generateUUID()}`;
   const printContextId = uid();
   const mediaId = uid();
@@ -508,6 +533,15 @@ private buildIndexXml(
 
   const colorSpaceCMYK = uid();
   const colorSpaceRGB = uid();
+
+  let pageWidthInches = '5in';
+let pageHeightInches = '11in';
+
+if (W === 1056 && H === 528) { // 8.5 x 5.5 template canvas
+  pageWidthInches = '6in';
+  pageHeightInches = '13in';
+}
+
 
   const color = {
     Black: uid(),
@@ -593,11 +627,12 @@ const imgXml = imgs.map(i => `
       <medium id="${mediaId}">
         <name>Media 1</name>
         <preprinted>false</preprinted>
-        <size>
-          <name>Custom</name>
-          <width>5in</width>
-          <height>11in</height>
-        </size>
+<size>
+  <name>Custom</name>
+  <width>${pageWidthInches}</width>
+  <height>${pageHeightInches}</height>
+</size>
+
         <media-type>Unspecified</media-type>
         <media-front-coating>UNSPECIFIED</media-front-coating>
         <media-back-coating>UNSPECIFIED</media-back-coating>
@@ -612,11 +647,12 @@ const imgXml = imgs.map(i => `
         <location>public/document/${sectionFile}</location>
         <context>${printContextId}</context>
         <name>Section 1</name>
-        <size>
-          <name>Custom</name>
-          <width>5in</width>
-          <height>11in</height>
-        </size>
+<size>
+  <name>Custom</name>
+  <width>${pageWidthInches}</width>
+  <height>${pageHeightInches}</height>
+</size>
+
         <portrait>false</portrait>
         <left-margin>0.25in</left-margin>
         <top-margin>0.25in</top-margin>
