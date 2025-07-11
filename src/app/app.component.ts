@@ -204,6 +204,120 @@ sampleRecord = {
   }
 
 
+
+  generateIndexXml(fields: string[]): string {
+  const xmlHeader = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`;
+
+  const scriptsXml = this.buildScriptsXml(fields);
+
+  const xmlBody = `
+<package schemaVersion="1.0.0.59"
+         htmlVersion="1.0.0.3"
+         xmlns="http://www.objectiflune.com/connectschemas/Template"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.objectiflune.com/connectschemas/Template http://www.objectiflune.com/connectschemas/Template/1_0_0_59.xsd">
+  
+  <metadata/>
+  <manifest>
+    <!-- Include manifest details if needed -->
+  </manifest>
+
+  ${scriptsXml}
+
+</package>
+  `.trim();
+
+  return `${xmlHeader}\n${xmlBody}`;
+}
+
+
+buildScriptsXml(fields: string[]): string {
+  return `
+<scripts>
+  ${fields.map(field => this.buildScriptEntry(field)).join('\n\n')}
+</scripts>
+  `.trim();
+}
+
+buildScriptEntry(field: string): string {
+  return `
+<script type="STANDARD">
+  <com.objectiflune.scripting.text.TextScriptModel schemaVersion="1.0.0.2">
+    <entry>
+      <field xsi:type="dataFieldReference">
+        <type>STRING</type>
+        <path>${field}</path>
+      </field>
+      <fieldFormatString>
+        <type>NONE</type>
+      </fieldFormatString>
+      <format type="NONE"/>
+      <prefix></prefix>
+      <suffix></suffix>
+    </entry>
+    <attribute></attribute>
+    <convertToJSON>false</convertToJSON>
+    <insertMethod>HTML</insertMethod>
+  </com.objectiflune.scripting.text.TextScriptModel>
+  <enabled>true</enabled>
+  <findText>@${field}@</findText>
+  <name>${field}</name>
+  <origin>
+    <entry><key>Bundle-SymbolicName</key><value>com.objectiflune.scripting.text;singleton:=true</value></entry>
+    <entry><key>Bundle-Version</key><value>2019.1.0.20181108-2246-54341</value></entry>
+    <entry><key>Bundle-Name</key><value>Text Scripts</value></entry>
+    <entry><key>Bundle-Vendor</key><value>OBJECTIFLUNE</value></entry>
+  </origin>
+  <scope>RESULT_SET</scope>
+  <selectorText></selectorText>
+  <selectorType>TEXT</selectorType>
+  <source></source>
+</script>
+  `.trim();
+}
+
+
+
+private buildScriptEntries(fields: string[]): string {
+  return `
+    <scripts>
+      ${fields.map(field => `
+        <script type="STANDARD">
+          <com.objectiflune.scripting.text.TextScriptModel schemaVersion="1.0.0.2">
+            <entry>
+              <field xsi:type="dataFieldReference">
+                <type>STRING</type>
+                <path>${field}</path>
+              </field>
+              <fieldFormatString><type>NONE</type></fieldFormatString>
+              <format type="NONE"/>
+              <prefix></prefix>
+              <suffix></suffix>
+            </entry>
+            <attribute></attribute>
+            <convertToJSON>false</convertToJSON>
+            <insertMethod>HTML</insertMethod>
+          </com.objectiflune.scripting.text.TextScriptModel>
+          <enabled>true</enabled>
+          <findText>@${field}@</findText>
+          <name>${field}</name>
+          <origin>
+            <entry><key>Bundle-SymbolicName</key><value>com.objectiflune.scripting.text;singleton:=true</value></entry>
+            <entry><key>Bundle-Version</key><value>2019.1.0.20181108-2246-54341</value></entry>
+            <entry><key>Bundle-Name</key><value>Text Scripts</value></entry>
+            <entry><key>Bundle-Vendor</key><value>OBJECTIFLUNE</value></entry>
+          </origin>
+          <scope>RESULT_SET</scope>
+          <selectorText></selectorText>
+          <selectorType>TEXT</selectorType>
+          <source></source>
+        </script>
+      `).join('\n')}
+    </scripts>
+  `;
+}
+
+
 public exportToOLConnectHtml(): void {
   const canvas = this.canvas.getCanvas();
   const objects = canvas.getObjects();
@@ -353,7 +467,6 @@ html += `<div style="
 
         }
 
-        /* IMAGE *************************************************************/
        /* IMAGE *************************************************************/
 if (o.type === 'image') {
 
@@ -432,6 +545,18 @@ public async exportAsOLTemplate(record: { [k: string]: string }): Promise<void> 
   const imgFolder   = docFolder.folder('images')!;
   const fontsFolder = docFolder.folder('fonts')!;
 
+  const fields = [
+  'FirstName', 'LastName', 'full_name',
+  'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
+  'MailingAddress', 'address2', 'Mailingcity', 'MailingState', 'Mailingzip',
+  'AgentName', 'AgentNumber'
+];
+
+const scriptsXml = this.buildScriptEntries(fields);
+docFolder.file('scripts.xml', scriptsXml);
+
+
+
   const W = this.canvas.getCanvas().getWidth();
   const H = this.canvas.getCanvas().getHeight();
 
@@ -443,6 +568,8 @@ public async exportAsOLTemplate(record: { [k: string]: string }): Promise<void> 
   const images: Array<{ id:string; filename:string }> = [];
 const pageHtmlFront = await this.buildPageHtml(jsonFront, W, H, imgFolder, images, 1);
 const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, images, 2);
+
+
 
 
   const sectionFile = 'section-combined.html';
@@ -481,6 +608,8 @@ const indexXml = this.buildIndexXml(sectionId, sectionFile, masterPageId, images
 
 zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, masterPageId, images, W, H));
 
+
+
   /* 7 ─ zip → blob → download ─────────────────────────────────────────── */
   const blob = await zip.generateAsync({ type: 'blob' });
   saveAs(blob, 'template.OL-template');
@@ -516,6 +645,8 @@ body{margin:0;padding:0;}`.trim());
 }
 
 
+
+
 private buildIndexXml(
   sectionId: string,
   sectionFile: string,
@@ -535,30 +666,22 @@ private buildIndexXml(
   const colorSpaceRGB = uid();
 
   let pageWidthInches = '5in';
-let pageHeightInches = '11in';
+  let pageHeightInches = '11in';
 
-if (W === 1056 && H === 528) { // 8.5 x 5.5 template canvas
-  pageWidthInches = '6in';
-  pageHeightInches = '13in';
-}
-
+  if (W === 1056 && H === 528) {
+    pageWidthInches = '6in';
+    pageHeightInches = '13in';
+  }
 
   const color = {
-    Black: uid(),
-    Cyan: uid(),
-    Magenta: uid(),
-    Yellow: uid(),
-    WebRed: uid(),
-    WebGreen: uid(),
-    WebBlue: uid(),
-    White: uid(),
+    Black: uid(), Cyan: uid(), Magenta: uid(), Yellow: uid(),
+    WebRed: uid(), WebGreen: uid(), WebBlue: uid(), White: uid()
   };
 
-const imgXml = imgs.map(i => `
-  <image id="${i.id}">
-    <location>public/document/images/${i.filename}</location>
-  </image>`).join('');
-
+  const imgXml = imgs.map(i => `
+    <image id="${i.id}">
+      <location>public/document/images/${i.filename}</location>
+    </image>`).join('');
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <package schemaVersion="${CONNECT_SCHEMA_VERSION}" htmlVersion="1.0.0.3"
@@ -569,40 +692,26 @@ const imgXml = imgs.map(i => `
   <manifest>
     <colorProfiles/>
     <colorSpaces>
-      <colorSpace id="${colorSpaceCMYK}">
-        <colorSpaceType>2</colorSpaceType><name>CMYK</name>
-      </colorSpace>
-      <colorSpace id="${colorSpaceRGB}">
-        <colorSpaceType>1</colorSpaceType><name>RGB</name>
-      </colorSpace>
+      <colorSpace id="${colorSpaceCMYK}"><colorSpaceType>2</colorSpaceType><name>CMYK</name></colorSpace>
+      <colorSpace id="${colorSpaceRGB}"><colorSpaceType>1</colorSpaceType><name>RGB</name></colorSpace>
     </colorSpaces>
     <colors>
-      <color id="${color.Black}"><name>Black</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>0</values><values>0</values><values>0</values><values>1</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.Cyan}"><name>Cyan</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>1</values><values>0</values><values>0</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.Magenta}"><name>Magenta</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>0</values><values>1</values><values>0</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.Yellow}"><name>Yellow</name><colorSpace>${colorSpaceCMYK}</colorSpace><values>0</values><values>0</values><values>1</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.WebRed}"><name>WebRed</name><colorSpace>${colorSpaceRGB}</colorSpace><values>1</values><values>0</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.WebGreen}"><name>WebGreen</name><colorSpace>${colorSpaceRGB}</colorSpace><values>0</values><values>1</values><values>0</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.WebBlue}"><name>WebBlue</name><colorSpace>${colorSpaceRGB}</colorSpace><values>0</values><values>0</values><values>1</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
-      <color id="${color.White}"><name>White</name><colorSpace>${colorSpaceRGB}</colorSpace><values>1</values><values>1</values><values>1</values><spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>
+      ${Object.entries(color).map(([name, id]) => {
+        const values = name === 'White' ? ['1','1','1'] :
+                      name === 'WebRed' ? ['1','0','0'] :
+                      name === 'WebGreen' ? ['0','1','0'] :
+                      name === 'WebBlue' ? ['0','0','1'] :
+                      name === 'Cyan' ? ['1','0','0','0'] :
+                      name === 'Magenta' ? ['0','1','0','0'] :
+                      name === 'Yellow' ? ['0','0','1','0'] : ['0','0','0','1'];
+        const colorSpace = name.startsWith('Web') || name === 'White' ? colorSpaceRGB : colorSpaceCMYK;
+        return `<color id="${id}"><name>${name}</name><colorSpace>${colorSpace}</colorSpace>${values.map(v => `<values>${v}</values>`).join('')}<spot>false</spot><autoName>false</autoName><overprint>false</overprint></color>`;
+      }).join('')}
     </colors>
     <contexts>
       <context id="${printContextId}">
         <type>PRINT</type>
         <section>${sectionId}</section>
-        <finishing>
-          <binding>
-            <style>NONE</style>
-            <edge>DEFAULT</edge>
-            <type>DEFAULT</type>
-            <angle>DEFAULT</angle>
-            <item-count>0</item-count>
-            <area>0cm</area>
-          </binding>
-        </finishing>
-        <colorOutput>
-          <keepRgbBlack>false</keepRgbBlack>
-        </colorOutput>
       </context>
     </contexts>
     <fontDefinitions/>
@@ -627,17 +736,12 @@ const imgXml = imgs.map(i => `
       <medium id="${mediaId}">
         <name>Media 1</name>
         <preprinted>false</preprinted>
-<size>
-  <name>Custom</name>
-  <width>${pageWidthInches}</width>
-  <height>${pageHeightInches}</height>
-</size>
-
+        <size>
+          <name>Custom</name>
+          <width>${pageWidthInches}</width>
+          <height>${pageHeightInches}</height>
+        </size>
         <media-type>Unspecified</media-type>
-        <media-front-coating>UNSPECIFIED</media-front-coating>
-        <media-back-coating>UNSPECIFIED</media-back-coating>
-        <media-texture>UNSPECIFIED</media-texture>
-        <media-grade>UNSPECIFIED</media-grade>
         <use-front-side-background-image>false</use-front-side-background-image>
         <use-back-side-background-image>false</use-back-side-background-image>
       </medium>
@@ -647,12 +751,11 @@ const imgXml = imgs.map(i => `
         <location>public/document/${sectionFile}</location>
         <context>${printContextId}</context>
         <name>Section 1</name>
-<size>
-  <name>Custom</name>
-  <width>${pageWidthInches}</width>
-  <height>${pageHeightInches}</height>
-</size>
-
+        <size>
+          <name>Custom</name>
+          <width>${pageWidthInches}</width>
+          <height>${pageHeightInches}</height>
+        </size>
         <portrait>false</portrait>
         <left-margin>0.25in</left-margin>
         <top-margin>0.25in</top-margin>
@@ -669,55 +772,25 @@ const imgXml = imgs.map(i => `
         <includedStyleSheets>${stylesheetDefault}</includedStyleSheets>
         <includedStyleSheets>${stylesheetAll}</includedStyleSheets>
         <includedStyleSheets>${stylesheetPrint}</includedStyleSheets>
-        <finishing>
-          <binding>
-            <style>NONE</style>
-            <edge>DEFAULT</edge>
-            <type>DEFAULT</type>
-            <angle>DEFAULT</angle>
-            <item-count>0</item-count>
-            <area>0cm</area>
-          </binding>
-        </finishing>
-        <sectionBackground>
-          <image/>
-          <resource>NONE</resource>
-          <position>CENTERED</position>
-          <top/>
-          <left/>
-          <allPages>false</allPages>
-          <from>1</from>
-          <to>999</to>
-          <rotation>0</rotation>
-          <scaleX>100.0</scaleX>
-          <scaleY>100.0</scaleY>
-        </sectionBackground>
+        <finishing><binding><style>NONE</style></binding></finishing>
+        <sectionBackground><resource>NONE</resource><allPages>false</allPages></sectionBackground>
         <duplex>false</duplex>
- <masterSheets>
- ${this.buildMasterSheetsXml(mediaId, masterPageId)}
- </masterSheets>
-
+        <masterSheets>
+          ${this.buildMasterSheetsXml(mediaId, masterPageId)}
+        </masterSheets>
       </section>
     </sections>
     <stylesheets>
-      <stylesheet id="${stylesheetDefault}">
-        <location>public/document/css/default.css</location>
-        <readOnly>false</readOnly>
-      </stylesheet>
-      <stylesheet id="${stylesheetAll}">
-        <location>public/document/css/context_all_styles.css</location>
-        <readOnly>false</readOnly>
-      </stylesheet>
+      <stylesheet id="${stylesheetDefault}"><location>public/document/css/default.css</location></stylesheet>
+      <stylesheet id="${stylesheetAll}"><location>public/document/css/context_all_styles.css</location></stylesheet>
       <stylesheet id="${stylesheetPrint}" target-context="PRINT">
         <location>public/document/css/context_print_styles.css</location>
-        <readOnly>false</readOnly>
       </stylesheet>
     </stylesheets>
   </manifest>
   <datamodelconfigadapter>
-    <dataTypes/>
     <datamodel version="1">
-${this.generateDataModelFields()}
+      ${this.generateDataModelFields()}
     </datamodel>
   </datamodelconfigadapter>
   <locale><source>SYSTEM</source></locale>
@@ -725,11 +798,16 @@ ${this.generateDataModelFields()}
     <colorManagement>false</colorManagement>
     <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
   </colorSettings>
-  <scripts/>
+  ${this.buildScriptEntries([
+    'FirstName', 'LastName', 'full_name',
+    'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
+    'MailingAddress', 'address2', 'Mailingcity', 'MailingState', 'Mailingzip',
+    'AgentName', 'AgentNumber'])}
   <translationFileEntries/>
   <defaultParameters/>
 </package>`;
 }
+
 
 private convertPlainTextToVariables(text: string): string {
   const normalized = text.trim().replace(/\s+/g, ' ');
