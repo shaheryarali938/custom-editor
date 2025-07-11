@@ -42,3 +42,5 @@ Thumbs.db
 .npm
 projects/angular-editor-fabric-js/package-lock.json
 projects/angular-editor-fabric-js/node_modules/*
+
+.early.coverage
