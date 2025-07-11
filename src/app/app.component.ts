@@ -7,12 +7,16 @@ declare var FontFace: any;
 
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 /** -----------------------------------------------------------------
  *  Which PlanetPress Connect schema do we want to emit?
  *  1.0.0.59  → opens in EVERY Connect release since 2018
  *  1.0.0.61  → required only for the very latest 2023-08+ builds
  *  ----------------------------------------------------------------- */
+const CONNECT_SCHEMA_VERSION: '1.0.0.59' | '1.0.0.61' = '1.0.0.59';
+
 const CONNECT_SCHEMA_VERSION: '1.0.0.59' | '1.0.0.61' = '1.0.0.59';
 
 
@@ -23,9 +27,12 @@ const CONNECT_SCHEMA_VERSION: '1.0.0.59' | '1.0.0.61' = '1.0.0.59';
 })
 
 
+
+
 export class AppComponent implements OnInit {
   @ViewChild("canvasEditor", { static: false })
   canvasEditor!: FabricjsEditorComponent;
+  @ViewChild('uploadFileInput') uploadFileInput!: ElementRef;
   @ViewChild('uploadFileInput') uploadFileInput!: ElementRef;
   showTextDropdown = false;
   showImportExportDropdown = false;
@@ -33,6 +40,26 @@ export class AppComponent implements OnInit {
   currentTemplates: { front: any, back: any } = { front: null, back: null };
 extraField1: any;
 extraField2: any;
+  currentTemplates: { front: any, back: any } = { front: null, back: null };
+extraField1: any;
+extraField2: any;
+
+sampleRecord = {
+  FirstName: 'Jessica',
+  LastName: 'Neuwirth',
+  full_name: 'Jessica Neuwirth',
+  PropertyAddress: '177 Main St #c',
+  PropertyCity: 'Millbury',
+  PropertyState: 'MA',
+  PropertyZip: '1527',
+  MailingAddress: '28 Church St',
+  Mailingcity: 'Grafton',
+  Mailingzip: '01519-1518',
+  AgentName: 'Auntie Gina',
+  AgentNumber: '559-206-1566',
+  ReturnAddressStreet: '1099 East Champlain Drive, Suite A #229',
+  ReturnAddressCityStateZip: 'Fresno, CA 93720'
+};
 
 sampleRecord = {
   FirstName: 'Jessica',
@@ -171,10 +198,13 @@ sampleRecord = {
   toggleSide() {
     const canvasJSON = this.canvas.getCanvas().toJSON();
   
+  
     if (this.isFront) {
+      this.selectedSide = 'front';
       this.selectedSide = 'front';
       this.frontCanvasData = canvasJSON;
       this.canvas.getCanvas().clear();
+  
   
       if (this.backCanvasData) {
         this.canvas.getCanvas().loadFromJSON(this.backCanvasData, () => {
@@ -186,8 +216,10 @@ sampleRecord = {
       }
     } else {
       this.selectedSide = 'back';
+      this.selectedSide = 'back';
       this.backCanvasData = canvasJSON;
       this.canvas.getCanvas().clear();
+  
   
       if (this.frontCanvasData) {
         this.canvas.getCanvas().loadFromJSON(this.frontCanvasData, () => {
@@ -198,6 +230,7 @@ sampleRecord = {
         });
       }
     }
+  
   
     this.isFront = !this.isFront;
     this.addDashedSafetyArea();
@@ -326,6 +359,7 @@ public exportToOLConnectHtml(): void {
   const bgColor = canvas.backgroundColor || 'white'; // Default to white if none
 
   let htmlContent = `<div class="page" style="
+  let htmlContent = `<div class="page" style="
     position:relative;
     width:${width}px;
     height:${height}px;
@@ -333,6 +367,10 @@ public exportToOLConnectHtml(): void {
     overflow:hidden;
   ">\n`;
 
+  for (const obj of objects) {
+    if (obj.type === 'textbox' || obj.type === 'text') {
+      const text = (obj as fabric.Textbox).text || '';
+      htmlContent += `
   for (const obj of objects) {
     if (obj.type === 'textbox' || obj.type === 'text') {
       const text = (obj as fabric.Textbox).text || '';
@@ -346,16 +384,23 @@ public exportToOLConnectHtml(): void {
           font-size:${(obj as any).fontSize}px;
           font-weight:${(obj as any).fontWeight || 'normal'};
           font-style:${(obj as any).fontStyle || 'normal'};
+          font-weight:${(obj as any).fontWeight || 'normal'};
+          font-style:${(obj as any).fontStyle || 'normal'};
           color:${(obj as any).fill};
         ">
           ${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
         </div>\n`;
     }
+    }
 
     if (obj.type === 'image') {
       const img = obj as fabric.Image;
       const src = (img.getElement() as HTMLImageElement).src;
+    if (obj.type === 'image') {
+      const img = obj as fabric.Image;
+      const src = (img.getElement() as HTMLImageElement).src;
 
+      htmlContent += `
       htmlContent += `
         <img src="${src}" style="
           position:absolute;
@@ -366,9 +411,22 @@ public exportToOLConnectHtml(): void {
         "/>\n`;
     }
   }
+    }
+  }
 
   htmlContent += `</div>`;
+  htmlContent += `</div>`;
 
+  const blob = new Blob([htmlContent], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `olconnect-template.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
   const blob = new Blob([htmlContent], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -382,6 +440,8 @@ public exportToOLConnectHtml(): void {
 
 private buildMasterSheetsXml(mediaId: string, masterId: string, n = 4): string {
   const one = `
+private buildMasterSheetsXml(mediaId: string, masterId: string, n = 4): string {
+  const one = `
     <masterSheet>
       <medium>${mediaId}</medium>
       <frontMaster>${masterId}</frontMaster>
@@ -393,10 +453,28 @@ private buildMasterSheetsXml(mediaId: string, masterId: string, n = 4): string {
 }
 
 
+  return Array(n).fill(one).join('');
+}
 
+
+
+/* ════════════════════════════════════════════════════════════════
 /* ════════════════════════════════════════════════════════════════
    1) buildPageHtml  – creates one <div class="page">…</div> block
    ════════════════════════════════════════════════════════════════ */
+private async buildPageHtml(
+  json: any,
+  W: number,
+  H: number,
+  imagesFolder: JSZip,
+  images: Array<{ id: string; filename: string }>,
+  pageNumber: number  // ← add this
+): Promise<string>{
+
+  // StaticCanvas typings omit width/height → cast as any then set them
+  const temp = new fabric.StaticCanvas(null, {} as any);
+  temp.setWidth(W);
+  temp.setHeight(H);
 private async buildPageHtml(
   json: any,
   W: number,
@@ -417,6 +495,12 @@ private async buildPageHtml(
       
 let topMargin = 20;
 let bottomMargin = 20;
+  return new Promise<string>(resolve => {
+    temp.loadFromJSON(json, () => {
+      const bg = (temp.backgroundColor as string) || '#ffffff';
+      
+let topMargin = 20;
+let bottomMargin = 20;
 
 if (pageNumber === 1) {
   topMargin = 0;         // Customize for page 1
@@ -425,7 +509,15 @@ if (pageNumber === 1) {
   topMargin = 40;        // Customize for page 2
   bottomMargin = 10;     // Customize for page 2
 }
+if (pageNumber === 1) {
+  topMargin = 0;         // Customize for page 1
+  bottomMargin = 30;     // Customize for page 1
+} else if (pageNumber === 2) {
+  topMargin = 40;        // Customize for page 2
+  bottomMargin = 10;     // Customize for page 2
+}
 
+let html = `<div class="page" pagenumber="${pageNumber}" style="
 let html = `<div class="page" pagenumber="${pageNumber}" style="
   position:relative;
   width:${W}px;
@@ -436,6 +528,18 @@ let html = `<div class="page" pagenumber="${pageNumber}" style="
   margin-bottom:${bottomMargin}px;
 ">`;
 
+
+
+      for (const o of temp.getObjects()) {
+
+        /* TEXT **************************************************************/
+        if (o.type === 'textbox' || o.type === 'text' || o.type === 'i-text') {
+          const t = o as fabric.Textbox;
+          const fill = typeof (t as any).fill === 'string' ? (t as any).fill : '#000';
+          const escapedText = this.convertPlainTextToVariables(t.text || '')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/\n/g, '<br>');
 
       for (const o of temp.getObjects()) {
 
@@ -450,19 +554,27 @@ let html = `<div class="page" pagenumber="${pageNumber}" style="
 
 
 html += `<div style="
+html += `<div style="
   position:absolute;
   left:${o.left}px;
   top:${o.top}px;
   width:${o.width}px;
   font-family:'${(t as any).fontFamily || 'Arial'}';
+  font-family:'${(t as any).fontFamily || 'Arial'}';
   font-size:${(t as any).fontSize || 12}px;
+  font-weight:${(t as any).fontWeight || 'normal'};
+  font-style:${(t as any).fontStyle || 'normal'};
   font-weight:${(t as any).fontWeight || 'normal'};
   font-style:${(t as any).fontStyle || 'normal'};
   color:${fill};
   text-align:${(t as any).textAlign || 'left'};
+  text-align:${(t as any).textAlign || 'left'};
   line-height:${(t as any).lineHeight || 1.16};
   transform: rotate(${o.angle || 0}deg);
   transform-origin: top left;
+">${escapedText}</div>`;
+
+        }
 ">${escapedText}</div>`;
 
         }
@@ -479,10 +591,15 @@ if (this.isBarcode(o)) {
 
   /* ▸ font-size: ~70 % of box height gives the IMB glyphs the right rise */
   const fs = Math.round(H * 0.70);
+  /* ▸ font-size: ~70 % of box height gives the IMB glyphs the right rise */
+  const fs = Math.round(H * 0.70);
 
   /* ▸ IMB is 65 bars → derive letter-spacing so text exactly spans W */
   const lsEm = (W / 65 / fs).toFixed(4);  // expressed in _em_
+  /* ▸ IMB is 65 bars → derive letter-spacing so text exactly spans W */
+  const lsEm = (W / 65 / fs).toFixed(4);  // expressed in _em_
 
+  html += `\n<div style="
   html += `\n<div style="
       position:absolute; left:${o.left}px; top:${o.top}px;
       width:${W}px; height:${H}px;
@@ -495,7 +612,17 @@ if (this.isBarcode(o)) {
   continue;                              // ⛔️ skip normal image export
 }
 
+    ">@imbarcode@</div>`;
+  continue;                              // ⛔️ skip normal image export
+}
 
+
+  /* 2️⃣  All other images keep working exactly as before */
+  const img = o as fabric.Image;
+  const src = (img.getElement() as HTMLImageElement).src;
+  const ext = (src.split(';')[0].split('/')[1] || 'png').toLowerCase();
+  const filename = `img-${images.length}.${ext}`;
+  const id       = `res-${this.generateUUID()}`;
   /* 2️⃣  All other images keep working exactly as before */
   const img = o as fabric.Image;
   const src = (img.getElement() as HTMLImageElement).src;
@@ -508,7 +635,13 @@ if (this.isBarcode(o)) {
     imagesFolder.file(filename, src.split(',')[1], { base64: true });
   }
   images.push({ id, filename });
+  // inline/base64 images → write to zip
+  if (src.startsWith('data:')) {
+    imagesFolder.file(filename, src.split(',')[1], { base64: true });
+  }
+  images.push({ id, filename });
 
+html += `
 html += `
   <img src="images/${filename}" style="
     position:absolute;
@@ -526,6 +659,16 @@ html += `
 
       }
 
+}
+
+      }
+
+      html += '</div>'; // close .page
+      resolve(html);
+    });
+  });
+}
+
       html += '</div>'; // close .page
       resolve(html);
     });
@@ -533,6 +676,7 @@ html += `
 }
 
 
+/* ════════════════════════════════════════════════════════════════
 /* ════════════════════════════════════════════════════════════════
    2) exportAsOLTemplate – writes ONE HTML file with both pages
    ════════════════════════════════════════════════════════════════ */
@@ -559,7 +703,12 @@ docFolder.file('scripts.xml', scriptsXml);
 
   const W = this.canvas.getCanvas().getWidth();
   const H = this.canvas.getCanvas().getHeight();
+  const W = this.canvas.getCanvas().getWidth();
+  const H = this.canvas.getCanvas().getHeight();
 
+  /* 2 ─ JSON snapshots for each side ───────────────────────────────────── */
+  const jsonFront = this.frontCanvasData ?? this.canvas.getCanvas().toJSON();
+  const jsonBack  = this.backCanvasData  ?? { version:'fabric', objects:[], background:'#ffffff' };
   /* 2 ─ JSON snapshots for each side ───────────────────────────────────── */
   const jsonFront = this.frontCanvasData ?? this.canvas.getCanvas().toJSON();
   const jsonBack  = this.backCanvasData  ?? { version:'fabric', objects:[], background:'#ffffff' };
@@ -588,7 +737,11 @@ const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, image
   <body spellcheck="false" contenteditable="false">
   ${pageHtmlFront}${pageHtmlBack}
   </body></html>`);
+  </body></html>`);
 
+  /* 4 ─ add master-page HTML *here* ────────────────────────────────────── */
+  const masterPageId = `res-${this.generateUUID()}`;                 // ← generate once …
+  const masterPageFile = `master-${masterPageId}.html`;              //   … reuse everywhere
   /* 4 ─ add master-page HTML *here* ────────────────────────────────────── */
   const masterPageId = `res-${this.generateUUID()}`;                 // ← generate once …
   const masterPageFile = `master-${masterPageId}.html`;              //   … reuse everywhere
@@ -597,11 +750,21 @@ const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, image
     masterPageFile,
     '<!DOCTYPE html><html masterpage="Master page 1"><head><meta charset="UTF-8"></head><body></body></html>'
   );
+  docFolder.file(
+    masterPageFile,
+    '<!DOCTYPE html><html masterpage="Master page 1"><head><meta charset="UTF-8"></head><body></body></html>'
+  );
 
   /* 5 ─ resources (fonts & CSS) ────────────────────────────────────────── */
   await this.embedFontsInto(fontsFolder);
   this.embedCssInto(cssFolder);            // make sure embedCssInto() creates context_print_styles.css
+  /* 5 ─ resources (fonts & CSS) ────────────────────────────────────────── */
+  await this.embedFontsInto(fontsFolder);
+  this.embedCssInto(cssFolder);            // make sure embedCssInto() creates context_print_styles.css
 
+  /* 6 ─ build manifest, now pass masterPageId ──────────────────────────── */
+  const sectionId = `res-${this.generateUUID()}`;
+const indexXml = this.buildIndexXml(sectionId, sectionFile, masterPageId, images, W, H);
   /* 6 ─ build manifest, now pass masterPageId ──────────────────────────── */
   const sectionId = `res-${this.generateUUID()}`;
 const indexXml = this.buildIndexXml(sectionId, sectionFile, masterPageId, images, W, H);
@@ -616,7 +779,14 @@ zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, masterPageId, i
 }
 
 
+  /* 7 ─ zip → blob → download ─────────────────────────────────────────── */
+  const blob = await zip.generateAsync({ type: 'blob' });
+  saveAs(blob, 'template.OL-template');
+}
 
+
+
+/* ════════════════════════════════════════════════════════════════
 /* ════════════════════════════════════════════════════════════════
    3) embedFontsInto – unchanged from earlier two-page version
    ════════════════════════════════════════════════════════════════ */
@@ -627,16 +797,27 @@ private async embedFontsInto(folder: JSZip) {
   folder.file('ArialRoundedMTBold.woff', await this.loadAssetAsBase64('assets/fonts/ArialRoundedMTBold.woff'), { base64:true });
 }
 
+private async embedFontsInto(folder: JSZip) {
+  folder.file('Lindy-Bold.woff',         await this.loadAssetAsBase64('assets/fonts/Lindy-Bold.woff'),         { base64:true });
+  folder.file('PremiumUltra26.woff',     await this.loadAssetAsBase64('assets/fonts/PremiumUltra26.woff'),     { base64:true });
+  folder.file('Ctorres.woff',            await this.loadAssetAsBase64('assets/fonts/Ctorres.woff'),            { base64:true });
+  folder.file('ArialRoundedMTBold.woff', await this.loadAssetAsBase64('assets/fonts/ArialRoundedMTBold.woff'), { base64:true });
+}
 
+
+/* ════════════════════════════════════════════════════════════════
 /* ════════════════════════════════════════════════════════════════
    4) embedCssInto – unchanged helper for three tiny CSS files
    ════════════════════════════════════════════════════════════════ */
+private embedCssInto(folder: JSZip) {
+  folder.file('default.css', `
 private embedCssInto(folder: JSZip) {
   folder.file('default.css', `
 @font-face{font-family:'Lindy-Bold';src:url('../fonts/Lindy-Bold.woff') format('woff');}
 @font-face{font-family:'PremiumUltra';src:url('../fonts/PremiumUltra26.woff') format('woff');}
 @font-face{font-family:'Ctorres';src:url('../fonts/Ctorres.woff') format('woff');}
 @font-face{font-family:'ArialRoundedMTBold';src:url('../fonts/ArialRoundedMTBold.woff') format('woff');}
+body{margin:0;padding:0;}`.trim());
 body{margin:0;padding:0;}`.trim());
 
   folder.file('context_all_styles.css', '/* Context all styles */');
@@ -661,7 +842,23 @@ private buildIndexXml(
   const stylesheetDefault = uid();
   const stylesheetAll = uid();
   const stylesheetPrint = uid();
+private buildIndexXml(
+  sectionId: string,
+  sectionFile: string,
+  masterPageId: string,
+  imgs: Array<{ id: string; filename: string }>,
+  W: number,
+  H: number
+): string {
+  const uid = () => `res-${this.generateUUID()}`;
+  const printContextId = uid();
+  const mediaId = uid();
+  const stylesheetDefault = uid();
+  const stylesheetAll = uid();
+  const stylesheetPrint = uid();
 
+  const colorSpaceCMYK = uid();
+  const colorSpaceRGB = uid();
   const colorSpaceCMYK = uid();
   const colorSpaceRGB = uid();
 
@@ -683,6 +880,7 @@ private buildIndexXml(
       <location>public/document/images/${i.filename}</location>
     </image>`).join('');
 
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <package schemaVersion="${CONNECT_SCHEMA_VERSION}" htmlVersion="1.0.0.3"
   xmlns="http://www.objectiflune.com/connectschemas/Template"
@@ -807,6 +1005,7 @@ private buildIndexXml(
   <defaultParameters/>
 </package>`;
 }
+}
 
 
 private convertPlainTextToVariables(text: string): string {
@@ -815,7 +1014,14 @@ private convertPlainTextToVariables(text: string): string {
   // =========================
   // PROPERTY BLOCKS
   // =========================
+  // =========================
+  // PROPERTY BLOCKS
+  // =========================
 
+  // Template 1
+  if (/4903 Morena Blud Ste 1211 San Diego, CA 92102/i.test(normalized)) {
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
+  }
   // Template 1
   if (/4903 Morena Blud Ste 1211 San Diego, CA 92102/i.test(normalized)) {
     return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
@@ -825,7 +1031,15 @@ private convertPlainTextToVariables(text: string): string {
   if (/45 Broadway Chula Vista, CA 91910/i.test(normalized)) {
     return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
   }
+  // Template 2
+  if (/45 Broadway Chula Vista, CA 91910/i.test(normalized)) {
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
+  }
 
+  // Template 3 (new variant of Broadway)
+  if (/45 Broadway.*Chula Vista, CA 91910/i.test(normalized)) {
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
+  }
   // Template 3 (new variant of Broadway)
   if (/45 Broadway.*Chula Vista, CA 91910/i.test(normalized)) {
     return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
@@ -835,11 +1049,22 @@ private convertPlainTextToVariables(text: string): string {
   if (/4903 Morena Blud San Diego, CA 92117/i.test(normalized)) {
     return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
   }
+  // Template 4
+  if (/4903 Morena Blud San Diego, CA 92117/i.test(normalized)) {
+    return '@PropertyAddress@, @PropertyState@ @PropertyZip@';
+  }
 
   // =========================
   // MAILING BLOCKS
   // =========================
+  // =========================
+  // MAILING BLOCKS
+  // =========================
 
+  // Template 1 bottom
+  if (/William Rhodes 2918 Jamestown Dr Montgomery, AL 36111-1211/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
   // Template 1 bottom
   if (/William Rhodes 2918 Jamestown Dr Montgomery, AL 36111-1211/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
@@ -849,7 +1074,15 @@ private convertPlainTextToVariables(text: string): string {
   if (/Krask Scott R 405 Hunt River Way Suwanee, GA 30024-2745/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
+  // Template 2 bottom
+  if (/Krask Scott R 405 Hunt River Way Suwanee, GA 30024-2745/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
 
+  // Template 3 bottom
+  if (/Smith Kermit R 2122 Riding Crop Way Windsor Mill, MD 21244/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
   // Template 3 bottom
   if (/Smith Kermit R 2122 Riding Crop Way Windsor Mill, MD 21244/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
@@ -859,7 +1092,15 @@ private convertPlainTextToVariables(text: string): string {
   if (/Goberdan Lisa 127 Hempstead Ave Lynbrook, NY 1156-1612/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
+  // Template 4 bottom
+  if (/Goberdan Lisa 127 Hempstead Ave Lynbrook, NY 1156-1612/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
 
+  // Template 5 bottom
+  if (/Lisa Goberdan 127 Hempstead Ave Lynbrook, NY 11563-1612/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
   // Template 5 bottom
   if (/Lisa Goberdan 127 Hempstead Ave Lynbrook, NY 11563-1612/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
@@ -869,11 +1110,28 @@ private convertPlainTextToVariables(text: string): string {
   if (/Edward J\.Dyll 14817 Le Grande Dr Addison, TX 75001 - 4912/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
+  // Template 6 bottom
+  if (/Edward J\.Dyll 14817 Le Grande Dr Addison, TX 75001 - 4912/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
 
   // Template 7 bottom
   if (/Esther Bernice Dunn 523 n Mulberry St Mansfield, OH 44902-1042/i.test(normalized)) {
     return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
   }
+  // Template 7 bottom
+  if (/Esther Bernice Dunn 523 n Mulberry St Mansfield, OH 44902-1042/i.test(normalized)) {
+    return '@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@';
+  }
+
+  // =========================
+  // DEFAULT: return original
+  // =========================
+  return text;
+}
+
+
+
 
   // =========================
   // DEFAULT: return original
@@ -901,7 +1159,32 @@ private extractVariableFieldsFromCanvas(canvas: fabric.Canvas): Set<string> {
   }
   return fields;
 }
+private extractVariableFieldsFromCanvas(canvas: fabric.Canvas): Set<string> {
+  const fields = new Set<string>();
+  for (const obj of canvas.getObjects()) {
+    if (obj.type === 'textbox' || obj.type === 'text' || obj.type === 'i-text') {
+      const text = (obj as fabric.Textbox).text || '';
+      const matches = text.match(/\[([^\]]+)\]/g);
+      if (matches) {
+        matches.forEach(match => {
+          const fieldName = match.replace(/\[|\]/g, '');
+          fields.add(fieldName);
+        });
+      }
+    }
+  }
+  return fields;
+}
 
+private generateDataModelFields(): string {
+  const discFields = [
+    'FirstName', 'LastName', 'full_name', 'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
+    'MailingAddress', 'address2', 'Mailingcity', 'MailingState', 'Mailingzip',
+    'AgentName', 'AgentNumber', 'ReturnAddressStreet', 'ReturnAddressCityStateZip',
+    'extra_field_1', 'extra_field_2', 'extra_field_3',
+    'sequence', 'cont_id', 'imbarcode', 'Website', 'list', 'batch', 'ylhq_id',
+    'order_id', 'short_code', 'user_id', 'MailingDate', 'Pictures', 'imbDigits'
+  ];
 private generateDataModelFields(): string {
   const discFields = [
     'FirstName', 'LastName', 'full_name', 'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
@@ -918,6 +1201,23 @@ private generateDataModelFields(): string {
   });
   xml += '    </configs>';
   return xml;
+}
+
+  let xml = '<configs>\n';
+  discFields.forEach(field => {
+    xml += `        <field type="string" name="${field}" required="true"/>\n`;
+  });
+  xml += '    </configs>';
+  return xml;
+}
+
+
+private generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 
@@ -938,23 +1238,57 @@ const buffer = await (blob as any).arrayBuffer();
   return btoa(String.fromCharCode(...new Uint8Array(buffer)));
 }
 
+private async loadAssetAsBase64(path: string): Promise<string> {
+  const response = await fetch(path);
+  const blob = await response.blob();
+const buffer = await (blob as any).arrayBuffer();
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
 
   private isBarcode(obj: fabric.Object): boolean {
     if (obj.type !== 'image') return false;
     const srcStr: string = (obj as any).getSrc?.() || (obj as any).src || '';
+    if (obj.type !== 'image') return false;
+    const srcStr: string = (obj as any).getSrc?.() || (obj as any).src || '';
     // Identify the barcode image by its filename or characteristics
+    if (srcStr.toLowerCase().includes('barcode')) {
     if (srcStr.toLowerCase().includes('barcode')) {
       return true;
     }
+  
   
     // Optionally: check dimensions or aspect ratio if filename is not enough
     const bounds = obj.getBoundingRect();
     const aspectRatio = bounds.width / bounds.height;
     return (aspectRatio > 4 || aspectRatio < 0.25);  // very wide or tall = likely barcode
+    return (aspectRatio > 4 || aspectRatio < 0.25);  // very wide or tall = likely barcode
   }
   
   
+  
+  
   lockBarcodes() {
+    this.canvas.getCanvas().getObjects().forEach((obj: any) => {
+      const isBarcode = obj.type === 'image' && (
+        (obj.src && obj.src.includes("barcode")) ||
+        (obj.src && obj.src.includes("download.png")) ||
+        (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
+      );
+  
+      if (isBarcode) {
+        obj.set({
+          lockMovementX: true,
+          lockMovementY: true,
+          lockScalingX: true,
+          lockScalingY: true,
+          lockRotation: true,
+          selectable: false,
+          evented: false,
+          hoverCursor: 'default',
+        });
+        (obj as any).isBarcode = true;
+      }
     this.canvas.getCanvas().getObjects().forEach((obj: any) => {
       const isBarcode = obj.type === 'image' && (
         (obj.src && obj.src.includes("barcode")) ||
@@ -1025,7 +1359,59 @@ const buffer = await (blob as any).arrayBuffer();
         }
       }
     });
+      if (obj.type === 'textbox' && typeof obj.text === 'string') {
+        const text = obj.text.trim();
+        const lines = text.split('\n');
+      
+        const zipRegex = /\b\d{5}(?:\s?-\s?\d{4})?\b/;
+        const cityStateZipRegex = /,\s?[A-Z]{2}\s+\d{4,5}(?:\s?-\s?\d{4})?$/;
+      
+        const hasAtLeastTwoLines = lines.length >= 2;
+        const endsWithCityStateZip = cityStateZipRegex.test(lines[lines.length - 1]);
+      
+        if (hasAtLeastTwoLines && endsWithCityStateZip) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default',
+          });
+          (obj as any).isProtectedAddress = true;
+        }
+      }
+      
+  
+      // 🔐 Lock protected postage text
+      if (obj.type === 'textbox' && typeof obj.text === 'string') {
+        const normalized = obj.text.replace(/\s+/g, '').toLowerCase();
+        if (
+          normalized.includes('firstclass') &&
+          normalized.includes('presort') &&
+          normalized.includes('postagepaid') &&
+          normalized.includes('ylhq')
+        ) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: 'default',
+          });
+          (obj as any).isProtectedText = true;
+        }
+      }
+    });
   }
+  
+  
+  
   
   
   
@@ -1068,7 +1454,12 @@ const buffer = await (blob as any).arrayBuffer();
   // Starting index
 extraFieldCounter = 1;
 addButtonText = 'Add Extra Field 1';
+extraFieldCounter = 1;
+addButtonText = 'Add Extra Field 1';
 
+addNextExtraField() {
+  const variableName = `extra_field${this.extraFieldCounter}`;
+  const displayText = `{{${variableName}}`;
 addNextExtraField() {
   const variableName = `extra_field${this.extraFieldCounter}`;
   const displayText = `{{${variableName}}`;
@@ -1083,9 +1474,26 @@ addNextExtraField() {
     fill: "#000",
     editable: false,
   });
+  const newText = new fabric.Textbox(displayText, {
+    left: 100,
+    top: 100 + (this.extraFieldCounter - 1) * 50, // har naye field ko neeche shift karne ke liye
+    fontFamily: this.selectedFont,
+    fontWeight: this.selectedFontWeight,
+    fontStyle: this.isItalic ? "italic" : "normal",
+    fontSize: this.selectedFontSize,
+    fill: "#000",
+    editable: false,
+  });
 
   this.canvas.getCanvas().add(newText);
+  this.canvas.getCanvas().add(newText);
 
+  // Counter aur button text update karo
+  this.extraFieldCounter++;
+  this.addButtonText = `Add Extra Field ${this.extraFieldCounter}`;
+}
+
+  
   // Counter aur button text update karo
   this.extraFieldCounter++;
   this.addButtonText = `Add Extra Field ${this.extraFieldCounter}`;
@@ -1154,6 +1562,8 @@ addNextExtraField() {
       image: "../assets/img/flower_postcard_back.png",
       filePathFront:
         "../assets/prebuilt-templates/Flower Postcard (Back).json",
+      filePathFront:
+        "../assets/prebuilt-templates/Flower Postcard (Back).json",
     },
     {
       name: "Realistic Postcard",
@@ -1161,12 +1571,14 @@ addNextExtraField() {
       side: "back",
       image: "../assets/img/rp_back.png",
       filePathFront: "../assets/prebuilt-templates/Realistic Postcard (Back).json",
+      filePathFront: "../assets/prebuilt-templates/Realistic Postcard (Back).json",
     },
     {
       name: "Realistic Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/rp.png",
+      filePathFront: "../assets/prebuilt-templates/Realistic Postcard (Front).json",
       filePathFront: "../assets/prebuilt-templates/Realistic Postcard (Front).json",
     },
     // {
@@ -1222,12 +1634,15 @@ addNextExtraField() {
       filePathFront:
         "../assets/prebuilt-templates/8.5×5.5/casita_postcard_front.json",
       filePathBack: "../assets/prebuilt-templates/Casita Postcard (Front).json"
+      filePathBack: "../assets/prebuilt-templates/Casita Postcard (Front).json"
     },
     {
       name: "Casita Postcard",
       size: "8.5x5.5",
       side: "back",
       image: "../assets/img/casita_postcard_back.png",
+      filePathFront:
+        "../assets/prebuilt-templates/Casita Postcard (Back).json",
       filePathFront:
         "../assets/prebuilt-templates/Casita Postcard (Back).json",
     },
@@ -1283,12 +1698,14 @@ addNextExtraField() {
       side: "back",
       image: "../assets/img/shp_back.png",
       filePathFront: "../assets/prebuilt-templates/Standard Handwritten (Back).json",
+      filePathFront: "../assets/prebuilt-templates/Standard Handwritten (Back).json",
     },
     {
       name: "Standard Handwritten Postcard",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/shp.png",
+      filePathFront: "../assets/prebuilt-templates/Standard Handwritten (Front).json",
       filePathFront: "../assets/prebuilt-templates/Standard Handwritten (Front).json",
     },
     {
@@ -1297,12 +1714,14 @@ addNextExtraField() {
       side: "back",
       image: "../assets/img/svp_back.png",
       filePathFront: "../assets/prebuilt-templates/Street View Postcard (Back).json",
+      filePathFront: "../assets/prebuilt-templates/Street View Postcard (Back).json",
     },
     {
       name: "Street View Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/svp.png",
+      filePathFront: "../assets/prebuilt-templates/Street View Postcard (Front).json",
       filePathFront: "../assets/prebuilt-templates/Street View Postcard (Front).json",
     },
     {
@@ -1311,12 +1730,14 @@ addNextExtraField() {
       side: "back",
       image: "../assets/img/swmy_back.png",
       filePathFront: "../assets/prebuilt-templates/Sorry We Missed You Postcard (Back).json",
+      filePathFront: "../assets/prebuilt-templates/Sorry We Missed You Postcard (Back).json",
     },
     {
       name: "Sorry We Missed You Postcard",
       size: "8.5x5.5",
       side: "front",
       image: "../assets/img/swmy.png",
+      filePathFront: "../assets/prebuilt-templates/Sorry We Missed You Postcard (Front).json",
       filePathFront: "../assets/prebuilt-templates/Sorry We Missed You Postcard (Front).json",
     },
     {
@@ -1332,6 +1753,7 @@ addNextExtraField() {
       side: "front",
       image: "../assets/img/vp.png",
       filePathFront: "../assets/prebuilt-templates/Violet Postcard (Front).json",
+      filePathFront: "../assets/prebuilt-templates/Violet Postcard (Front).json",
     },
     {
       name: "Yellow Letter Postcard",
@@ -1339,12 +1761,14 @@ addNextExtraField() {
       side: "back",
       image: "../assets/img/ylp_back.png",
       filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Back).json",
+      filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Back).json",
     },
     {
       name: "Yellow Letter Postcard",
       size: "4.25x5.5",
       side: "front",
       image: "../assets/img/ylp.png",
+      filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Front).json",
       filePathFront: "../assets/prebuilt-templates/Yellow Letter Postcard (Front).json",
     },
   ];
@@ -1382,7 +1806,12 @@ addNextExtraField() {
 
   selectedSide: 'front'|'back' = 'front'; 
 
+  selectedSide: 'front'|'back' = 'front'; 
+
   get filteredTemplates() {
+    return this.prebuiltTemplates.filter(template => 
+      template.size === this.selectedSize && 
+      template.side === this.selectedSide
     return this.prebuiltTemplates.filter(template => 
       template.size === this.selectedSize && 
       template.side === this.selectedSide
@@ -1390,11 +1819,22 @@ addNextExtraField() {
   }
 
 
+
   async ngOnInit() {
+
 
     await this.loadCustomFonts();
     this.fontsLoaded = true;
 
+  const customFont1 = new FontFace(
+    "Lindy-Bold",
+    "url('assets/fonts/Lindy-Bold.woff') format('woff')"
+  );
+  
+  customFont1.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'Lindy-Bold' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'Lindy-Bold':", err));
   const customFont1 = new FontFace(
     "Lindy-Bold",
     "url('assets/fonts/Lindy-Bold.woff') format('woff')"
@@ -1409,7 +1849,15 @@ addNextExtraField() {
     "PremiumUltra",
     "url('assets/fonts/PremiumUltra26.woff') format('woff')"
   );
+  const customFont2 = new FontFace(
+    "PremiumUltra",
+    "url('assets/fonts/PremiumUltra26.woff') format('woff')"
+  );
 
+  customFont2.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'PremiumUltra' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'PremiumUltra':", err));
   customFont2.load().then((loadedFont) => {
     (document as any).fonts.add(loadedFont);
     console.log("Custom font 'PremiumUltra' loaded successfully.");
@@ -1419,7 +1867,15 @@ addNextExtraField() {
     "Ctorres",
     "url('assets/fonts/Ctorres.woff') format('woff')"
   );
+  const customFont3 = new FontFace(
+    "Ctorres",
+    "url('assets/fonts/Ctorres.woff') format('woff')"
+  );
 
+  customFont3.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'Ctorres' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'Ctorres':", err));
   customFont3.load().then((loadedFont) => {
     (document as any).fonts.add(loadedFont);
     console.log("Custom font 'Ctorres' loaded successfully.");
@@ -1429,6 +1885,15 @@ addNextExtraField() {
     "ArialRoundedMTBold",
     "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')"
   );
+  const customFont4 = new FontFace(
+    "ArialRoundedMTBold",
+    "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')"
+  );
+
+  customFont4.load().then((loadedFont) => {
+    (document as any).fonts.add(loadedFont);
+    console.log("Custom font 'ArialRoundedMTBold' loaded successfully.");
+  }).catch(err => console.error("Failed to load custom font 'ArialRoundedMTBold':", err));
 
   customFont4.load().then((loadedFont) => {
     (document as any).fonts.add(loadedFont);
@@ -1497,15 +1962,26 @@ addNextExtraField() {
 
 
 
+  
+
+
+
   async loadCustomFonts(): Promise<void> {
     const customFonts = [
       new FontFace("Lindy-Bold", "url('assets/fonts/Lindy-Bold.woff') format('woff')"),
       new FontFace("PremiumUltra", "url('assets/fonts/PremiumUltra26.woff') format('woff')"),
       new FontFace("Ctorres", "url('assets/fonts/Ctorres.woff') format('woff')"),
       new FontFace("ArialRoundedMTBold", "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')")
+      new FontFace("Lindy-Bold", "url('assets/fonts/Lindy-Bold.woff') format('woff')"),
+      new FontFace("PremiumUltra", "url('assets/fonts/PremiumUltra26.woff') format('woff')"),
+      new FontFace("Ctorres", "url('assets/fonts/Ctorres.woff') format('woff')"),
+      new FontFace("ArialRoundedMTBold", "url('assets/fonts/ArialRoundedMTBold.woff') format('woff')")
     ];
   
+  
     try {
+      const loadedFonts = await Promise.all(customFonts.map(font => font.load()));
+      loadedFonts.forEach(loadedFont => (document as any).fonts.add(loadedFont));
       const loadedFonts = await Promise.all(customFonts.map(font => font.load()));
       loadedFonts.forEach(loadedFont => (document as any).fonts.add(loadedFont));
       console.log("All custom fonts loaded successfully.");
@@ -1513,6 +1989,8 @@ addNextExtraField() {
       console.error("Failed to load custom fonts:", err);
     }
   }
+
+  
 
   
   // onFontFamilyChange() {
@@ -1683,25 +2161,37 @@ addNextExtraField() {
   async loadImageTemplate(template: any) {
     let height: number, width: number;
   
+  
     switch (template.size) {
+      case '4.25x5.5':
       case '4.25x5.5':
         height = 408;
         width = 528;
         break;
+      case '8.5x5.5':
       case '8.5x5.5':
         height = 528;
         width = 1056;
         break;
       default:
         console.error('Unsupported template size:', template.size);
+        console.error('Unsupported template size:', template.size);
         return;
     }
   
+  
     this.changeSizeWithMeasures(height, width, template.size);
+  
   
     // Find matching front/back templates
     let frontTemplate = template;
     let backTemplate = template;
+  
+    if (template.side === 'front') {
+      backTemplate = this.prebuiltTemplates.find(t =>
+        t.size === template.size &&
+        t.side === 'back' &&
+        t.name.replace(/\s*\(.*\)/g, '') === template.name.replace(/\s*\(.*\)/g, '')
   
     if (template.side === 'front') {
       backTemplate = this.prebuiltTemplates.find(t =>
@@ -1714,30 +2204,46 @@ addNextExtraField() {
         t.size === template.size &&
         t.side === 'front' &&
         t.name.replace(/\s*\(.*\)/g, '') === template.name.replace(/\s*\(.*\)/g, '')
+      frontTemplate = this.prebuiltTemplates.find(t =>
+        t.size === template.size &&
+        t.side === 'front' &&
+        t.name.replace(/\s*\(.*\)/g, '') === template.name.replace(/\s*\(.*\)/g, '')
       );
     }
   
+  
     if (!frontTemplate || !backTemplate) {
+      console.error('Matching front/back template not found.');
       console.error('Matching front/back template not found.');
       return;
     }
+  
   
     // Load both JSONs
     const handler = new HttpXhrBackend({ build: () => new XMLHttpRequest() });
     const http = new HttpClient(handler);
   
+  
     try {
+      const frontJson = await http.get(frontTemplate.filePathFront, { responseType: 'text' }).toPromise();
+      const backJson = await http.get(backTemplate.filePathFront, { responseType: 'text' }).toPromise();
+  
       const frontJson = await http.get(frontTemplate.filePathFront, { responseType: 'text' }).toPromise();
       const backJson = await http.get(backTemplate.filePathFront, { responseType: 'text' }).toPromise();
   
       this.frontCanvasData = frontJson;
       this.backCanvasData = backJson;
   
+  
       // Load selected side onto canvas
       this.isFront = (template.side === 'front');
       const jsonToLoad = this.isFront ? this.frontCanvasData : this.backCanvasData;
   
+      this.isFront = (template.side === 'front');
+      const jsonToLoad = this.isFront ? this.frontCanvasData : this.backCanvasData;
+  
       this.canvas.loadJsonToCanvas(jsonToLoad); // Must exist in your fabric-js component
+  
   
       this.selectedSize = template.size;
       this.selectedSide = template.side;
@@ -1745,8 +2251,11 @@ addNextExtraField() {
       this.showProductData = false;
     } catch (err) {
       console.error('Error loading template JSONs:', err);
+      console.error('Error loading template JSONs:', err);
     }
   }
+  
+  
   
   
 
@@ -1914,7 +2423,20 @@ addNextExtraField() {
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
   this.addDashedSafetyArea();
+  const canvas = this.canvas.getCanvas();
+  const json = JSON.stringify(canvas.toJSON());
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `canvas-export-${this.isFront ? 'front' : 'back'}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  this.addDashedSafetyArea();
   }
+
 
 
   // Update the loadCanvasFromJSON method
@@ -1922,7 +2444,13 @@ addNextExtraField() {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'application/json';
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
 
+  input.addEventListener('change', (event: Event) => {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
   input.addEventListener('change', (event: Event) => {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
@@ -1950,7 +2478,31 @@ addNextExtraField() {
     };
     reader.readAsText(file);
   });
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      try {
+        const json = JSON.parse(e.target?.result as string);
+        const canvas = this.canvas.getCanvas();
+        
+        // Clear existing canvas while preserving bleed area
+        const bleedLines = this.getBleedAreaLines();
+        canvas.clear();
+        
+        canvas.loadFromJSON(json, () => {
+          // Re-add bleed area if needed
+          bleedLines.forEach(line => canvas.add(line));
+          canvas.renderAll();
+          this.addDashedSafetyArea();
+        });
+      } catch (error) {
+        console.error('Error loading JSON:', error);
+        alert('Invalid JSON file. Please upload a valid canvas export.');
+      }
+    };
+    reader.readAsText(file);
+  });
 
+  input.click();
   input.click();
   }
 
@@ -1990,6 +2542,7 @@ addNextExtraField() {
   }
 
   // In your component class:
+  public selectedSize: string = '4.25x5.5';
   public selectedSize: string = '4.25x5.5';
 
   public changeSizeWithMeasures(
@@ -2272,11 +2825,18 @@ addNextExtraField() {
     const inputElement = event.target as HTMLInputElement;
     const selectedColor = inputElement.value; // Get selected color
   
+  
     const activeObjects = this.canvas.getCanvas().getActiveObjects();
     if (!activeObjects || activeObjects.length === 0) return;
   
+  
     activeObjects.forEach((object) => {
       if (
+        object instanceof fabric.Textbox || 
+        object instanceof fabric.Text || 
+        object instanceof fabric.Rect || 
+        object instanceof fabric.Circle || 
+        object instanceof fabric.Triangle || 
         object instanceof fabric.Textbox || 
         object instanceof fabric.Text || 
         object instanceof fabric.Rect || 
@@ -2290,8 +2850,10 @@ addNextExtraField() {
       }
     });
   
+  
     this.canvas.getCanvas().requestRenderAll(); // ✅ Use requestRenderAll() for smoother real-time updates
   }
+  
   
   getBleedAreaLines(): fabric.Object[] {
     return this.canvas
