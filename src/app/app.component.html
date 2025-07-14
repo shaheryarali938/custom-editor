@@ -1,55 +1,44 @@
 <div class="w-100 vh-100 position-relative">
-  <!-- Full-screen overlay (unchanged, shows when showProductData is true) -->
-  <div *ngIf="showProductData" class="overlay">
-    <!-- Centered content box -->
-    <div class="content-box pb-4 shadow-lg rounded-lg">
-      <div class="wrapper bg-white rounded-lg shadow-md">
-        <!-- Card Header -->
-        <div
-          class="card-header bg-yellow custom-scale text-dark font-weight-bold text-center py-3"
-        >
-          Templates
-        </div>
-        <!-- Card Body -->
-        <div class="card-body">
-          <div class="row w-100">
-            <!-- We loop over all prebuiltTemplates in an <ng-container> -->
-            <ng-container *ngFor="let template of prebuiltTemplates">
-              <!-- Display only if size matches and side matches -->
-              <div
-                class="col-4 mb-4 mt-4"
-                *ngIf="
-                  template.size === selectedSize &&
-                  (isFront
-                    ? template.side === 'front'
-                    : template.side === 'back')
-                "
-                (click)="loadImageTemplate(template)"
-                style="cursor: pointer; font-size: 13px"
-              >
-                <div
-                  class="template-thumbnail border border-gray-300 p-2 rounded-lg overflow-hidden shadow-sm transition-transform transform hover:scale-105"
-                >
-                  <img
-                    [src]="template.image"
-                    alt="Template"
-                    class="img-fluid w-100 rounded-lg"
-                  />
-                </div>
-                {{ template.name }}
-              </div>
-            </ng-container>
-          </div>
-        </div>
-      </div>
-      <!-- Close Button for Product Data overlay -->
-      <div class="text-center mt-3">
-        <button
-          class="btn btn-danger px-4 py-2 mt-4 rounded-lg shadow-sm"
-          (click)="toggleProductData()"
-        >
-          Close
+  <!-- Full-screen overlay for templates -->
+  <div *ngIf="showProductData" class="templates-overlay">
+    <div class="templates-modal">
+      <!-- Header -->
+      <div class="templates-header">
+        <h2 class="templates-title">Templates</h2>
+        <button class="templates-close-btn" (click)="toggleProductData()">
+          X
         </button>
+      </div>
+
+      <!-- Content -->
+      <div class="templates-content">
+        <!-- Templates Grid -->
+        <div class="templates-grid" *ngIf="prebuiltTemplates.length > 0">
+          <ng-container *ngFor="let template of prebuiltTemplates">
+            <div
+              class="template-item"
+              *ngIf="
+                template.size === selectedSize &&
+                (isFront ? template.side === 'front' : template.side === 'back')
+              "
+              (click)="loadImageTemplate(template)"
+            >
+              <img
+                [src]="template.image"
+                [alt]="template.name"
+                class="template-image"
+              />
+              <div class="template-name">{{ template.name }}</div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- No Templates Message -->
+        <div class="no-templates" *ngIf="prebuiltTemplates.length === 0">
+          <i class="fa fa-image"></i>
+          <h4>No Templates Available</h4>
+          <p>No templates found for the selected size and side.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -60,300 +49,316 @@
       <div class="col-xl-12">
         <div class="row w-100 p-0 m-0">
           <!-- Single container holding both "Add Text" (left) and "Import/Export" (right) -->
-        <div class="custom-container">
-          <div class="row align-items-center justify-content-between py-3 px-3"
-            style="background-color: #f9f9f9; border-bottom: 1px solid #ddd;">
-            <!-- LEFT: Toggle icon + hidden "Add Text" controls -->
-            <div class="col-auto d-flex align-items-center">
-              <!-- Static "Add Text" label -->
-              <span style="font-weight: bold; color: #000; margin-right: 8px;">
-                Add Text
-              </span>
-              <!-- 1) Dropdown trigger: down arrow icon -->
-              <div class="dropdown mr-3" style="position: relative;">
-                <!-- Toggle Button -->
-                <button 
-                  class="btn p-0" 
-                  type="button" 
-                  (click)="toggleTextDropdown()"
-                  style="
-                    background-color: #fdc323;
-                    border: none;
-                    border-radius: 50%;
-                    width: 30px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                  "
-                >
-                  <i class="fa" [ngClass]="showTextDropdown ? 'fa fa-angle-up' : 'fa fa-angle-down'" 
-                     style="font-size: 14px; color: #000;"></i>
-                </button>
-              
-                <!-- Dropdown Menu controlled by Angular -->
-                <div 
-                  *ngIf="showTextDropdown" 
-                  class="dropdown-menu dropdown-menu-right p-3 show" 
-                  style="
-                    display: block !important;
-                    min-width: 280px; 
-                    border-radius: 6px; 
-                    position: absolute; 
-                    top: 35px; 
-                    left: 0; 
-                    z-index: 1050;
-                    background-color: #fff;
-                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-                  "
-                >
-                  <input 
-                    type="text" 
-                    class="form-control mb-2" 
-                    [(ngModel)]="canvas.textString" 
-                    placeholder="Enter your text here" 
-                    style="width: 100%;"
-                  />
-                  <button 
-                    class="btn btn-yellow w-100" 
-                    (click)="addText()"
+          <div class="custom-container">
+            <div
+              class="row align-items-center justify-content-between py-3 px-3"
+              style="background-color: #f9f9f9; border-bottom: 1px solid #ddd"
+            >
+              <!-- LEFT: Toggle icon + hidden "Add Text" controls -->
+              <div class="col-auto d-flex align-items-center">
+                <!-- Static "Add Text" label -->
+                <span style="font-weight: bold; color: #000; margin-right: 8px">
+                  Add Text
+                </span>
+                <!-- 1) Dropdown trigger: down arrow icon -->
+                <div class="dropdown mr-3" style="position: relative">
+                  <!-- Toggle Button -->
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    (click)="toggleTextDropdown()"
+                    style="
+                      background-color: #fdc323;
+                      border: none;
+                      border-radius: 50%;
+                      width: 30px;
+                      height: 30px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
                   >
-                    <i class="fa fa-plus"></i> Add Text
+                    <i
+                      class="fa"
+                      [ngClass]="
+                        showTextDropdown ? 'fa fa-angle-up' : 'fa fa-angle-down'
+                      "
+                      style="font-size: 14px; color: #000"
+                    ></i>
                   </button>
+
+                  <!-- Dropdown Menu controlled by Angular -->
+                  <div
+                    *ngIf="showTextDropdown"
+                    class="dropdown-menu dropdown-menu-right p-3 show"
+                    style="
+                      display: block !important;
+                      min-width: 280px;
+                      border-radius: 6px;
+                      position: absolute;
+                      top: 35px;
+                      left: 0;
+                      z-index: 1050;
+                      background-color: #fff;
+                      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                    "
+                  >
+                    <input
+                      type="text"
+                      class="form-control mb-2"
+                      [(ngModel)]="canvas.textString"
+                      placeholder="Enter your text here"
+                      style="width: 100%"
+                    />
+                    <button class="btn btn-yellow w-100" (click)="addText()">
+                      <i class="fa fa-plus"></i> Add Text
+                    </button>
+                  </div>
                 </div>
-              </div>    
 
-              <!-- 3) Always-visible font/style/color controls -->
-              <!-- (A) Font Family -->
-              <select
-                class="form-control mr-2"
-                style="width: 205px;"
-                [(ngModel)]="selectedFont"
-                (change)="onFontFamilyChange()"
-              >
-                <option
-                  value="ArialRoundedMTBold"
-                  style="font-family: ArialRoundedMTBold"
-                  selected
+                <!-- 3) Always-visible font/style/color controls -->
+                <!-- (A) Font Family -->
+                <select
+                  class="form-control mr-2"
+                  style="width: 205px"
+                  [(ngModel)]="selectedFont"
+                  (change)="onFontFamilyChange()"
                 >
-                  Arial Rounded MT Bold
-                </option>
-                <option value="PremiumUltra" style="font-family: PremiumUltra">
-                  PremiumUltra
-                </option>
-                <option value="Ctorres" style="font-family: Ctorres">
-                  Ctorres
-                </option>
-                <option value="Lindy-Bold" style="font-family: Lindy-Bold">
-                  Lindy-Bold
-                </option>
-                <!-- etc. -->
-              </select>
+                  <option
+                    value="ArialRoundedMTBold"
+                    style="font-family: ArialRoundedMTBold"
+                    selected
+                  >
+                    Arial Rounded MT Bold
+                  </option>
+                  <option
+                    value="PremiumUltra"
+                    style="font-family: PremiumUltra"
+                  >
+                    PremiumUltra
+                  </option>
+                  <option value="Ctorres" style="font-family: Ctorres">
+                    Ctorres
+                  </option>
+                  <option value="Lindy-Bold" style="font-family: Lindy-Bold">
+                    Lindy-Bold
+                  </option>
+                  <!-- etc. -->
+                </select>
 
-              <!-- (B) Font Size -->
-              <select
-                class="form-control mr-2"
-                style="width: 80px;"
-                [(ngModel)]="selectedFontSize"
-                (change)="onFontSizeChange()"
-              >
-                <option *ngFor="let size of fontSizes" [value]="size">
-                  {{ size }}px
-                </option>
-              </select>
+                <!-- (B) Font Size -->
+                <select
+                  class="form-control mr-2"
+                  style="width: 80px"
+                  [(ngModel)]="selectedFontSize"
+                  (change)="onFontSizeChange()"
+                >
+                  <option *ngFor="let size of fontSizes" [value]="size">
+                    {{ size }}px
+                  </option>
+                </select>
 
-              <!-- (C) Bold -->
-              <button
-                class="btn border mr-1"
-                style="background-color: #fdc323; color: #000;"
-                [ngClass]="{ active: isBold }"
-                (click)="toggleBold()"
-              >
-                <i class="fa fa-bold"></i>
-              </button>
-              <!-- (D) Italic -->
-              <button
-                class="btn border mr-2"
-                style="background-color: #fdc323; color: #000;"
-                [ngClass]="{ active: isItalic }"
-                (click)="toggleItalic()"
-              >
-                <i class="fa fa-italic"></i>
-              </button>
+                <!-- (C) Bold -->
+                <button
+                  class="btn border mr-1"
+                  style="background-color: #fdc323; color: #000"
+                  [ngClass]="{ active: isBold }"
+                  (click)="toggleBold()"
+                >
+                  <i class="fa fa-bold"></i>
+                </button>
+                <!-- (D) Italic -->
+                <button
+                  class="btn border mr-2"
+                  style="background-color: #fdc323; color: #000"
+                  [ngClass]="{ active: isItalic }"
+                  (click)="toggleItalic()"
+                >
+                  <i class="fa fa-italic"></i>
+                </button>
 
-              <!-- (E) Text color picker -->
-              <input
-                type="color"
-                class="form-control p-1"
-                (input)="onObjectColorChange($event)"
-                value="#000000"
-                style="width: 50px; height: 40px;"
-              />
+                <!-- (E) Text color picker -->
+                <input
+                  type="color"
+                  class="form-control p-1"
+                  (input)="onObjectColorChange($event)"
+                  value="#000000"
+                  style="width: 50px; height: 40px"
+                />
+              </div>
+              <!-- RIGHT COLUMN: "Import/Export" dropdown -->
+
+              <div class="col-auto d-flex align-items-center">
+                <!-- 1) "Clean" button placed outside the dropdown -->
+                <button
+                  class="btn btn-yellow btn-sm mr-1"
+                  (click)="toggleSide()"
+                  style="padding: 5px 10px"
+                >
+                  <i class=""></i> Switch to {{ isFront ? "Back" : "Front" }}
+                </button>
+                <!-- Upload File Button -->
+                <input
+                  type="file"
+                  #uploadFileInput
+                  style="display: none"
+                  (change)="readUrl($event)"
+                />
+                <button
+                  class="btn btn-yellow btn-sm mr-1"
+                  (click)="openFileUpload()"
+                  style="padding: 5px 10px"
+                >
+                  <i class=""></i> Upload Image
+                </button>
+
+                <!-- Select Product Dropdown -->
+                <div class="dropdown d-inline-block position-relative">
+                  <button
+                    class="btn btn-yellow btn-sm dropdown-toggle mr-1"
+                    type="button"
+                    (click)="toggleProductDropdown()"
+                    style="padding: 5px 10px"
+                  >
+                    <i class=""></i> Select Product
+                  </button>
+
+                  <!-- Product Dropdown Menu -->
+                  <div
+                    *ngIf="showProductDropdown"
+                    class="dropdown-menu dropdown-menu-right p-2 show"
+                    style="
+                      display: block !important;
+                      position: absolute;
+                      top: 100%;
+                      right: 0;
+                      min-width: 230px;
+                      border-radius: 6px;
+                      background-color: #fff;
+                      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                      z-index: 1050;
+                    "
+                  >
+                    <button
+                      class="dropdown-item"
+                      (click)="
+                        changeSizeWithMeasures(408, 528, '4.25x5.5');
+                        showProductDropdown = false
+                      "
+                      style="font-size: 14px; padding: 7px"
+                    >
+                      <i class=""></i> First Class Postcard (4.25x5.5)
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      (click)="
+                        changeSizeWithMeasures(528, 1056, '8.5x5.5');
+                        showProductDropdown = false
+                      "
+                      style="font-size: 14px; padding: 7px"
+                    >
+                      <i class=""></i> Half Page Postcard (8.5x5.5)
+                    </button>
+                  </div>
+                </div>
+                <button
+                  class="btn btn-danger btn-sm mr-1"
+                  (click)="confirmClear()"
+                  style="padding: 5px 10px"
+                >
+                  <i class=""></i> Clean
+                </button>
+                <div class="dropdown d-inline-block position-relative">
+                  <style>
+                    /* Adjust dropdown styling as needed */
+                    .dropdown-menu {
+                      padding: 0 !important;
+                      margin: 0 !important;
+                      border-radius: 5px !important;
+                    }
+                    .dropdown-item {
+                      border-bottom: 1px solid #000 !important;
+                      margin: 0 !important;
+                      padding: 0.5rem 1rem !important;
+                      border-radius: 0 !important;
+                    }
+                    .dropdown-item:last-child {
+                      border-bottom: none !important;
+                    }
+                    .dropdown-item:hover,
+                    .dropdown-item:focus {
+                      background-color: #fff3cd !important;
+                      color: #212529 !important;
+                    }
+                    .dropdown-item.text-danger:hover,
+                    .dropdown-item.text-danger:focus {
+                      background-color: #f8d7da !important;
+                      color: #721c24 !important;
+                    }
+                  </style>
+
+                  <button
+                    class="btn btn-yellow btn-sm dropdown-toggle"
+                    type="button"
+                    (click)="toggleImportExportDropdown()"
+                    style="padding: 5px 10px; font-size: 14px"
+                  >
+                    Import/Export
+                  </button>
+                  <!-- Dropdown menu controlled by Angular -->
+                  <div
+                    *ngIf="showImportExportDropdown"
+                    class="dropdown-menu dropdown-menu-right p-3 show"
+                    style="
+                      display: block !important;
+                      position: absolute;
+                      top: 100%;
+                      right: 0;
+                      min-width: 205px;
+                      border-radius: 6px;
+                      background-color: #fff;
+                      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                      z-index: 1050;
+                    "
+                  >
+                    <button class="dropdown-item" (click)="rasterize()">
+                      <i class="fa fa-download mr-2"></i> Export to Image
+                    </button>
+                    <button class="dropdown-item" (click)="rasterizeSVG()">
+                      <i class="fa fa-download mr-2"></i> Export to SVG
+                    </button>
+                    <button class="dropdown-item" (click)="saveCanvasToJSON()">
+                      <i class="fa fa-download mr-2"></i> Export to Canvas
+                    </button>
+                    <button class="dropdown-item" (click)="exportToHtml()">
+                      <i class="fa fa-download mr-2"></i> Export to HTML
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      (click)="loadCanvasFromJSON()"
+                    >
+                      <i class="fa fa-upload mr-2"></i> Import Canvas
+                    </button>
+
+                    <button
+                      class="dropdown-item"
+                      (click)="exportToOLConnectHtml()"
+                    >
+                      <i class="fa fa-upload mr-2"></i> Export to OL HTML
+                    </button>
+
+                    <button
+                      class="dropdown-item"
+                      (click)="exportAsOLTemplate(sampleRecord)"
+                    >
+                      <i class="fa fa-upload mr-2"></i>Export as OL-Template
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-    <!-- RIGHT COLUMN: "Import/Export" dropdown -->
-     
-    <div class="col-auto d-flex align-items-center">
-      <!-- 1) "Clean" button placed outside the dropdown -->
-      <button 
-        class="btn btn-yellow btn-sm mr-1"
-        (click)="toggleSide()"
-        style="padding: 5px 10px;"
-      >
-      <i class=""></i> Switch to {{ isFront ? "Back" : "Front" }}
-      </button>
-        <!-- Upload File Button -->
-        <input
-          type="file"
-          #uploadFileInput
-          style="display: none"
-          (change)="readUrl($event)"
-        />
-        <button
-          class="btn btn-yellow btn-sm mr-1"
-          (click)="openFileUpload()"
-          style="padding: 5px 10px;"
-        >
-          <i class=""></i> Upload Image
-        </button>
-
-        <!-- Select Product Dropdown -->
-        <div class="dropdown d-inline-block position-relative">
-          <button
-            class="btn btn-yellow btn-sm dropdown-toggle mr-1"
-            type="button"
-            (click)="toggleProductDropdown()"
-            style="padding: 5px 10px;"
-          >
-            <i class=""></i> Select Product
-          </button>
-
-        <!-- Product Dropdown Menu -->
-        <div
-          *ngIf="showProductDropdown"
-          class="dropdown-menu dropdown-menu-right p-2 show"
-          style="
-            display: block !important;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            min-width: 230px;
-            border-radius: 6px;
-            background-color: #fff;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1050;
-          "
-        >
-          <button
-            class="dropdown-item"
-            (click)="changeSizeWithMeasures(408, 528, '4.25x5.5'); showProductDropdown = false;"
-            style="font-size: 14px; padding: 7px;"
-          >
-            <i class=""></i> First Class Postcard (4.25x5.5)
-          </button>
-          <button
-            class="dropdown-item"
-            (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5'); showProductDropdown = false;"
-            style="font-size: 14px; padding: 7px;"
-          >
-            <i class=""></i> Half Page Postcard (8.5x5.5)
-          </button>
+          </div>
         </div>
-        </div>
-        <button 
-          class="btn btn-danger btn-sm mr-1"
-          (click)="confirmClear()"
-          style="padding: 5px 10px;"
-        >
-          <i class=""></i> Clean
-        </button>
-      <div class="dropdown d-inline-block position-relative">
-        <style>
-          /* Adjust dropdown styling as needed */
-          .dropdown-menu {
-            padding: 0 !important;
-            margin: 0 !important;
-            border-radius: 5px !important;
-          }
-          .dropdown-item {
-            border-bottom: 1px solid #000 !important;
-            margin: 0 !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 0 !important;
-          }
-          .dropdown-item:last-child {
-            border-bottom: none !important;
-          }
-          .dropdown-item:hover,
-          .dropdown-item:focus {
-            background-color: #fff3cd !important;
-            color: #212529 !important;
-          }
-          .dropdown-item.text-danger:hover,
-          .dropdown-item.text-danger:focus {
-            background-color: #f8d7da !important;
-            color: #721c24 !important;
-          }
-        </style>
-
-          <button
-          class="btn btn-yellow btn-sm dropdown-toggle"
-          type="button"
-          (click)="toggleImportExportDropdown()"
-          style="padding: 5px 10px; font-size: 14px;"
-          >
-          Import/Export
-          </button>
-        <!-- Dropdown menu controlled by Angular -->
-          <div
-          *ngIf="showImportExportDropdown"
-          class="dropdown-menu dropdown-menu-right p-3 show"
-          style="
-            display: block !important;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            min-width: 205px;
-            border-radius: 6px;
-            background-color: #fff;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1050;
-          "
-        >
-          <button class="dropdown-item" (click)="rasterize()">
-            <i class="fa fa-download mr-2"></i> Export to Image
-          </button>
-          <button class="dropdown-item" (click)="rasterizeSVG()">
-            <i class="fa fa-download mr-2"></i> Export to SVG
-          </button>
-          <button class="dropdown-item" (click)="saveCanvasToJSON()">
-            <i class="fa fa-download mr-2"></i> Export to Canvas
-          </button>
-          <button class="dropdown-item" (click)="exportToHtml()">
-            <i class="fa fa-download mr-2"></i> Export to HTML
-          </button>
-          <button class="dropdown-item" (click)="loadCanvasFromJSON()">
-            <i class="fa fa-upload mr-2"></i> Import Canvas
-          </button>
-
-          <button class="dropdown-item" (click)="exportToOLConnectHtml()">
-                        <i class="fa fa-upload mr-2"></i> Export to OL HTML</button>
-
-<button class="dropdown-item" (click)="exportAsOLTemplate(sampleRecord)">
-
-            <i class="fa fa-upload mr-2"></i>Export as OL-Template
-          </button>
-          
-
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-          
-        </div>
-        
       </div>
     </div>
   </div>
@@ -565,10 +570,32 @@
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <rect x="3" y="5" width="18" height="14" rx="2" stroke="#1E1E1E" stroke-width="2"/>
-              <line x1="8" y1="9" x2="14" y2="9" stroke="#1E1E1E" stroke-width="2"/>
-              <line x1="8" y1="13" x2="12" y2="13" stroke="#1E1E1E" stroke-width="2"/>
-              <rect x="16" y="10" width="4" height="4" fill="#1E1E1E"/>
+              <rect
+                x="3"
+                y="5"
+                width="18"
+                height="14"
+                rx="2"
+                stroke="#1E1E1E"
+                stroke-width="2"
+              />
+              <line
+                x1="8"
+                y1="9"
+                x2="14"
+                y2="9"
+                stroke="#1E1E1E"
+                stroke-width="2"
+              />
+              <line
+                x1="8"
+                y1="13"
+                x2="12"
+                y2="13"
+                stroke="#1E1E1E"
+                stroke-width="2"
+              />
+              <rect x="16" y="10" width="4" height="4" fill="#1E1E1E" />
             </svg>
           </span>
           <span>product</span>
@@ -676,7 +703,9 @@
               fill-opacity="0.8"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5zm7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64L19.43 13z"/>
+              <path
+                d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5zm7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64L19.43 13z"
+              />
             </svg>
           </div>
           <span>Options</span>
@@ -697,7 +726,7 @@
               <input
                 type="text"
                 class="form-control"
-                style="cursor: text !important;"
+                style="cursor: text !important"
                 [(ngModel)]="canvas.textString"
                 placeholder="Enter your text here"
               />
@@ -711,17 +740,33 @@
                 >
                   <!-- Sans-serif Fonts -->
 
+                  <option
+                    value="ArialRoundedMTBold"
+                    selected
+                    style="font-family: ArialRoundedMTBold"
+                  >
+                    Arial Rounded MT Bold
+                  </option>
+                  <option
+                    value="PremiumUltra"
+                    style="font-family: PremiumUltra"
+                  >
+                    PremiumUltra
+                  </option>
+                  <option value="Ctorres" style="font-family: Ctorres">
+                    Ctorres
+                  </option>
+                  <option value="Lindy-Bold" style="font-family: Lindy-Bold">
+                    Lindy-Bold
+                  </option>
+                  <option
+                    value="Arial Black"
+                    style="font-family: 'Arial Black', Arial, sans-serif"
+                  >
+                    Arial Black
+                  </option>
 
-                  <option value="ArialRoundedMTBold" selected style="font-family: ArialRoundedMTBold">Arial Rounded MT Bold</option>
-                 <option value="PremiumUltra" style="font-family: PremiumUltra">PremiumUltra</option>
-                 <option value="Ctorres" style="font-family: Ctorres">Ctorres</option>
-                 <option value="Lindy-Bold" style="font-family: Lindy-Bold">Lindy-Bold</option>
-                 <option value="Arial Black" style="font-family: 'Arial Black', Arial, sans-serif;">
-                  Arial Black
-                </option>
-
-
-                   <!-- 
+                  <!-- 
                   <option value="Roboto" style="font-family: Roboto">
                     Roboto
                   </option>
@@ -918,8 +963,7 @@
                 />
               </div>
             </div>
-            
-            
+
             <div class="tab-content w-100 px-2" id="v-pills-tabContent">
               <div
                 class="tab-pane fade w-100"
@@ -945,7 +989,6 @@
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
 
@@ -994,7 +1037,7 @@
                   <button
                     type="button"
                     class="btn btn-outline-danger btn-sm"
-                    style="width: 100%;"
+                    style="width: 100%"
                     (click)="removeWhite(canvas.url)"
                   >
                     <i class="fa fa-times" aria-hidden="true"></i> Remove
@@ -1079,7 +1122,7 @@
                   type="button"
                   class="btn btn-yellow w-100 my-1 mt-2"
                   (click)="changeSizeWithMeasures(408, 528, '4.25x5.5')"
-                  style="font-size: 13px; padding: 7px;"
+                  style="font-size: 13px; padding: 7px"
                 >
                   First Class Postcard (4.25 x 5.5)
                 </button>
@@ -1089,7 +1132,7 @@
                   type="button"
                   class="btn btn-yellow w-100 my-1"
                   (click)="changeSizeWithMeasures(528, 1056, '8.5x5.5')"
-                  style="font-size: 13px; padding: 7px;"
+                  style="font-size: 13px; padding: 7px"
                 >
                   Half Page Postcard (8.5 x 5.5)
                 </button>
@@ -1110,78 +1153,89 @@
 
         <!-- In app.component.html -->
         <div
-        class="tab-pane fade"
-        [ngClass]="{ 'show active': activeTab === 'design-color' }"
-        id="v-pills-design-color"
-        role="tabpanel"
-        aria-labelledby="v-pills-design-color-tab"
+          class="tab-pane fade"
+          [ngClass]="{ 'show active': activeTab === 'design-color' }"
+          id="v-pills-design-color"
+          role="tabpanel"
+          aria-labelledby="v-pills-design-color-tab"
         >
-        <style>
-          .btn-yellow.active {
-  background-color: black !important;
-  color: white !important; /* Adjust text color for better visibility */
-}
-        </style>
-        <div class="card">
-          <div class="card-header bg-yellow">Templates</div>
-          <div class="card-body px-0 template-max-height">
-            <!-- Size Tabs -->
-            <div class="btn-group w-100 mb-3">
-              <button 
-                class="btn btn-yellow"
-                [class.active]="selectedSize === '4.25x5.5'"
-                (click)="selectedSize = '4.25x5.5'"
-              >
-                4.25x5.5
-              </button>
-              <button 
-                class="btn btn-yellow"
-                [class.active]="selectedSize === '8.5x5.5'"
-                (click)="selectedSize = '8.5x5.5'"
-              >
-                8.5x5.5
-              </button>
-            </div>
+          <style>
+            .btn-yellow.active {
+              background-color: black !important;
+              color: white !important; /* Adjust text color for better visibility */
+            }
+          </style>
+          <div class="card">
+            <div class="card-header bg-yellow">Templates</div>
+            <div class="card-body px-0 template-max-height">
+              <!-- Size Tabs -->
+              <div class="btn-group w-100 mb-3">
+                <button
+                  class="btn btn-yellow"
+                  [class.active]="selectedSize === '4.25x5.5'"
+                  (click)="selectedSize = '4.25x5.5'"
+                >
+                  4.25x5.5
+                </button>
+                <button
+                  class="btn btn-yellow"
+                  [class.active]="selectedSize === '8.5x5.5'"
+                  (click)="selectedSize = '8.5x5.5'"
+                >
+                  8.5x5.5
+                </button>
+              </div>
 
-            <!-- Side Filters -->
-            <div class="btn-group w-100 mb-3">
-              <button 
-                class="btn btn-yellow"
-                [class.active]="selectedSide === 'front'"
-                (click)="selectedSide = 'front'"
-              >
-                Front
-              </button>
-              <button 
-                class="btn btn-yellow"
-                [class.active]="selectedSide === 'back'"
-                (click)="selectedSide = 'back'"
-              >
-                Back
-              </button>
-            </div>
+              <!-- Side Filters -->
+              <div class="btn-group w-100 mb-3">
+                <button
+                  class="btn btn-yellow"
+                  [class.active]="selectedSide === 'front'"
+                  (click)="selectedSide = 'front'"
+                >
+                  Front
+                </button>
+                <button
+                  class="btn btn-yellow"
+                  [class.active]="selectedSide === 'back'"
+                  (click)="selectedSide = 'back'"
+                >
+                  Back
+                </button>
+              </div>
 
-            <!-- Template Grid -->
-            <div class="row p-0 m-0 w-100">
-              <div
-                class="col-6 text-center w-100 mb-3 mt-4 template-name"
-                *ngFor="let template of filteredTemplates"
-                (click)="loadImageTemplate(template)"
-                style="cursor: pointer; font-size: 12px"
-              >
-                <div class="template-thumbnail" style="border: 1px solid #ddd; padding: 5px; border-radius: 5px;">
-                  <img
-                    [src]="template.image"
-                    alt="Template"
-                    class="img-fluid w-100"
-                    style="border-radius: 5px; max-height: 100px; object-fit: cover;"
-                  />
+              <!-- Template Grid -->
+              <div class="row p-0 m-0 w-100">
+                <div
+                  class="col-6 text-center w-100 mb-3 mt-4 template-name"
+                  *ngFor="let template of filteredTemplates"
+                  (click)="loadImageTemplate(template)"
+                  style="cursor: pointer; font-size: 12px"
+                >
+                  <div
+                    class="template-thumbnail"
+                    style="
+                      border: 1px solid #ddd;
+                      padding: 5px;
+                      border-radius: 5px;
+                    "
+                  >
+                    <img
+                      [src]="template.image"
+                      alt="Template"
+                      class="img-fluid w-100"
+                      style="
+                        border-radius: 5px;
+                        max-height: 100px;
+                        object-fit: cover;
+                      "
+                    />
+                  </div>
+                  {{ template.name }}
                 </div>
-                {{ template.name }}
               </div>
             </div>
           </div>
-        </div>
         </div>
 
         <div
@@ -1386,21 +1440,28 @@
       class="col-md-12 col-lg-9 p-0 d-flex justify-content-center order-3 order-lg-2 mt-4 mt-lg-0 canvas-section-wrapper"
     >
       <!-- Canvas Section -->
-    <div class="canvas-wrapper position-relative">
-      <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
+      <div class="canvas-wrapper position-relative">
+        <angular-editor-fabric-js #canvas></angular-editor-fabric-js>
 
-      <!-- Safety & Bleed Boundaries -->
-      <div id="safety-area" class="canvas-boundary safety-boundary"></div>
-      <div id="bleed-area" class="canvas-boundary bleed-boundary"></div>
+        <!-- Safety & Bleed Boundaries -->
+        <div id="safety-area" class="canvas-boundary safety-boundary"></div>
+        <div id="bleed-area" class="canvas-boundary bleed-boundary"></div>
 
-      <!-- Labels for Safety and Bleed Areas -->
-      <!-- Labels for Safety and Bleed Areas -->
-      <div class="canvas-labels">
-        <div id="safety-label" class="canvas-label safety-label" style="color: rgb(255, 54, 54);">Bleed Area</div>
-        <div id="bleed-label" class="canvas-label bleed-label">Safety Area</div>
+        <!-- Labels for Safety and Bleed Areas -->
+        <!-- Labels for Safety and Bleed Areas -->
+        <div class="canvas-labels">
+          <div
+            id="safety-label"
+            class="canvas-label safety-label"
+            style="color: rgb(255, 54, 54)"
+          >
+            Bleed Area
+          </div>
+          <div id="bleed-label" class="canvas-label bleed-label">
+            Safety Area
+          </div>
+        </div>
       </div>
-    </div>
-
     </div>
   </div>
 

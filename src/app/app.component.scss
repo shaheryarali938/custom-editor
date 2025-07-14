@@ -17,7 +17,7 @@
   width: 100% !important;
   object-fit: cover;
   cursor: pointer;
-  -webkit-transition: 0.5s ease;
+  transition: 0.5s ease;
   -webkit-transition: 0.5s ease;
 
   &:hover {
@@ -344,7 +344,6 @@
   .template-name {
     font-size: 12px !important;
   }
-  
 }
 
 .right-10 {
@@ -417,7 +416,7 @@
 
 /* Shared vertical line */
 .canvas-label::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -427,7 +426,7 @@
 
 /* Dot at end of line */
 .canvas-label::after {
-  content: '▲'; /* or '▲' for solid triangle */
+  content: "▲"; /* or '▲' for solid triangle */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -458,18 +457,195 @@
 
 .overlay {
   position: fixed;
-  inset: 0;                     /* top:0 right:0 bottom:0 left:0 */
-  background: rgba(0,0,0,.55);
+  inset: 0; /* top:0 right:0 bottom:0 left:0 */
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
 
   /* 👇 NEW  */
-  overflow-y: auto;            /* allow the page to scroll if needed */
-  padding: 2rem 0;             /* a little breathing-space top & bottom */
+  overflow-y: auto; /* allow the page to scroll if needed */
+  padding: 2rem 0; /* a little breathing-space top & bottom */
 }
+
+/* Templates Modal Styles */
+.templates-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.templates-modal {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 1200px;
+  width: 95%;
+  max-height: 85vh;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+.templates-header {
+  background: #fdc323;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px 20px 0 0;
+}
+
+.templates-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.templates-close-btn {
+  background: none;
+  border: none;
+  font-weight: bold;
+  border: 1px solid #242323;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.1);
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+  }
+}
+
+.templates-content {
+  padding: 30px;
+  max-height: calc(85vh - 140px);
+  overflow-y: auto;
+}
+
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.template-item {
+  border: 2px solid #f0f0f0;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: white;
+
+  &:hover {
+    border-color: #fdc323;
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.template-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  background: #f8f9fa;
+
+  @media (max-width: 768px) {
+    height: 150px;
+  }
+}
+
+.template-name {
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  text-align: center;
+  background: #fafafa;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+}
+
+.no-templates {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+
+  i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  h4 {
+    margin-bottom: 10px;
+    color: #666;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .content-box {
   background: #fff;
-  max-height: calc(100vh - 4rem);   /* never taller than viewport */
-  overflow-y: auto;                 /* scroll inside if it’s still too tall */
+  max-height: calc(100vh - 4rem); /* never taller than viewport */
+  overflow-y: auto; /* scroll inside if it's still too tall */
 }
