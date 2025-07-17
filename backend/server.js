@@ -7,7 +7,7 @@ const fs = require('fs');
 const app = express();
 
 // ✅ Enable CORS for Angular dev server
-app.use(cors({ origin: 'http://localhost:3001' }));
+app.use(cors({ origin: 'http://13.235.111.46:3001' }));
 
 
 // ⬇️ Your upload folder
@@ -43,3 +43,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
+
