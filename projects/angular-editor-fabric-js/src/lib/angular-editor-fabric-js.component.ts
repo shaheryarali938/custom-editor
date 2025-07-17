@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { fabric } from "fabric";
-import { HttpClient, HttpHandler, HttpXhrBackend } from '@angular/common/http';
+import { HttpClient, HttpHandler, HttpXhrBackend } from "@angular/common/http";
 
 @Component({
   selector: "angular-editor-fabric-js",
@@ -84,34 +84,37 @@ export class FabricjsEditorComponent implements AfterViewInit {
       selectionBorderColor: "blue",
       isDrawingMode: false,
     });
-    this.canvas.on('object:added', (e) => {
+    this.canvas.on("object:added", (e) => {
       const obj = e.target;
       if (!obj || (obj as any).isBarcode) return;
-    
+
       // Save initial position
-      this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
-    });    
+      this.lastValidPositions.set(obj, {
+        left: obj.left || 0,
+        top: obj.top || 0,
+      });
+    });
 
     this.canvas.on("object:scaling", (e) => {
       const obj = e.target;
       if (!obj) return;
-    
+
       obj.setCoords();
       const objBounds = obj.getBoundingRect(true);
-    
-      const isOverlapping = this.canvas.getObjects().some(target => {
+
+      const isOverlapping = this.canvas.getObjects().some((target) => {
         const isProtected =
           (target as any).isBarcode ||
           (target as any).isProtectedText ||
           (target as any).isProtectedAddress;
-    
+
         if (!isProtected) return false;
-    
+
         target.setCoords();
         const targetBounds = target.getBoundingRect(true);
         return this.isOverlapping(objBounds, targetBounds);
       });
-    
+
       if (isOverlapping) {
         obj.scaleX = (obj as any)._lastGoodScaleX || 1;
         obj.scaleY = (obj as any)._lastGoodScaleY || 1;
@@ -126,10 +129,6 @@ export class FabricjsEditorComponent implements AfterViewInit {
         (obj as any)._lastGoodTop = obj.top;
       }
     });
-    
-    
-    
-    
 
     this.canvas.on({
       "object:moving": (e) => {
@@ -182,7 +181,6 @@ export class FabricjsEditorComponent implements AfterViewInit {
     this.htmlCanvas.nativeElement.style.borderRadius = "10px"; // Keep rounded corners
 
     this.addDashedSafetyArea();
-    
 
     // get references to the html canvas element & its context
     this.canvas.on("mouse:down", (e) => {
@@ -197,17 +195,17 @@ export class FabricjsEditorComponent implements AfterViewInit {
       (obj as any).isProtectedAddress
     );
   }
-  
-  
 
   public retrackObjects(): void {
     this.canvas.getObjects().forEach((obj) => {
       if (!(obj as any).isBarcode) {
-        this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
+        this.lastValidPositions.set(obj, {
+          left: obj.left || 0,
+          top: obj.top || 0,
+        });
       }
     });
   }
-  
 
   /*------------------------Block elements------------------------*/
   // Preview Canvas
@@ -304,21 +302,19 @@ export class FabricjsEditorComponent implements AfterViewInit {
       evented: false,
       excludeFromExport: true,
     } as any);
-    (this.safetyArea as any).id = 'safetyLine';
-    
+    (this.safetyArea as any).id = "safetyLine";
 
     this.canvas.add(this.safetyArea);
     this.canvas.sendToBack(this.safetyArea);
   }
 
   bringGuidesToFront(): void {
-    this.canvas.getObjects().forEach(obj => {
-      if ((obj as any).id === 'safetyLine' || (obj as any).id === 'bleedLine') {
+    this.canvas.getObjects().forEach((obj) => {
+      if ((obj as any).id === "safetyLine" || (obj as any).id === "bleedLine") {
         this.canvas.bringToFront(obj);
       }
     });
   }
-  
 
   // Block "Add text"
 
@@ -391,210 +387,216 @@ export class FabricjsEditorComponent implements AfterViewInit {
     }
   }
 
-// Configuration for your specific barcode area
-private barcodeArea = {
-  // Coordinates for the barcode area in your document
-  left: 50,       // Adjust based on your document layout
-  top: 700,       // Vertical position of barcode area
-  width: 300,     // Width of barcode area
-  height: 100     // Height of barcode area
-};
-
-// Add this configuration at the top of your component
-private barcodeDetectionSettings = {
-  padding: 2, // Reduce this to make the detection area tighter
-  minWidth: 100,
-  maxWidth: 1100,
-  minHeight: 80,
-  maxHeight: 400
-};
-  // In your component class
-private lastValidPositions = new WeakMap<fabric.Object, { left: number; top: number }>();
-
-setupMovementProtection(): void {
-  // Initialize last known positions
-  this.canvas.getObjects().forEach(obj => {
-    if (!this.isBarcode(obj)) {
-      this.lastValidPositions.set(obj, { left: obj.left || 0, top: obj.top || 0 });
-    }
-  });
-
-  // Handle movement events
-  this.canvas.on('object:modified', (e) => {
-    const obj = e.target;
-    if (!obj || this.isProtectedZone(obj)) return;
-  
-    const isOverlapping = this.canvas.getObjects().some(objToCheck => {
-      if (!this.isProtectedZone(objToCheck)) return false;
-      objToCheck.setCoords();
-      const protectedBounds = objToCheck.getBoundingRect(true);
-      obj.setCoords();
-      const objBounds = obj.getBoundingRect(true);
-      return this.isOverlapping(objBounds, protectedBounds);
-    });
-  
-    if (isOverlapping) {
-      const lastPos = this.lastValidPositions.get(obj);
-      if (lastPos) {
-        obj.set({
-          left: lastPos.left,
-          top: lastPos.top
-        });
-        obj.setCoords();
-        this.canvas.requestRenderAll();
-      }
-    } else {
-      this.lastValidPositions.set(obj, {
-        left: obj.left || 0,
-        top: obj.top || 0
-      });
-    }
-  });
-  
-}
-
-// Modified checkBarcodeOverlap method
-private checkBarcodeOverlap(obj: fabric.Object): boolean {
-  obj.setCoords(); // make sure coords are up-to-date
-  const objBounds = obj.getBoundingRect();
-
-  return this.canvas.getObjects().some(otherObj => {
-    if (!(otherObj as any).isBarcode) return false;
-    otherObj.setCoords();
-    const barcodeBounds = otherObj.getBoundingRect();
-    return this.isOverlapping(objBounds, barcodeBounds);
-  });
-}
-
-
-// Helper method to adjust bounds with padding
-private getAdjustedBounds(rect: any, padding: number = 0): any {
-  return {
-    left: rect.left + padding,
-    top: rect.top + padding,
-    width: rect.width - (padding * 2),
-    height: rect.height - (padding * 2)
+  // Configuration for your specific barcode area
+  private barcodeArea = {
+    // Coordinates for the barcode area in your document
+    left: 50, // Adjust based on your document layout
+    top: 700, // Vertical position of barcode area
+    width: 300, // Width of barcode area
+    height: 100, // Height of barcode area
   };
-}
 
-// Updated isBarcode method with precise detection
-private isBarcode(obj: fabric.Object): boolean {
-  if (obj.type !== 'image') return false;
-  
-  const src = (obj as any).getSrc?.() || (obj as any).src || '';
-  const settings = this.barcodeDetectionSettings;
-  
-  // Check if dimensions match barcode characteristics
-  const isBarcodeSize = (
-    obj.width! > settings.minWidth &&
-    obj.width! < settings.maxWidth &&
-    obj.height! > settings.minHeight &&
-    obj.height! < settings.maxHeight
-  );
-  
-  return src.includes('barcode') || src.includes('download.png') || isBarcodeSize;
-}
+  // Add this configuration at the top of your component
+  private barcodeDetectionSettings = {
+    padding: 2, // Reduce this to make the detection area tighter
+    minWidth: 100,
+    maxWidth: 1100,
+    minHeight: 80,
+    maxHeight: 400,
+  };
+  // In your component class
+  private lastValidPositions = new WeakMap<
+    fabric.Object,
+    { left: number; top: number }
+  >();
 
-private isOverlapping(rect1: any, rect2: any): boolean {
-  return !(
-    rect1.left > rect2.left + rect2.width ||
-    rect1.left + rect1.width < rect2.left ||
-    rect1.top > rect2.top + rect2.height ||
-    rect1.top + rect1.height < rect2.top
-  );
-}
-
-
-
-loadJsonToCanvas(json: string, callback?: () => void): void {
-  this.canvas.loadFromJSON(json, () => {
-    this.canvas.renderAll();
-    this.addDashedSafetyArea();
-    this.setupMovementProtection();
-    this.bringGuidesToFront();
-
-    this.canvas.getObjects().forEach((obj: any) => {
-      const isBarcode = obj.type === 'image' && (
-        (obj.src && obj.src.includes("barcode")) ||
-        (obj.src && obj.src.includes("download.png")) ||
-        (obj.width > 100 && obj.width < 1100 && obj.height < 400 && obj.height > 80)
-      );
-
-      if (isBarcode) {
-        obj.set({
-          lockMovementX: true,
-          lockMovementY: true,
-          lockScalingX: true,
-          lockScalingY: true,
-          lockRotation: true,
-          selectable: false,
-          evented: false,
-          hoverCursor: 'default'
+  setupMovementProtection(): void {
+    // Initialize last known positions
+    this.canvas.getObjects().forEach((obj) => {
+      if (!this.isBarcode(obj)) {
+        this.lastValidPositions.set(obj, {
+          left: obj.left || 0,
+          top: obj.top || 0,
         });
-        (obj as any).isBarcode = true;
-        return;
-      }
-
-      // Protected postage text detection
-      if (obj.type === 'textbox' && typeof obj.text === 'string') {
-        const normalizedText = obj.text.replace(/\s+/g, '').toLowerCase();
-
-        if (
-          normalizedText.includes('firstclass') &&
-          normalizedText.includes('presort') &&
-          normalizedText.includes('postagepaid') &&
-          normalizedText.includes('ylhq')
-        ) {
-          obj.set({
-            lockMovementX: true,
-            lockMovementY: true,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockRotation: true,
-            selectable: false,
-            evented: false,
-            hoverCursor: 'default',
-          });
-          (obj as any).isProtectedText = true;
-        }
-
-        // ✅ Address detection and protection
-        const text = obj.text.trim();
-        const lines = text.split('\n');
-
-        const cityStateZipRegex = /,\s?[A-Z]{2}\s+\d{4,5}(?:\s?-\s?\d{4})?$/;
-        const hasAtLeastTwoLines = lines.length >= 2;
-        const endsWithCityStateZip = cityStateZipRegex.test(lines[lines.length - 1]);
-
-        if (hasAtLeastTwoLines && endsWithCityStateZip) {
-          obj.set({
-            lockMovementX: true,
-            lockMovementY: true,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockRotation: true,
-            selectable: false,
-            evented: false,
-            hoverCursor: 'default',
-          });
-          (obj as any).isProtectedAddress = true;
-        }
       }
     });
 
-    if (callback) callback();
-  });
-}
+    // Handle movement events
+    this.canvas.on("object:modified", (e) => {
+      const obj = e.target;
+      if (!obj || this.isProtectedZone(obj)) return;
 
+      const isOverlapping = this.canvas.getObjects().some((objToCheck) => {
+        if (!this.isProtectedZone(objToCheck)) return false;
+        objToCheck.setCoords();
+        const protectedBounds = objToCheck.getBoundingRect(true);
+        obj.setCoords();
+        const objBounds = obj.getBoundingRect(true);
+        return this.isOverlapping(objBounds, protectedBounds);
+      });
 
-  
-  
+      if (isOverlapping) {
+        const lastPos = this.lastValidPositions.get(obj);
+        if (lastPos) {
+          obj.set({
+            left: lastPos.left,
+            top: lastPos.top,
+          });
+          obj.setCoords();
+          this.canvas.requestRenderAll();
+        }
+      } else {
+        this.lastValidPositions.set(obj, {
+          left: obj.left || 0,
+          top: obj.top || 0,
+        });
+      }
+    });
+  }
+
+  // Modified checkBarcodeOverlap method
+  private checkBarcodeOverlap(obj: fabric.Object): boolean {
+    obj.setCoords(); // make sure coords are up-to-date
+    const objBounds = obj.getBoundingRect();
+
+    return this.canvas.getObjects().some((otherObj) => {
+      if (!(otherObj as any).isBarcode) return false;
+      otherObj.setCoords();
+      const barcodeBounds = otherObj.getBoundingRect();
+      return this.isOverlapping(objBounds, barcodeBounds);
+    });
+  }
+
+  // Helper method to adjust bounds with padding
+  private getAdjustedBounds(rect: any, padding: number = 0): any {
+    return {
+      left: rect.left + padding,
+      top: rect.top + padding,
+      width: rect.width - padding * 2,
+      height: rect.height - padding * 2,
+    };
+  }
+
+  // Updated isBarcode method with precise detection
+  private isBarcode(obj: fabric.Object): boolean {
+    if (obj.type !== "image") return false;
+
+    const src = (obj as any).getSrc?.() || (obj as any).src || "";
+    const settings = this.barcodeDetectionSettings;
+
+    // Check if dimensions match barcode characteristics
+    const isBarcodeSize =
+      obj.width! > settings.minWidth &&
+      obj.width! < settings.maxWidth &&
+      obj.height! > settings.minHeight &&
+      obj.height! < settings.maxHeight;
+
+    return (
+      src.includes("barcode") || src.includes("download.png") || isBarcodeSize
+    );
+  }
+
+  private isOverlapping(rect1: any, rect2: any): boolean {
+    return !(
+      rect1.left > rect2.left + rect2.width ||
+      rect1.left + rect1.width < rect2.left ||
+      rect1.top > rect2.top + rect2.height ||
+      rect1.top + rect1.height < rect2.top
+    );
+  }
+
+  loadJsonToCanvas(json: string, callback?: () => void): void {
+    this.canvas.loadFromJSON(json, () => {
+      this.canvas.renderAll();
+      this.addDashedSafetyArea();
+      this.setupMovementProtection();
+      this.bringGuidesToFront();
+
+      this.canvas.getObjects().forEach((obj: any) => {
+        const isBarcode =
+          obj.type === "image" &&
+          ((obj.src && obj.src.includes("barcode")) ||
+            (obj.src && obj.src.includes("download.png")) ||
+            (obj.width > 100 &&
+              obj.width < 1100 &&
+              obj.height < 400 &&
+              obj.height > 80));
+
+        if (isBarcode) {
+          obj.set({
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            selectable: false,
+            evented: false,
+            hoverCursor: "default",
+          });
+          (obj as any).isBarcode = true;
+          return;
+        }
+
+        // Protected postage text detection
+        if (obj.type === "textbox" && typeof obj.text === "string") {
+          const normalizedText = obj.text.replace(/\s+/g, "").toLowerCase();
+
+          if (
+            normalizedText.includes("firstclass") &&
+            normalizedText.includes("presort") &&
+            normalizedText.includes("postagepaid") &&
+            normalizedText.includes("ylhq")
+          ) {
+            obj.set({
+              lockMovementX: true,
+              lockMovementY: true,
+              lockScalingX: true,
+              lockScalingY: true,
+              lockRotation: true,
+              selectable: false,
+              evented: false,
+              hoverCursor: "default",
+            });
+            (obj as any).isProtectedText = true;
+          }
+
+          // ✅ Address detection and protection
+          const text = obj.text.trim();
+          const lines = text.split("\n");
+
+          const cityStateZipRegex = /,\s?[A-Z]{2}\s+\d{4,5}(?:\s?-\s?\d{4})?$/;
+          const hasAtLeastTwoLines = lines.length >= 2;
+          const endsWithCityStateZip = cityStateZipRegex.test(
+            lines[lines.length - 1]
+          );
+
+          if (hasAtLeastTwoLines && endsWithCityStateZip) {
+            obj.set({
+              lockMovementX: true,
+              lockMovementY: true,
+              lockScalingX: true,
+              lockScalingY: true,
+              lockRotation: true,
+              selectable: false,
+              evented: false,
+              hoverCursor: "default",
+            });
+            (obj as any).isProtectedAddress = true;
+          }
+        }
+      });
+
+      if (callback) callback();
+    });
+  }
 
   loadImageTemplate(template: any): void {
-    const handler: HttpHandler = new HttpXhrBackend({ build: () => new XMLHttpRequest() });
+    const handler: HttpHandler = new HttpXhrBackend({
+      build: () => new XMLHttpRequest(),
+    });
     const httpClient = new HttpClient(handler);
-  
-    httpClient.get(template.filePathFront, { responseType: 'text' }).subscribe(
+
+    httpClient.get(template.filePathFront, { responseType: "text" }).subscribe(
       (jsonString: string) => {
         // ✅ Reuse your unified loader
         this.loadJsonToCanvas(jsonString, () => {
@@ -602,12 +604,11 @@ loadJsonToCanvas(json: string, callback?: () => void): void {
           this.retrackObjects(); // for snap-back protection
         });
       },
-      error => {
+      (error) => {
         console.error("Error loading template JSON file:", error);
       }
     );
   }
-  
 
   // Block "Upload Image"
 
@@ -653,28 +654,27 @@ loadJsonToCanvas(json: string, callback?: () => void): void {
   public readUrl(event) {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
-      
+
       reader.onload = (readerEvent) => {
         const imageUrl = readerEvent.target?.result as string; // ✅ Force type to string
-  
+
         // ✅ Add image directly to Fabric.js canvas
         fabric.Image.fromURL(imageUrl, (img) => {
           img.set({
-            left: 100, 
-            top: 100, 
+            left: 100,
+            top: 100,
             scaleX: 0.5, // Adjust as needed
             scaleY: 0.5,
           });
-  
+
           this.canvas.add(img); // ✅ Add image to Fabric.js canvas
           this.canvas.renderAll(); // ✅ Refresh canvas
         });
       };
-  
+
       reader.readAsDataURL(event.target.files[0]);
     }
   }
-  
 
   removeWhite(url) {
     this.url = "";
