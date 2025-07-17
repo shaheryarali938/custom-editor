@@ -3,8 +3,6 @@ import { FabricjsEditorComponent } from "projects/angular-editor-fabric-js/src/p
 import { fabric } from "fabric";
 import { HttpClient, HttpXhrBackend } from "@angular/common/http";
 
-
-
 declare var FontFace: any;
 
 import JSZip from 'jszip';
@@ -25,100 +23,7 @@ const CONNECT_SCHEMA_VERSION: '1.0.0.59' | '1.0.0.61' = '1.0.0.59';
 })
 
 
-
 export class AppComponent implements OnInit {
-
-  constructor(private http: HttpClient) {}
-
- isUploading = false;
-
-async placeOrder(): Promise<void> {
-  this.isUploading = true;
-  try {
-    const zipBlob = await this.exportAsOLTemplateToBlob();
-    const formData = new FormData();
-    formData.append('template', zipBlob, 'template.OL-template');
-
-   this.http.post<{ url: string }>('http://localhost:3000/api/upload-template', formData).subscribe({
-  next: (response) => {
-    const savedUrl = response.url;
-    window.location.href = `https://www.yellowletterhq.com/product/postcards/?template=${encodeURIComponent(savedUrl)}`;
-  },
-  error: (err) => {
-    alert('Upload failed. Please try again.');
-    console.error('UPLOAD ERROR:', err);
-  }
-});
-
-
-  } catch (err) {
-    alert('Something went wrong.');
-    this.isUploading = false;
-  }
-}
-
-
-
-async exportAsOLTemplateToBlob(): Promise<Blob> {
-  const zip = await this.generateOLTemplateZip(); // Your existing method to create zip
-  return await zip.generateAsync({ type: 'blob' });
-}
-
-private async generateOLTemplateZip(): Promise<JSZip> {
-  const zip = new JSZip();
-  const docFolder   = zip.folder('public')!.folder('document')!;
-  const cssFolder   = docFolder.folder('css')!;
-  const imgFolder   = docFolder.folder('images')!;
-  const fontsFolder = docFolder.folder('fonts')!;
-
-  const fields = [
-    'FirstName', 'LastName', 'full_name',
-    'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
-    'MailingAddress', 'address2', 'Mailingcity', 'MailingState', 'Mailingzip',
-    'AgentName', 'AgentNumber'
-  ];
-
-  const scriptsXml = this.buildScriptEntries(fields);
-  docFolder.file('scripts.xml', scriptsXml);
-
-  const W = this.canvas.getCanvas().getWidth();
-  const H = this.canvas.getCanvas().getHeight();
-
-  const jsonFront = this.frontCanvasData ?? this.canvas.getCanvas().toJSON();
-  const jsonBack  = this.backCanvasData  ?? { version: 'fabric', objects: [], background: '#ffffff' };
-
-  const images: Array<{ id: string; filename: string }> = [];
-  const pageHtmlFront = await this.buildPageHtml(jsonFront, W, H, imgFolder, images, 1);
-  const pageHtmlBack  = await this.buildPageHtml(jsonBack , W, H, imgFolder, images, 2);
-
-  const sectionFile = 'section-combined.html';
-  docFolder.file(sectionFile, `<!DOCTYPE html><html section="Section 1" dpi="96" scale="1.0">
-  <head>
-    <link rel="stylesheet" href="css/default.css"/>
-    <link rel="stylesheet" href="css/context_all_styles.css"/>
-    <link rel="stylesheet" href="css/context_print_styles.css"/>
-    <style>.page-spacer { height: 30px; background-color: transparent; }</style>
-  </head>
-  <body spellcheck="false" contenteditable="false">
-  ${pageHtmlFront}${pageHtmlBack}
-  </body></html>`);
-
-  const masterPageId = `res-${this.generateUUID()}`;
-  const masterPageFile = `master-${masterPageId}.html`;
-  docFolder.file(masterPageFile, '<!DOCTYPE html><html masterpage="Master page 1"><head><meta charset="UTF-8"></head><body></body></html>');
-
-  await this.embedFontsInto(fontsFolder);
-  this.embedCssInto(cssFolder);
-
-  const sectionId = `res-${this.generateUUID()}`;
-  zip.file('index.xml', this.buildIndexXml(sectionId, sectionFile, masterPageId, images, W, H));
-
-  return zip;
-}
-
-
-
-
   @ViewChild("canvasEditor", { static: false })
   canvasEditor!: FabricjsEditorComponent;
   @ViewChild('uploadFileInput') uploadFileInput!: ElementRef;
@@ -128,9 +33,6 @@ private async generateOLTemplateZip(): Promise<JSZip> {
   currentTemplates: { front: any, back: any } = { front: null, back: null };
 extraField1: any;
 extraField2: any;
-
-  showProductData: boolean = false;
-  showTopBarModal: boolean = false;
 
 sampleRecord = {
   FirstName: 'Jessica',
@@ -303,40 +205,42 @@ sampleRecord = {
 
 
 private buildScriptEntries(fields: string[]): string {
-  return fields.map(field => `
-    <script type="STANDARD">
-      <com.objectiflune.scripting.text.TextScriptModel schemaVersion="1.0.0.2">
-        <entry>
-          <field xsi:type="dataFieldReference">
-            <type>STRING</type>
-            <path>${field}</path>
-          </field>
-          <fieldFormatString>
-            <type>NONE</type>
-          </fieldFormatString>
-          <format type="NONE"/>
-          <prefix></prefix>
-          <suffix></suffix>
-        </entry>
-        <attribute></attribute>
-        <convertToJSON>false</convertToJSON>
-        <insertMethod>TEXT</insertMethod>
-      </com.objectiflune.scripting.text.TextScriptModel>
-      <enabled>true</enabled>
-      <findText>@${field}@</findText>
-      <name>${field}</name>
-      <origin>
-        <entry><key>Bundle-SymbolicName</key><value>com.objectiflune.scripting.text;singleton:=true</value></entry>
-        <entry><key>Bundle-Version</key><value>2019.1.0.20181108-2246-54341</value></entry>
-        <entry><key>Bundle-Name</key><value>Text Scripts</value></entry>
-        <entry><key>Bundle-Vendor</key><value>OBJECTIFLUNE</value></entry>
-      </origin>
-      <scope>RESULT_SET</scope>
-      <selectorText>@${field}@</selectorText>
-      <selectorType>TEXT</selectorType>
-      <source>DATA_MODEL</source>
-    </script>
-  `).join('\n');
+  return `
+    <scripts>
+      ${fields.map(field => `
+        <script type="STANDARD">
+          <com.objectiflune.scripting.text.TextScriptModel schemaVersion="1.0.0.2">
+            <entry>
+              <field xsi:type="dataFieldReference">
+                <type>STRING</type>
+                <path>${field}</path>
+              </field>
+              <fieldFormatString><type>NONE</type></fieldFormatString>
+              <format type="NONE"/>
+              <prefix></prefix>
+              <suffix></suffix>
+            </entry>
+            <attribute></attribute>
+            <convertToJSON>false</convertToJSON>
+            <insertMethod>HTML</insertMethod>
+          </com.objectiflune.scripting.text.TextScriptModel>
+          <enabled>true</enabled>
+          <findText>@${field}@</findText>
+          <name>${field}</name>
+          <origin>
+            <entry><key>Bundle-SymbolicName</key><value>com.objectiflune.scripting.text;singleton:=true</value></entry>
+            <entry><key>Bundle-Version</key><value>2019.1.0.20181108-2246-54341</value></entry>
+            <entry><key>Bundle-Name</key><value>Text Scripts</value></entry>
+            <entry><key>Bundle-Vendor</key><value>OBJECTIFLUNE</value></entry>
+          </origin>
+          <scope>RESULT_SET</scope>
+          <selectorText></selectorText>
+          <selectorType>TEXT</selectorType>
+          <source></source>
+        </script>
+      `).join('\n')}
+    </scripts>
+  `;
 }
 
 
@@ -426,8 +330,10 @@ private async buildPageHtml(
   H: number,
   imagesFolder: JSZip,
   images: Array<{ id: string; filename: string }>,
-  pageNumber: number
-): Promise<string> {
+  pageNumber: number  // ← add this
+): Promise<string>{
+
+  // StaticCanvas typings omit width/height → cast as any then set them
   const temp = new fabric.StaticCanvas(null, {} as any);
   temp.setWidth(W);
   temp.setHeight(H);
@@ -435,130 +341,119 @@ private async buildPageHtml(
   return new Promise<string>(resolve => {
     temp.loadFromJSON(json, () => {
       const bg = (temp.backgroundColor as string) || '#ffffff';
+      
+let topMargin = 20;
+let bottomMargin = 20;
 
-      let topMargin = 20;
-      let bottomMargin = 20;
-      if (pageNumber === 1) {
-        topMargin = 0;
-        bottomMargin = 30;
-      } else if (pageNumber === 2) {
-        topMargin = 40;
-        bottomMargin = 10;
-      }
+if (pageNumber === 1) {
+  topMargin = 0;         // Customize for page 1
+  bottomMargin = 30;     // Customize for page 1
+} else if (pageNumber === 2) {
+  topMargin = 40;        // Customize for page 2
+  bottomMargin = 10;     // Customize for page 2
+}
 
-      let html = `<div class="page" pagenumber="${pageNumber}" style="
-        position:relative;
-        width:${W}px;
-        height:${H}px;
-        background-color:${bg};
-        overflow:hidden;
-        margin-top:${topMargin}px;
-        margin-bottom:${bottomMargin}px;
-      ">`;
+let html = `<div class="page" pagenumber="${pageNumber}" style="
+  position:relative;
+  width:${W}px;
+  height:${H}px;
+  background-color:${bg};
+  overflow:hidden;
+  margin-top:${topMargin}px;
+  margin-bottom:${bottomMargin}px;
+">`;
 
-      const objects = temp.getObjects();
 
-      // Find mailing block
-      let mailingTextIndex = -1;
-      for (let i = 0; i < objects.length; i++) {
-        const o = objects[i];
-        if (o.type === 'textbox' || o.type === 'text' || o.type === 'i-text') {
-          const t = o as fabric.Textbox;
-          const plain = (t.text || '').replace(/\s+/g, ' ').trim();
-          if (
-            /^@FirstName@ @LastName@ @MailingAddress@, @MailingState@ @Mailingzip@$/.test(
-              plain
-            )
-          ) {
-            mailingTextIndex = i;
-            break;
-          }
-        }
-      }
+      for (const o of temp.getObjects()) {
 
-      let barcodeHandled = false;
-
-      for (let i = 0; i < objects.length; i++) {
-        const o = objects[i];
-
-        // Handle TEXT
+        /* TEXT **************************************************************/
         if (o.type === 'textbox' || o.type === 'text' || o.type === 'i-text') {
           const t = o as fabric.Textbox;
           const fill = typeof (t as any).fill === 'string' ? (t as any).fill : '#000';
           const escapedText = this.convertPlainTextToVariables(t.text || '')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\n/g, '<br>');
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/\n/g, '<br>');
 
-          html += `<div style="
-            position:absolute;
-            left:${o.left}px;
-            top:${o.top}px;
-            width:${o.width}px;
-            font-family:'${(t as any).fontFamily || 'Arial'}';
-            font-size:${(t as any).fontSize || 12}px;
-            font-weight:${(t as any).fontWeight || 'normal'}';
-            font-style:${(t as any).fontStyle || 'normal'}';
-            color:${fill};
-            text-align:${(t as any).textAlign || 'left'};
-            line-height:${(t as any).lineHeight || 1.16};
-            transform: rotate(${o.angle || 0}deg);
-            transform-origin: top left;
-          ">${escapedText}</div>`;
+
+html += `<div style="
+  position:absolute;
+  left:${o.left}px;
+  top:${o.top}px;
+  width:${o.width}px;
+  font-family:'${(t as any).fontFamily || 'Arial'}';
+  font-size:${(t as any).fontSize || 12}px;
+  font-weight:${(t as any).fontWeight || 'normal'};
+  font-style:${(t as any).fontStyle || 'normal'};
+  color:${fill};
+  text-align:${(t as any).textAlign || 'left'};
+  line-height:${(t as any).lineHeight || 1.16};
+  transform: rotate(${o.angle || 0}deg);
+  transform-origin: top left;
+">${escapedText}</div>`;
+
         }
 
-        // Handle IMAGE
-        if (o.type === 'image') {
-          const img = o as fabric.Image;
+       /* IMAGE *************************************************************/
+if (o.type === 'image') {
 
-          // Only replace barcode image that comes before mailing block
-          if (!barcodeHandled && i + 1 === mailingTextIndex) {
-            const H = o.getScaledHeight();
-            const W = o.getScaledWidth();
-            const fs = Math.round(H * 0.70);
-            const lsEm = (W / 65 / fs).toFixed(4);
+/* 1️⃣  If this image is the barcode → output @imbarcode@ instead  */
+if (this.isBarcode(o)) {
 
-            html += `<div style="
-              position:absolute;
-              left:${o.left}px;
-              top:${o.top}px;
-              width:${W}px;
-              height:${H}px;
-              font-family:'USPS4CB';
-              font-size:${fs}px;
-              line-height:${H}px;
-              letter-spacing:${lsEm}em;
-              white-space:nowrap;
-              overflow:hidden;
-            ">@imbarcode@</div>`;
-            barcodeHandled = true;
-            continue;
-          }
+  /* ▸ box dimensions that the old <img> occupied */
+  const H = o.getScaledHeight();          // barcode height in px
+  const W = o.getScaledWidth();           // barcode width  in px
 
-          // All other images
-          const src = (img.getElement() as HTMLImageElement).src;
-          const ext = (src.split(';')[0].split('/')[1] || 'png').toLowerCase();
-          const filename = `img-${images.length}.${ext}`;
-          const id = `res-${this.generateUUID()}`;
+  /* ▸ font-size: ~70 % of box height gives the IMB glyphs the right rise */
+  const fs = Math.round(H * 0.70);
 
-          if (src.startsWith('data:')) {
-            imagesFolder.file(filename, src.split(',')[1], { base64: true });
-          }
-          images.push({ id, filename });
+  /* ▸ IMB is 65 bars → derive letter-spacing so text exactly spans W */
+  const lsEm = (W / 65 / fs).toFixed(4);  // expressed in _em_
 
-          html += `<img src="images/${filename}" style="
-            position:absolute;
-            left:${img.left}px;
-            top:${img.top}px;
-            width:${img.width}px;
-            height:${img.height}px;
-            transform: scale(${img.scaleX || 1}, ${img.scaleY || 1}) rotate(${img.angle || 0}deg);
-            transform-origin: top left;
-          "/>`;
-        }
+  html += `\n<div style="
+      position:absolute; left:${o.left}px; top:${o.top}px;
+      width:${W}px; height:${H}px;
+      font-family:'USPS4CB';
+      font-size:${fs}px;
+      line-height:${H}px;           /* vertical centring */
+      letter-spacing:${lsEm}em;     /* bar-to-bar distance */
+      white-space:nowrap; overflow:hidden;
+    ">@imbarcode@</div>`;
+  continue;                              // ⛔️ skip normal image export
+}
+
+
+  /* 2️⃣  All other images keep working exactly as before */
+  const img = o as fabric.Image;
+  const src = (img.getElement() as HTMLImageElement).src;
+  const ext = (src.split(';')[0].split('/')[1] || 'png').toLowerCase();
+  const filename = `img-${images.length}.${ext}`;
+  const id       = `res-${this.generateUUID()}`;
+
+  // inline/base64 images → write to zip
+  if (src.startsWith('data:')) {
+    imagesFolder.file(filename, src.split(',')[1], { base64: true });
+  }
+  images.push({ id, filename });
+
+html += `
+  <img src="images/${filename}" style="
+    position:absolute;
+    left:${img.left}px;
+    top:${img.top}px;
+    width:${img.width}px;
+    height:${img.height}px;
+    transform:
+      scale(${img.scaleX || 1}, ${img.scaleY || 1})
+      rotate(${img.angle || 0}deg);
+    transform-origin: top left;
+  "/>`;
+
+}
+
       }
 
-      html += '</div>';
+      html += '</div>'; // close .page
       resolve(html);
     });
   });
@@ -827,15 +722,11 @@ private buildIndexXml(
     <colorManagement>false</colorManagement>
     <renderingIntent>RELATIVE_COLORIMETRIC</renderingIntent>
   </colorSettings>
-<scripts>
   ${this.buildScriptEntries([
     'FirstName', 'LastName', 'full_name',
     'PropertyAddress', 'PropertyCity', 'PropertyState', 'PropertyZip',
     'MailingAddress', 'address2', 'Mailingcity', 'MailingState', 'Mailingzip',
-    'AgentName', 'AgentNumber', 'imbarcode' // if needed
-  ])}
-</scripts>
-
+    'AgentName', 'AgentNumber'])}
   <translationFileEntries/>
   <defaultParameters/>
 </package>`;
@@ -2004,6 +1895,24 @@ addNextExtraField() {
     this.previewModal.nativeElement.style.display = "none";
   }
 
+  // public changeBleedSize() {
+  //   this.canvas.changeBleedSize();
+  // }
+
+  showProductData: boolean = false;
+  showTopBarModal: boolean = false;
+  showOptionsModal: boolean = false;
+
+  toggleShowTopBarModal() {
+    this.showTopBarModal = !this.showTopBarModal;
+  }
+  toggleShowOptionsModal() {
+    this.showOptionsModal = !this.showOptionsModal;
+  }
+
+  toggleProductData() {
+    this.showProductData = false;
+  }
 
   // In your component class:
   public selectedSize: string = '4.25x5.5';
@@ -2269,17 +2178,6 @@ addNextExtraField() {
   public changeFigureColor(color) {
     this.canvas.changeFigureColor(color);
   }
-
-  // ...existing code...
-
-toggleProductData() {
-  this.showProductData = !this.showProductData;
-}
-
-toggleShowTopBarModal() {
-  this.showTopBarModal = !this.showTopBarModal;
-}
-
 
   // onObjectColorChange(event: Event) {
   //   const inputElement = event.target as HTMLInputElement;

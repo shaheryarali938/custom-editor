@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { FabricjsEditorModule } from 'projects/angular-editor-fabric-js/src/public-api';
@@ -16,7 +15,6 @@ import { PositiveNumberDirective } from '../directives/positive-number.directive
   imports: [
     BrowserModule,
     FabricjsEditorModule,
-    HttpClientModule ,  
     FormsModule,
     ColorPickerModule
   ],
