@@ -181,13 +181,23 @@ export class AppComponent implements OnInit {
 
   toggleTextDropdown() {
     this.showTextDropdown = !this.showTextDropdown;
+    // Close other dropdowns for better UX
+    this.showImportExportDropdown = false;
+    this.showProductDropdown = false;
   }
+
   toggleImportExportDropdown() {
     this.showImportExportDropdown = !this.showImportExportDropdown;
+    // Close other dropdowns for better UX
+    this.showTextDropdown = false;
+    this.showProductDropdown = false;
   }
 
   toggleProductDropdown() {
     this.showProductDropdown = !this.showProductDropdown;
+    // Close other dropdowns for better UX
+    this.showTextDropdown = false;
+    this.showImportExportDropdown = false;
   }
 
   openFileUpload() {
@@ -372,6 +382,11 @@ export class AppComponent implements OnInit {
   }
 
   public exportToOLConnectHtml(): void {
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is empty! Please add some content before exporting.");
+      this.showImportExportDropdown = false;
+      return;
+    }
     const canvas = this.canvas.getCanvas();
     const objects = canvas.getObjects();
     const width = canvas.getWidth();
@@ -432,6 +447,7 @@ export class AppComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    this.showImportExportDropdown = false;
   }
 
   private buildMasterSheetsXml(
@@ -616,6 +632,11 @@ export class AppComponent implements OnInit {
   public async exportAsOLTemplate(record: {
     [k: string]: string;
   }): Promise<void> {
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is empty! Please add some content before exporting.");
+      this.showImportExportDropdown = false;
+      return;
+    }
     /* 1 ─ folders & canvas sizes ─────────────────────────────────────────── */
     const zip = new JSZip();
     const docFolder = zip.folder("public")!.folder("document")!;
@@ -725,6 +746,7 @@ export class AppComponent implements OnInit {
     /* 7 ─ zip → blob → download ─────────────────────────────────────────── */
     const blob = await zip.generateAsync({ type: "blob" });
     saveAs(blob, "template.OL-template");
+    this.showImportExportDropdown = false;
   }
 
   /* ════════════════════════════════════════════════════════════════
@@ -1314,6 +1336,8 @@ body{margin:0;padding:0;}`.trim()
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
+    this.showImportExportDropdown = false;
+    this.showProductDropdown = false;
   }
 
   // Default font properties
@@ -2084,10 +2108,62 @@ body{margin:0;padding:0;}`.trim()
     }
   }
 
+  // Helper method to check if canvas is empty
+  private isCanvasEmpty(): boolean {
+    const objects = this.canvas.getCanvas().getObjects();
+
+    // Filter out all guide lines, bleed lines, safety area lines, and other non-content objects
+    const contentObjects = objects.filter((obj: any) => {
+      // Check for various guide line identifiers
+      const isGuideLine =
+        (obj as any)._id === "bleed-line" ||
+        (obj as any)._id === "safety-line" ||
+        (obj as any).id === "bleed-line" ||
+        (obj as any).id === "safety-line" ||
+        (obj as any).name === "bleed-line" ||
+        (obj as any).name === "safety-line" ||
+        obj.type === "line" ||
+        // Check for dashed stroke patterns (typically guide lines)
+        ((obj as any).stroke && (obj as any).strokeDashArray) ||
+        // Check for stroke color patterns that indicate guide lines
+        (obj as any).stroke === "#ff0000" ||
+        (obj as any).stroke === "red" ||
+        // Check if object has guide-like properties
+        (obj.selectable === false &&
+          obj.evented === false &&
+          obj.type === "line");
+
+      return !isGuideLine;
+    });
+
+    console.log("Total objects:", objects.length);
+    console.log("Content objects:", contentObjects.length);
+    console.log(
+      "Objects details:",
+      objects.map((obj) => ({
+        type: obj.type,
+        id: (obj as any)._id || (obj as any).id,
+        name: (obj as any).name,
+        stroke: (obj as any).stroke,
+        strokeDashArray: (obj as any).strokeDashArray,
+        selectable: obj.selectable,
+        evented: obj.evented,
+      }))
+    );
+
+    return contentObjects.length === 0;
+  }
+
   // Export methods (unchanged)
   public rasterize() {
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is empty! Please add some content before exporting.");
+      this.showImportExportDropdown = false;
+      return;
+    }
     this.canvas.rasterize();
     this.showTopBarModal = false;
+    this.showImportExportDropdown = false;
     // var frontImage: HTMLImageElement;
     // var backImage: HTMLImageElement;
     // if (this.isFront) {
@@ -2153,19 +2229,36 @@ body{margin:0;padding:0;}`.trim()
   // }
 
   public rasterizeSVG() {
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is empty! Please add some content before exporting.");
+      this.showImportExportDropdown = false;
+      return;
+    }
     this.canvas.rasterizeSVG();
     this.addDashedSafetyArea();
     this.showTopBarModal = false;
+    this.showImportExportDropdown = false;
   }
 
   public exportToHtml() {
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is empty! Please add some content before exporting.");
+      this.showImportExportDropdown = false;
+      return;
+    }
     this.canvas.exportToHtml();
     this.addDashedSafetyArea();
     this.showTopBarModal = false;
+    this.showImportExportDropdown = false;
   }
 
   // Update the saveCanvasToJSON method
   public saveCanvasToJSON() {
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is empty! Please add some content before exporting.");
+      this.showImportExportDropdown = false;
+      return;
+    }
     const canvas = this.canvas.getCanvas();
     const json = JSON.stringify(canvas.toJSON());
     const blob = new Blob([json], { type: "application/json" });
@@ -2178,6 +2271,7 @@ body{margin:0;padding:0;}`.trim()
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
     this.addDashedSafetyArea();
+    this.showImportExportDropdown = false;
   }
 
   // Update the loadCanvasFromJSON method
@@ -2215,14 +2309,32 @@ body{margin:0;padding:0;}`.trim()
     });
 
     input.click();
+    this.showImportExportDropdown = false;
   }
 
   public confirmClear() {
-    this.canvas.confirmClear();
-    this.addDashedSafetyArea();
-    this.showTopBarModal = false;
-  }
+    // First check if canvas is already empty
+    if (this.isCanvasEmpty()) {
+      alert("Canvas is already empty! There's nothing to clear.");
+      this.showTopBarModal = false;
+      return;
+    }
 
+    // Canvas has content, ask for confirmation
+    const confirmation = confirm(
+      "Are you sure you want to clear the canvas? This action will remove all content and cannot be undone."
+    );
+
+    if (confirmation) {
+      // Clear canvas directly without additional confirmation
+      this.canvas.getCanvas().clear();
+      this.addDashedSafetyArea();
+      this.showTopBarModal = false;
+    } else {
+      // User cancelled, just close the modal
+      this.showTopBarModal = false;
+    }
+  }
   preview() {
     const canvasDataUrl = this.canvas.GetCanvasDataUrl();
     this.modalImage.nativeElement.src = canvasDataUrl;
@@ -2545,6 +2657,8 @@ body{margin:0;padding:0;}`.trim()
     });
 
     this.canvas.getCanvas().requestRenderAll(); // ✅ Use requestRenderAll() for smoother real-time updates
+    this.showImportExportDropdown = false;
+    this.showProductDropdown = false;
   }
 
   getBleedAreaLines(): fabric.Object[] {
