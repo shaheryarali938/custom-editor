@@ -39,7 +39,7 @@ async placeOrder(): Promise<void> {
     const formData = new FormData();
     formData.append('template', zipBlob, 'template.OL-template');
 
-   this.http.post<{ url: string }>('http://http://13.235.111.46:3000/api/upload-template', formData).subscribe({
+   this.http.post<{ url: string }>('http://13.235.111.46:3000/api/upload-template', formData).subscribe({
   next: (response) => {
     const savedUrl = response.url;
     window.location.href = `https://www.yellowletterhq.com/product/postcards/?template=${encodeURIComponent(savedUrl)}`;
