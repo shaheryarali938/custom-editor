@@ -5,8 +5,14 @@ yarn-debug.log*
 yarn-error.log*
 
 # Dependency directories
-node_modules/*
+node_modules/
+backend/node_modules/
+projects/angular-editor-fabric-js/node_modules/
+
+# Lock files
 package-lock.json
+backend/package-lock.json
+projects/angular-editor-fabric-js/package-lock.json
 
 # Build output directories
 build/
@@ -40,7 +46,6 @@ Thumbs.db
 
 # Optional npm cache directory
 .npm
-projects/angular-editor-fabric-js/package-lock.json
-projects/angular-editor-fabric-js/node_modules/*
 
+# Test coverage
 .early.coverage

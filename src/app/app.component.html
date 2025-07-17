@@ -297,6 +297,10 @@
                     }
                   </style>
 
+                  <button class="btn btn-yellow btn-sm mr-1" style="padding: 5px 10px" [disabled]="isUploading" (click)="placeOrder()">
+  {{ isUploading ? 'Placing Order...' : 'Place Order' }}
+</button>
+
                   <button
                     class="btn btn-yellow btn-sm dropdown-toggle"
                     type="button"
