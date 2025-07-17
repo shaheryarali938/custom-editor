@@ -7,6 +7,9 @@ const fs = require('fs');
 const app = express();
 
 // ✅ Enable CORS for Angular dev server
+
+const cors = require('cors');
+
 app.use(cors({ origin: 'http://13.235.111.46:3001' }));
 
 
