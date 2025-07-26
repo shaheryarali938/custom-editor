@@ -34,15 +34,17 @@ export class AppComponent implements OnInit {
 
       this.http
         .post<{ url: string }>(
-          "http://13.235.111.46:3000/api/upload-template",
+          "http://localhost:3000/api/upload-template",
           formData
         )
         .subscribe({
           next: (response) => {
             const savedUrl = response.url;
-            window.location.href = `https://www.yellowletterhq.com/product/postcards/?template=${encodeURIComponent(
-              savedUrl
-            )}`;
+// Detect postcard size based on canvas width/height
+const size = this.detectSelectedSize();
+const selectedSize = this.canvas.getCanvas().getWidth() === 1056 ? '8.5x5.5' : '4.25x5.5';
+window.location.href = `https://34.221.119.194/product/postcards/?template=${encodeURIComponent(savedUrl)}&size=${selectedSize}`;
+
           },
           error: (err) => {
             alert("Upload failed. Please try again.");
@@ -54,6 +56,19 @@ export class AppComponent implements OnInit {
       this.isUploading = false;
     }
   }
+
+  private detectSelectedSize(): string {
+  const W = this.canvas.getCanvas().getWidth();
+  const H = this.canvas.getCanvas().getHeight();
+
+  // Match dimensions to size (you can adjust as needed)
+  if ((W === 1056 && H === 528) || (W === 1056 && H === 544)) {
+    return '4.25x5.5';
+  }
+
+  return '8.5x5.5'; // Default fallback
+}
+
 
   async exportAsOLTemplateToBlob(): Promise<Blob> {
     const zip = await this.generateOLTemplateZip(); // Your existing method to create zip

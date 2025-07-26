@@ -2,49 +2,52 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const { exec } = require('child_process');
 
 const app = express();
+const PORT = 3000;
 
-// ✅ Enable CORS for Angular dev server
-
-const cors = require('cors');
-
+// Enable CORS for frontend IP (adjust as needed)
 app.use(cors({ origin: 'http://13.235.111.46:3001' }));
 
-
-// ⬇️ Your upload folder
-const uploadFolder = path.join(__dirname, 'saved_template');
-if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
-
-// ⬇️ Multer for file uploads
+// Set storage for uploaded files
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadFolder);
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'saved_template'));
   },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, `template-${uniqueSuffix}.OL-template`);
-  }
+  filename: (req, file, cb) => {
+    const filename = `template-${Date.now()}-${Math.floor(Math.random() * 100000000)}.OL-template`;
+    cb(null, filename);
+  },
 });
+
 const upload = multer({ storage });
 
-// ⬇️ API Route
 app.post('/api/upload-template', upload.single('template'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+    return res.status(400).send('No file uploaded');
   }
-  const publicUrl = `/saved_template/${req.file.filename}`;
-  res.json({ url: publicUrl });
+
+  const savedPath = `/saved_template/${req.file.filename}`;
+  const localPath = path.join(__dirname, 'saved_template', req.file.filename);
+  const templateType = req.body.templateType || "First Class Postcard (4.25 x 5.5)";
+
+  const pythonPath = 'python'; // or 'python3' depending on your system
+  const scriptPath = path.join(__dirname, 'auto_fill_form.py');
+
+  exec(`"${pythonPath}" "${scriptPath}" "${templateType}" "${savedPath}"`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`❌ Python Error: ${error.message}`);
+      return res.status(500).send('Python script failed.');
+    }
+    if (stderr) {
+      console.warn(`⚠️ Python stderr: ${stderr}`);
+    }
+    console.log(`✅ Python Output:\n${stdout}`);
+    res.json({ url: savedPath });
+  });
 });
 
-// ⬇️ Serve saved templates
-app.use('/saved_template', express.static(path.join(__dirname, 'saved_template')));
-
-// ✅ Start server
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server listening on http://localhost:${PORT}`);
 });
-
-
