@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
 
       this.http
         .post<{ url: string }>(
-          "http://localhost:3000/api/upload-template",
+          "http://www.yellowletterhq.com:3000/api/upload-template",
           formData
         )
         .subscribe({
