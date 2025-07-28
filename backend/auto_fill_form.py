@@ -21,7 +21,7 @@ if len(sys.argv) < 2:
 TEMPLATE_TYPE = sys.argv[1]
 ENCODED_TEMPLATE_PATH = urllib.parse.quote(sys.argv[2]) if len(sys.argv) >= 3 else ""
 
-url = f"https://34.221.119.194/product/postcards/?template={ENCODED_TEMPLATE_PATH}"
+url = f"https://yellowletterhq.com/product/postcards/?template={ENCODED_TEMPLATE_PATH}"
 print(f"Opening URL: {url}")
 
 # Launch browser
@@ -77,5 +77,5 @@ except Exception as e:
     print(f"⚠️ Skipped fede_custom_option9: {e}")
 
 print("✅ Form auto-filled.")
-time.sleep(100)  # Wait for observation
+time.sleep(1000)  # Wait for observation
 # driver.quit()
