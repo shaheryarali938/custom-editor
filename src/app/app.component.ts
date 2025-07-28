@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
 
       this.http
         .post<{ url: string }>(
-          "http://www.yellowletterhq.com:3000/api/upload-template",
+          "http://yellowletterhq.com:3000/api/upload-template",
           formData
         )
         .subscribe({
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
 // Detect postcard size based on canvas width/height
 const size = this.detectSelectedSize();
 const selectedSize = this.canvas.getCanvas().getWidth() === 1056 ? '8.5x5.5' : '4.25x5.5';
-window.location.href = `https://34.221.119.194/product/postcards/?template=${encodeURIComponent(savedUrl)}&size=${selectedSize}`;
+window.location.href = `https://yellowletterhq.com/product/postcards/?template=${encodeURIComponent(savedUrl)}&size=${selectedSize}`;
 
           },
           error: (err) => {
