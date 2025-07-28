@@ -8,7 +8,7 @@ const app = express();
 const PORT = 3000;
 
 // Enable CORS for frontend IP (adjust as needed)
-app.use(cors({ origin: 'http://www.yellowletterhq.com:3001' }));
+app.use(cors({ origin: 'http://13.235.111.46:3001' }));
 
 // Set storage for uploaded files
 const storage = multer.diskStorage({
